@@ -366,7 +366,7 @@ namespace CMIO { namespace DP { namespace Sample
 				answer = true;
 				break;
 			
-			case kCMIOStreamPropertyOutputBuffersNeededForDroplessPlayback:
+			case kCMIOStreamPropertyOutputBuffersNeededForThrottledPlayback:
 				answer = true;
 				break;
 			
@@ -395,7 +395,7 @@ namespace CMIO { namespace DP { namespace Sample
 				answer = false;
 				break;
 
-			case kCMIOStreamPropertyOutputBuffersNeededForDroplessPlayback:
+			case kCMIOStreamPropertyOutputBuffersNeededForThrottledPlayback:
 				answer = false;
 				break;
 			
@@ -424,7 +424,7 @@ namespace CMIO { namespace DP { namespace Sample
 				answer = sizeof(CMTime);
 				break;
 				
-			case kCMIOStreamPropertyOutputBuffersNeededForDroplessPlayback:
+            case kCMIOStreamPropertyOutputBuffersNeededForThrottledPlayback:
 				answer = sizeof(UInt32);
 				break;
 				
@@ -561,7 +561,7 @@ namespace CMIO { namespace DP { namespace Sample
 				dataUsed = sizeof(CMTime);
 				break;
 				
-			case kCMIOStreamPropertyOutputBuffersNeededForDroplessPlayback:
+			case kCMIOStreamPropertyOutputBuffersNeededForThrottledPlayback:
 				ThrowIf(dataSize != GetPropertyDataSize(address, qualifierDataSize, qualifierData), CAException(kCMIOHardwareBadPropertySizeError), "CMIO::DP::Stream::GetPropertyData: wrong data size for kCMIOStreamPropertyOutputBuffersNeededForDroplessPlayback");
 				*static_cast<UInt32*>(data) = GetMinimumInFlightFramesForThrottledPlayback();
 				dataUsed = sizeof(UInt32);
