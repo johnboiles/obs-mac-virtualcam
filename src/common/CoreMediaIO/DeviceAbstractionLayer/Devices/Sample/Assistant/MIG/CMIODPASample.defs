@@ -1,0 +1,271 @@
+/*
+	<codex>
+	<abstract>Contains:	Definitions for MACH Interface Generator (MIG) for the SampleVideoAssistant
+				Refer to the "Mach 3 Server Writer's Guide" by the Open Software Foundation and CMU for MIG syntax
+				
+				IMPORTANT NOTE - MIG does not support C++'s scope resolution operator (::).  To work around that, the .defs use _SCOPE_ as a place holder and relies on a custom MIG build
+				rule to process the MIG output with the "GenerateMIGOutput.pl" script which replaces the _SCOPE_ place holder as needed.
+	</abstract>
+	</codex>
+*/
+
+#include <mach/mach_types.defs>
+
+import "CMIO_DPA_Sample_Shared.h";
+
+// The subsystem name (SampleAssistant) doesn't really matter since it is never exposed to external clients, and the message-base-id (1984) is abritrary
+subsystem SampleAssistant	1984;
+
+// To avoid collisions in files which include MIG generated headers from multiple .defs sources, divide the namespace prefixing between the user/server prefix (CMIODPA) and the function
+// names (Sample).  This will prevent generic names (i.e, Connect) in the MIG output from colliding.
+userprefix 		CMIODPA;
+serverprefix	CMIODPA;
+serverdemux		CMIODPASampleServer;
+
+type UInt8												= uint8_t					ctype: UInt8;
+type Byte												= uint8_t					ctype: Byte;
+type UInt32												= uint32_t					ctype: UInt32;
+type SInt32												= int32_t					ctype: SInt32;
+type pid_t												= int32_t					ctype: pid_t;
+type CMIOObjectPropertyScope							= uint32_t					ctype: CMIOObjectPropertyScope;
+type CMIOObjectPropertyElement							= uint32_t					ctype: CMIOObjectPropertyElement;
+type CMIOClassID										= uint32_t					ctype: CMIOClassID;
+type CMIOObjectPropertyAddress							= struct[3] of uint32_t		ctype: CMIOObjectPropertyAddress;
+type Float64											= double					ctype: Float64;
+
+// An unbounded array of Byte
+type CMIOSampleUnboundedByteArray							= array[] of Byte												ctype: BytePtr;
+
+// An unbounded array of CMIOObjectPropertyAddress
+type CMIOSampleUnboundedPropertyAddressArray				= array[] of CMIOObjectPropertyAddress						ctype: CMIO_SCOPE_PropertyAddressPtr;
+
+// CMIO::DPA::Sample::DeviceState
+type CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_DeviceState			= struct[65] of uint64_t										ctype: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_DeviceState;
+
+// An unbounded array of CMIO::DPA::Sample::DeviceState
+type CMIOSampleUnboundedDeviceStateArray					= array[] of CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_DeviceState		ctype: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_DeviceStatePtr;
+
+// CMIO::DPA::Sample::ControlChanges
+type CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ControlChanges		= struct[3] of UInt32											ctype: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ControlChanges;
+
+// An unbounded array of CMIO::DPA::Sample::ControlChanges
+type CMIOSampleUnboundedControlChangesArray					= array[] of CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ControlChanges	ctype: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ControlChangesPtr;
+
+// A variable length byte array of up to 512 bytes
+type CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ByteArray512			= array[*:512] of UInt8											ctype: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ByteArray512;
+
+/*
+ SampleConnect() - 60 second timeout
+	This is the first call that clients invoke to establish a connection with the Assistant.  The Assistant will create a unique port for the client, add it to the portset it services, and a
+	return a send right to the client (via the MIG reply).  The Assistant will request a "no-sender" notification on that newly created port, thus allowing it to get a notification in the
+	event the client is terminated.
+*/
+//waittime 60000;
+routine SampleConnect (
+		servicePort			: mach_port_t;
+	in	client				: pid_t;
+	out	clientSendPort		: mach_port_t = MACH_MSG_TYPE_MAKE_SEND
+);
+
+/*
+ SampleDisconnect() - 60 second timeout
+	Invoked by a client when it no longer needs to communicate with the Assistant.
+*/
+//waittime 60000;
+routine SampleDisconnect (
+		clientSendPort  	: mach_port_t
+);
+
+/*
+ SampleGetDeviceStates() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleGetDeviceStates (
+		clientSendPort  	: mach_port_t;
+	in  messagePort			: mach_port_t = MACH_MSG_TYPE_MAKE_SEND_ONCE;
+	out states				: CMIOSampleUnboundedDeviceStateArray, dealloc
+);
+
+/*
+ SampleGetProperties() - 60 second timeout
+	Reports which properties are have changed since the indicated time
+*/
+//waittime 60000;
+routine SampleGetProperties (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in  messagePort			: mach_port_t = MACH_MSG_TYPE_MAKE_SEND_ONCE;
+	in	time				: uint64_t;
+	in	matchAddress		: CMIOObjectPropertyAddress;
+	out	addresses			: CMIOSampleUnboundedPropertyAddressArray, dealloc
+);
+
+/*
+ SampleSetPropertyState() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleSetPropertyState (
+		clientSendPort				: mach_port_t;
+	in	guid						: uint64_t;
+	in	sendChangedNotifications	: UInt32;
+	in	address						: CMIOObjectPropertyAddress;
+	in	qualifier					: CMIOSampleUnboundedByteArray;
+	in	data						: CMIOSampleUnboundedByteArray
+);
+
+/*
+ SampleGetPropertyState() - 60 second timeout
+	Reports the state of a specified property
+*/
+//waittime 60000;
+routine SampleGetPropertyState (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	address				: CMIOObjectPropertyAddress;
+	in	qualifier			: CMIOSampleUnboundedByteArray;
+	out	data				: CMIOSampleUnboundedByteArray, dealloc
+);
+
+/*
+ SampleGetControls() - 60 second timeout
+	Reports which controls are have changed since the indicated time
+*/
+//waittime 60000;
+routine SampleGetControls (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in  messagePort			: mach_port_t = MACH_MSG_TYPE_MAKE_SEND_ONCE;
+	in	time				: uint64_t;
+	out	controlChanges		: CMIOSampleUnboundedControlChangesArray, dealloc
+);
+
+/*
+ SampleSetControl() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleSetControl (
+		clientSendPort				: mach_port_t;
+	in	guid						: uint64_t;
+	in	controlID					: UInt32;
+	in	value						: UInt32;
+	out	newValue					: UInt32
+);
+
+
+/*
+ SampleProcessRS422Command() - 60 second timeout
+	Returns the UniCode name (up to 255 character) of the device with the specified guid.
+*/
+//waittime 60000;
+routine SampleProcessRS422Command (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in  command				: CMIO_SCOPE_DPA_SCOPE_Sample_SCOPE_ByteArray512;
+	in	responseLength		: UInt32;
+	out responseUsed		: UInt32;
+	out response			: CMIOSampleUnboundedByteArray, dealloc
+);
+
+/*
+ SampleStartStream() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleStartStream (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in  messagePort			: mach_port_t = MACH_MSG_TYPE_COPY_SEND;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+);
+
+/*
+ SampleStopStream() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleStopStream (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+
+);
+
+/*
+ SampleGetControlList() - 60 second timeout
+	Reports which properties are have changed since the indicated time
+*/
+//waittime 60000;
+routine SampleGetControlList (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	out	data				: CMIOSampleUnboundedByteArray, dealloc
+);
+
+/*
+ SampleStartDeckThreads() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleStartDeckThreads (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+);
+
+/*
+ SampleStopDeckThreads() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleStopDeckThreads (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+);
+
+/*
+ SampleDeckPlay() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleDeckPlay (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+);
+
+/*
+ SampleDeckStop() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleDeckStop (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement
+);
+
+/*
+ SampleDeckJog() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleDeckJog (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement;
+	in  speed				: SInt32
+);
+
+/*
+ SampleDeckCueTo() - 60 second timeout
+*/
+//waittime 60000;
+routine SampleDeckCueTo (
+		clientSendPort  	: mach_port_t;
+	in	guid				: uint64_t;
+	in	scope				: CMIOObjectPropertyScope;
+	in	element				: CMIOObjectPropertyElement;
+	in  requestedTimecode	: Float64;
+	in  playOnCue			: UInt32
+);
