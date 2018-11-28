@@ -50,7 +50,7 @@
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Self Include
-#include "CMIO_DP_Sample_Plugin.h"
+#include "CMIO_DP_Sample_PlugIn.h"
 
 // Internal Includes
 #include "CMIO_DP_Sample_Device.h"

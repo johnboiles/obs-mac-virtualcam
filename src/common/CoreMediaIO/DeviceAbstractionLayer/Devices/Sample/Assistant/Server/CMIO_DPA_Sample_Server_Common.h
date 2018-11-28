@@ -60,7 +60,7 @@
 
 // Standard Library Includes
 #include <set>
-#include <Map>
+#include <map>
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
