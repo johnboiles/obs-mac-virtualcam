@@ -77,6 +77,7 @@
 // System Includes
 #include <CoreMediaIO/CMIOHardware.h>
 #include <IOKit/IOMessage.h>
+#include <IOKit/video/IOVideoTypes.h>
 
 #define Log_HardwareStartStop 0
 

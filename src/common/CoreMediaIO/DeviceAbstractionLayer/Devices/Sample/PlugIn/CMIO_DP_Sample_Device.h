@@ -72,7 +72,6 @@
 
 // System Includes
 #include <IOKit/audio/IOAudioTypes.h>
-#include <IOKit/video/IOVideoTypes.h>
 
 namespace CMIO
 {
@@ -207,7 +206,6 @@ namespace CMIO { namespace DP { namespace Sample
 	protected:
 		void									CreateStreams(CMIOObjectPropertyScope scope);
 		void									ReleaseStreams(bool reportDeath = false);
-		void									HandleConfigChangeRequestNotification(const IOVideoDeviceNotification& notification);
 	
 	// Accessors / Setters for Properties
 	public:
