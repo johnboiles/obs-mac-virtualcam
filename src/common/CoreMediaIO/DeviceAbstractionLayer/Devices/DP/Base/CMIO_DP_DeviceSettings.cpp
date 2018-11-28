@@ -87,12 +87,12 @@ namespace
 		char idAsCharacter[5];
 		*((UInt32*)idAsCharacter) = id;
 		idAsCharacter[4] = 0;
-		return CFStringCreateWithFormat(NULL, NULL, CFSTR("%s '%s' control on %s channel %ld"), isStream ? "stream" : "device", idAsCharacter, (kCMIODevicePropertyScopeInput == scope) ? "input" : "output", channel);
+        return CFStringCreateWithFormat(NULL, NULL, CFSTR("%s '%s' control on %s channel %u"), isStream ? "stream" : "device", idAsCharacter, (kCMIODevicePropertyScopeInput == scope) ? "input" : "output", (unsigned int)channel);
 	}
 
 	CFStringRef DeviceSettings_ConstructFormatKey(UInt32 streamIndex, CMIOObjectPropertyScope scope)
 	{
-		return CFStringCreateWithFormat(NULL, NULL, CFSTR("physical format for %s stream %ld"), (kCMIODevicePropertyScopeInput == scope) ? "input" : "output", streamIndex);
+        return CFStringCreateWithFormat(NULL, NULL, CFSTR("physical format for %s stream %u"), (kCMIODevicePropertyScopeInput == scope) ? "input" : "output", (unsigned int)streamIndex);
 	}
 
 	void DeviceSettings_ConstructDictionaryFromFormat(CMFormatDescriptionRef format, CACFDictionary& formatDictionary)
