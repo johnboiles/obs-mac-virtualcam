@@ -385,7 +385,8 @@ namespace CMIO { namespace DP
 				CACFData rawPrefsCFData(static_cast<Byte*>(rawPrefsData), fileLength);
 				
 				// Parse the data as a property list
-				currentPrefsCFDictionary = (CFMutableDictionaryRef)CFPropertyListCreateFromXMLData(NULL, rawPrefsCFData.GetCFData(), kCFPropertyListMutableContainersAndLeaves, NULL);
+                CFPropertyListFormat fmt = kCFPropertyListXMLFormat_v1_0;
+                currentPrefsCFDictionary = (CFMutableDictionaryRef)CFPropertyListCreateWithData(NULL, rawPrefsCFData.GetCFData(), kCFPropertyListMutableContainersAndLeaves, &fmt, NULL);
 			}
 			else
 			{
@@ -419,8 +420,8 @@ namespace CMIO { namespace DP
 			currentPrefsDictionary.AddDictionary(prefsKey.GetCFString(), settingsDictionary.GetCFDictionary());
 			
 			// Make a CFData that contains the new prefs
-			CACFData newRawPrefsCFData(CFPropertyListCreateXMLData(NULL, (CFPropertyListRef)currentPrefsDictionary.GetCFMutableDictionary()), true);
-			
+            CACFData newRawPrefsCFData(CFPropertyListCreateData(NULL, (CFPropertyListRef)currentPrefsDictionary.GetCFMutableDictionary(), kCFPropertyListXMLFormat_v1_0, 0, NULL), true);
+
 			if (newRawPrefsCFData.IsValid())
 			{
 				// Open the prefs file for writing
@@ -521,7 +522,8 @@ namespace CMIO { namespace DP
 					CACFData rawPrefsCFData(static_cast<Byte*>(rawPrefsData), fileLength);
 					
 					// Parse the data as a property list
-					currentPrefsCFDictionary = (CFMutableDictionaryRef)CFPropertyListCreateFromXMLData(NULL, rawPrefsCFData.GetCFData(), kCFPropertyListMutableContainersAndLeaves, NULL);
+                    CFPropertyListFormat fmt = kCFPropertyListXMLFormat_v1_0;
+                    currentPrefsCFDictionary = (CFMutableDictionaryRef)CFPropertyListCreateWithData(NULL, rawPrefsCFData.GetCFData(), kCFPropertyListMutableContainersAndLeaves, &fmt, NULL);
 				}
 				else
 				{
