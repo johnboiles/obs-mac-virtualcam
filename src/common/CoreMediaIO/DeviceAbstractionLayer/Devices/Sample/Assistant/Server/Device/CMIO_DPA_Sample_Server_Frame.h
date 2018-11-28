@@ -126,12 +126,12 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 
 	// Accessors
 	public:
-		UInt32							Size() { return mSize; }
+		size_t							Size() { return mSize; }
 		void*							Get() { return mFrameData; }
 
 	protected:
 		IOStreamBufferID				mBufferID;
-		UInt32							mSize;
+		size_t							mSize;
 		void*							mFrameData;
 
 	// Clients

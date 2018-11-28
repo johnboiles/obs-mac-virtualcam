@@ -212,7 +212,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 
 		// Initialize the mach_msg_ool_descriptor_t portion of the message
 		message.mDescriptor.address		= frame.Get();
-		message.mDescriptor.size		= frame.Size();
+		message.mDescriptor.size		= (mach_msg_size_t)frame.Size();
 		message.mDescriptor.deallocate	= false;
 		message.mDescriptor.copy		= MACH_MSG_VIRTUAL_COPY;
 		message.mDescriptor.type		= MACH_MSG_OOL_DESCRIPTOR;

@@ -1365,7 +1365,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						// RFP FixMe and support for other sample rates
 						stream.mEvents[1].mEventTime = stream.mNominalFrameDuration;
 						stream.mEvents[1].mEventFrameCount = theBufferControl.totalFrameCount; 
-						stream.mEvents[1].mDroppedFrameCount = theBufferControl.droppedFrameCount; 
+						stream.mEvents[1].mDroppedFrameCount = (UInt32)theBufferControl.droppedFrameCount; 
 						
 						stream.mEvents[0].mEventTime = CMTimeMake(stream.mEvents[1].mEventTime.timescale, stream.mEvents[1].mEventTime.timescale);
 						stream.mEvents[0].mEventFrameCount = stream.mEvents[1].mEventFrameCount;
@@ -1375,7 +1375,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 					{
 						// Bump to next frame
 						stream.mEvents[0].mEventFrameCount = theBufferControl.totalFrameCount;
-						stream.mEvents[0].mDroppedFrameCount = theBufferControl.droppedFrameCount;							
+						stream.mEvents[0].mDroppedFrameCount = (UInt32)theBufferControl.droppedFrameCount;
 						stream.mEvents[0].mEventTime = CMTimeAdd(stream.mEvents[0].mEventTime, CMTimeMake(stream.mNominalFrameDuration.value*(stream.mEvents[0].mEventFrameCount- stream.mEvents[1].mEventFrameCount), stream.mNominalFrameDuration.timescale));
 						if (stream.mEvents[0].mDroppedFrameCount != stream.mEvents[1].mDroppedFrameCount)
 						{
@@ -1387,7 +1387,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 							DebugMessage("DPA::Sample::Server::Stream::StreamOutputCallback:  Dropped a frame (%ld)", stream.mUnderrunCount);
 						}
 						stream.mEvents[1].mEventFrameCount = theBufferControl.totalFrameCount; 
-						stream.mEvents[1].mDroppedFrameCount = theBufferControl.droppedFrameCount; 
+						stream.mEvents[1].mDroppedFrameCount = (UInt32)theBufferControl.droppedFrameCount;
 					}
 					
 					// Save hosttime
@@ -1472,7 +1472,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		CMA::SampleBuffer::TimingInfo timingInfo(GetNominalFrameDuration(), presentationTimeStamp, kCMTimeInvalid);
 		
 		// Wrap the entry in a Frame
-		Frame* frame = new Frame(mIOSAStream, GetFrameType(), theBufferControl->vbiTime, timingInfo, GetDiscontinuityFlags(), theBufferControl->droppedFrameCount, theBufferControl->firstVBITime, entry.bufferID, entry.dataLength, mIOSAStream.GetDataBuffer(entry.bufferID));
+		Frame* frame = new Frame(mIOSAStream, GetFrameType(), theBufferControl->vbiTime, timingInfo, GetDiscontinuityFlags(), (UInt32)theBufferControl->droppedFrameCount, theBufferControl->firstVBITime, entry.bufferID, entry.dataLength, mIOSAStream.GetDataBuffer(entry.bufferID));
 
 		// Clear the discontinuity flags since any accumulated discontinuties have passed onward with the frame
 		SetDiscontinuityFlags(kCMIOSampleBufferNoDiscontinuities);

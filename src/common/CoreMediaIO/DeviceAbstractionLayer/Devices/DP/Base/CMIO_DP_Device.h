@@ -206,7 +206,7 @@ namespace CMIO { namespace DP
 		bool								HasAnyStreams(CMIOObjectPropertyScope scope) const	{ return GetNumberStreams(scope) > 0; }
 		bool								HasInputStreams() const { return HasAnyStreams(kCMIODevicePropertyScopeInput); }
 		bool								HasOutputStreams() const { return HasAnyStreams(kCMIODevicePropertyScopeOutput); }
-		UInt32								GetNumberStreams(CMIOObjectPropertyScope scope) const { return (kCMIODevicePropertyScopeInput == scope) ? mInputStreamList.size() : mOutputStreamList.size(); }
+		UInt32								GetNumberStreams(CMIOObjectPropertyScope scope) const { return (kCMIODevicePropertyScopeInput == scope) ? (UInt32)mInputStreamList.size() : (UInt32)mOutputStreamList.size(); }
 		Stream*								GetStreamByID(CMIOObjectPropertyScope scope, CMIOStreamID id) const;
 		Stream*								GetStreamByIndex(CMIOObjectPropertyScope scope, UInt32 index) const;
 		Stream*								GetStreamByDeviceChannel(CMIOObjectPropertyScope scope, UInt32 deviceChannel) const;

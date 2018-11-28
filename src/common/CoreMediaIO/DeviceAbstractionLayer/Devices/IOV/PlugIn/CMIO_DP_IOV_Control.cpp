@@ -297,7 +297,7 @@ namespace CMIO { namespace DP { namespace IOV
 
 	UInt32 SelectorControl::GetNumberItems() const
 	{
-		return mSelectorMap.size();
+		return (UInt32)mSelectorMap.size();
 	}
 
 	UInt32 SelectorControl::GetCurrentItemID() const

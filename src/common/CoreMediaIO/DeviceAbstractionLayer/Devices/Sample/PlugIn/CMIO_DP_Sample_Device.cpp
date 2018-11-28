@@ -649,7 +649,7 @@ namespace CMIO { namespace DP { namespace Sample
 				}
 			}
 	
-			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), controlIDs.size(), &(controlIDs.front()), 0, NULL);
+			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), (UInt32)controlIDs.size(), &(controlIDs.front()), 0, NULL);
 			ThrowIfError(err, CAException(err), "CMIO::DP::Sample::Device::CreateControls: couldn't tell the DAL about the controls");
 		}
 	}
@@ -725,7 +725,7 @@ namespace CMIO { namespace DP { namespace Sample
 				}
 			}
 			
-			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), controlIDs.size(), &(controlIDs.front()), 0, NULL);
+			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), (UInt32)controlIDs.size(), &(controlIDs.front()), 0, NULL);
 			ThrowIfError(err, CAException(err), "CMIO::DP::Sample::Device::CreateControls: couldn't tell the DAL about the controls");
 		}
 	}
@@ -1152,7 +1152,7 @@ namespace CMIO { namespace DP { namespace Sample
 		// Tell the DAL about the new streams
 		if (streamIDs.size() > 0)
 		{
-			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), streamIDs.size(), &(streamIDs.front()), 0, NULL);
+			OSStatus err = CMIOObjectsPublishedAndDied(GetPlugIn().GetInterface(), GetObjectID(), (UInt32)streamIDs.size(), &(streamIDs.front()), 0, NULL);
 			ThrowIfError(err, CAException(err), "CMIO::DP::Sample::Device::CreateStreams: couldn't tell the DAL about the streams");
 		}
 	}

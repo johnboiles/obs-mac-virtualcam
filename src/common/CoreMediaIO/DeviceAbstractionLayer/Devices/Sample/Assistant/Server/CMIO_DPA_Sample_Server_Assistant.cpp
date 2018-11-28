@@ -330,7 +330,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 			mDeviceStateNotifiers.insert(std::make_pair(client, messagePort));
 
 			// Report the size of the variable length DeviceStates array
-			*length = mDevices.size();
+			*length = (mach_msg_type_number_t)mDevices.size();
 
 			// Simply return if there are no devices present
 			if (mDevices.empty())
@@ -794,7 +794,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 			CAMutex::Locker locker(assistant.mStateMutex);
 			
 			// Get the current device count
-			UInt32 deviceCount = assistant.mDevices.size();
+			UInt32 deviceCount = (UInt32)assistant.mDevices.size();
 			
 			while (true)
 			{

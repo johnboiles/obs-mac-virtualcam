@@ -298,9 +298,9 @@ namespace CMIO { namespace DP { namespace Property
 		{
 			FrameRatesMap::const_iterator i = std::find_if(mFrameRates.begin(), mFrameRates.end(), FormatDescriptionEquals<FrameRates>(format));
 			ThrowIf(i == mFrameRates.end(), CAException(kCMIODeviceUnsupportedFormatError), "CMIO::DP::FormatList::GetNumberFrameRates: invalid format description");
-			return (*i).second.size();
+			return (UInt32)(*i).second.size();
 		}
-		return mAllPossibleFrameRates.size();
+		return (UInt32)mAllPossibleFrameRates.size();
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -388,7 +388,7 @@ namespace CMIO { namespace DP { namespace Property
 	{
 		FrameRateRangeMap::const_iterator i = std::find_if(mFrameRateRanges.begin(), mFrameRateRanges.end(), FormatDescriptionEquals<FrameRateRanges>(format));
 		ThrowIf(i == mFrameRateRanges.end(), CAException(kCMIODeviceUnsupportedFormatError), "CMIO::DP::FormatList::GetNumberFrameRateRanges: invalid format description");
-		return (*i).second.size();
+		return (UInt32)(*i).second.size();
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -421,7 +421,7 @@ namespace CMIO { namespace DP { namespace Property
 			PropertyAddressList changedProperties;
 			PropertyAddress address(kCMIOStreamPropertyPreferredFormatDescription);
 			changedProperties.AppendUniqueItem(address);
-			mOwningStream->PropertiesChanged(changedProperties.GetNumberItems(), changedProperties.GetItems());
+			mOwningStream->PropertiesChanged((UInt32)changedProperties.GetNumberItems(), changedProperties.GetItems());
 		}
 	}
 
@@ -438,7 +438,7 @@ namespace CMIO { namespace DP { namespace Property
 			PropertyAddressList changedProperties;
 			PropertyAddress address(kCMIOStreamPropertyPreferredFrameRate);
 			changedProperties.AppendUniqueItem(address);
-			mOwningStream->PropertiesChanged(changedProperties.GetNumberItems(), changedProperties.GetItems());
+			mOwningStream->PropertiesChanged((UInt32)changedProperties.GetNumberItems(), changedProperties.GetItems());
 		}
 	}
 

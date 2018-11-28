@@ -685,7 +685,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		{
 			// This answer is a CMIODeviceStreamConfiguration
 			// This device has a single input stream with one channel, so creating the resultant CMIODeviceStreamConfiguration is straight forward
-			UInt32 inputStreamCount = mInputStreams.size();
+			UInt32 inputStreamCount = (UInt32)mInputStreams.size();
 			size = sizeof(UInt32) + (sizeof(UInt32) * inputStreamCount);
 			ThrowIfKernelError(vm_allocate(mach_task_self(), reinterpret_cast<vm_address_t*>(data), size, true), CAException(-1), "Device::GetPropertyState: allocation failed for kInputStreamConfigurationAddress");
 
@@ -702,7 +702,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		else if (PropertyAddress::IsSameAddress(address, kOutputStreamConfigurationAddress))
 		{
 			// This answer is a CMIODeviceStreamConfiguration
-			UInt32 outputStreamCount = mOutputStreams.size();
+			UInt32 outputStreamCount = (UInt32)mOutputStreams.size();
 			size = sizeof(UInt32) + (sizeof(UInt32) * outputStreamCount);
 			ThrowIfKernelError(vm_allocate(mach_task_self(), reinterpret_cast<vm_address_t*>(data), size, true), CAException(-1), "Device::GetPropertyState: allocation failed for kOutputStreamConfigurationAddress");
 
@@ -862,7 +862,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		}
 
 		// Report the length (in bytes)
-		*length = size;
+		*length = (mach_msg_type_number_t)size;
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1069,7 +1069,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		memcpy(*controlChanges, &(*changedControls.begin()), sizeof(ControlChanges) * changedControls.size());
 
 		// Report the number of changed controls
-		*length = changedControls.size();
+		*length = (mach_msg_type_number_t)changedControls.size();
 	}
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1137,7 +1137,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	IOReturn Device::RS422Command(const UInt8 *command, UInt32 commandLength, UInt8 *response, UInt32 *responseLength)
 	{
-		DebugMessage("Device::RS422Command: command Length = %d cmd %x %x %x %x", commandLength, *command++, *command++, *command++, *command++);
+		DebugMessage("Device::RS422Command: command Length = %d cmd %x %x %x %x", commandLength, command[0], command[1], command[2], command[3]);
 		*responseLength = 4;
 		*response++ = 1;
 		*response++ = 2;
@@ -1340,7 +1340,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		}
 		
 		// Report the length (in bytes)
-		*length = size;
+		*length = (mach_msg_type_number_t)size;
 	}
 	
 	
