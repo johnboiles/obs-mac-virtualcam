@@ -136,7 +136,7 @@ namespace CMIO { namespace DPA { namespace Sample
 		CMTimeOverride(const CMTime& time) : CMTimeOverrideSimple() { value = time.value; timescale = time.timescale; flags= time.flags; epoch = time.epoch; }
 		CMTimeOverride(const CMTimeOverrideSimple& time) : CMTimeOverrideSimple(time) {}
 		CMTimeOverride&	operator=(const CMTime& time) { this->value = time.value; this->timescale = time.timescale; this->flags = time.flags; this->epoch = time.epoch; return *this; }
-		operator			CMTime() const { CMTime time; time.value = this->value, time.timescale = this->timescale, time.flags = this->flags; time.epoch = this->epoch; return time;}
+        operator			CMTime() const { CMTime time; time.value = this->value; time.timescale = this->timescale; time.flags = this->flags; time.epoch = this->epoch; return time;}
 	};
 	
 	#pragma mark FrameType
