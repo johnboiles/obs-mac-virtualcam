@@ -110,11 +110,6 @@ namespace CMIO { namespace PTA
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	void* NotificationPortThread::Start(NotificationPortThread* thread)
 	{
-		// Register this thread the the garbage collector if needed
-		#if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
-			objc_registerThreadWithCollector();
-		#endif
-		
 		thread->mRunLoop = CFRunLoopGetCurrent();
 		
 		try
