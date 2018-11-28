@@ -1222,7 +1222,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		
 		//Create the plugin based controls
 		{
-			CACFArray			theSourceSelectorMap = NULL;
+			CACFArray			theSourceSelectorMap;
 			CFDictionaryRef		theSelectorItem = NULL;
 			CFDictionaryRef		theSelectorControl = NULL;
 			theSourceSelectorMap = CACFArray(3, false);

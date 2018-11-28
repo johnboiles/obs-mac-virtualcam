@@ -223,7 +223,7 @@ Float32 CMIOPreferencesGetFloat32Value(CFStringRef key, Boolean *keyExistsAndHas
 CFDictionaryRef CMIOPreferencesGetDictionary(CFStringRef key, Boolean *keyExistsAndHasValidFormat)
 {
 	bool isValid = false;
-	CFDictionaryRef retVal = false;
+	CFDictionaryRef retVal = NULL;
 	
 	CMIODebug();  // force one-time initialization, in case it hasn't been done yet.
 	
