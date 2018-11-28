@@ -468,7 +468,7 @@ namespace CMIO { namespace DP { namespace Sample
 						
 						RecentTimingInfo	recentTimingInfo[ 4 ];
 						
-						OSMemoryBarrier();
+                        std::atomic_thread_fence(std::memory_order_seq_cst);
 						recentTimingInfo[ 0 ] =	mRecentTimingInfo[ 0 ];
 						recentTimingInfo[ 1 ] =	mRecentTimingInfo[ 0 ];
 						recentTimingInfo[ 2 ] =	mRecentTimingInfo[ 1 ];
@@ -974,8 +974,8 @@ namespace CMIO { namespace DP { namespace Sample
 			mRecentTimingInfo[0].mValid = false;
 			mRecentTimingInfo[1] = mRecentTimingInfo[0];
 			mRecentTimingInfoIdx = 0;
-			OSMemoryBarrier();
-			
+            std::atomic_thread_fence(std::memory_order_seq_cst);
+
 			// Clear any accumulated discontinuity flags
 			SetDiscontinuityFlags(kCMIOSampleBufferNoDiscontinuities);
 			
@@ -1036,7 +1036,7 @@ namespace CMIO { namespace DP { namespace Sample
 		mRecentTimingInfo[0].mValid = false;
 		mRecentTimingInfo[1] = mRecentTimingInfo[0];
 		mRecentTimingInfoIdx = 0;
-		OSMemoryBarrier();
+        std::atomic_thread_fence(std::memory_order_seq_cst);
 
 		// The stream is no longer active
 		mStreaming = false;
@@ -1207,12 +1207,12 @@ namespace CMIO { namespace DP { namespace Sample
 			mRecentTimingInfo[ mRecentTimingInfoIdx ].mPTS = mTimingInfo.presentationTimeStamp;
 			mRecentTimingInfo[ mRecentTimingInfoIdx ].mHostTime = message->mHostTime;
 
-			OSMemoryBarrier();
+            std::atomic_thread_fence(std::memory_order_seq_cst);
 			mRecentTimingInfo[ mRecentTimingInfoIdx ].mValid = true;
-			OSMemoryBarrier();
+            std::atomic_thread_fence(std::memory_order_seq_cst);
 			mRecentTimingInfo[ prevTimingInfoIdx ].mValid = false;
-			OSMemoryBarrier();
-			
+            std::atomic_thread_fence(std::memory_order_seq_cst);
+
 			// Drive the clock
 			CMIOStreamClockPostTimingEvent(mTimingInfo.presentationTimeStamp, message->mHostTime, mSyncClock, mClock->GetClock());
 			mSyncClock = false;			
