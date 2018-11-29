@@ -387,7 +387,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						continue;
 					
 					// Add the stream to the map of input streams the device tracks
-					mInputStreams[streamID] = new Stream(this, registryEntry, streamDictionary, kCMIODevicePropertyScopeInput);
+					mInputStreams[streamID] = new IOBackedStream(this, registryEntry, streamDictionary, kCMIODevicePropertyScopeInput);
 					
 					// break out of the while loop since the stream was located
 					break;
@@ -428,7 +428,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						continue;
 					
 					// Add the stream to the map of output streams the device tracks
-					mOutputStreams[streamID] = new Stream(this, registryEntry, streamDictionary, kCMIODevicePropertyScopeOutput);
+					mOutputStreams[streamID] = new IOBackedStream(this, registryEntry, streamDictionary, kCMIODevicePropertyScopeOutput);
 					
 					// break out of the while loop since the stream was located
 					break;

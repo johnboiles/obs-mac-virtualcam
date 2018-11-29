@@ -54,7 +54,7 @@
 
 // Internal Includes
 #include "CMIO_DPA_Sample_Server_Common.h"
-#include "CMIO_DPA_Sample_Server_Stream.h"
+#include "CMIO_DPA_Sample_Server_IOBackedStream.h"
 #include "CMIO_DPA_Sample_Shared.h"
 
 // Public Utility Includes
