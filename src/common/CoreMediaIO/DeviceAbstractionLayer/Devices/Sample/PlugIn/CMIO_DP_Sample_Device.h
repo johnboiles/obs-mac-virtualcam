@@ -59,9 +59,6 @@
 #include "CMIO_DP_Property_SMPTETimeCallback.h"
 
 // Public Utility Includes
-#include "CMIO_IOKA_NotificationPort.h"
-
-// Public Utility Includes
 #include "CMIO_CMA_FormatDescription.h"
 #include "CMIO_IOKA_Object.h"
 
