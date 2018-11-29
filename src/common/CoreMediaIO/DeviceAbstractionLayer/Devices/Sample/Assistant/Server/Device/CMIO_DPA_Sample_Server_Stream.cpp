@@ -55,7 +55,7 @@
 // Internal Includes
 #include "CMIO_DPA_Sample_Server_ClientStream.h"
 #include "CMIO_DPA_Sample_Server_Device.h"
-#include "CMIO_DPA_Sample_Server_Frame.h"
+#include "CMIO_DPA_Sample_Server_IOBackedFrame.h"
 #include "CMIO_DPA_Sample_Server_Deck.h"
 #include "CMIO_DPA_Sample_Shared.h"
 
@@ -1472,7 +1472,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		CMA::SampleBuffer::TimingInfo timingInfo(GetNominalFrameDuration(), presentationTimeStamp, kCMTimeInvalid);
 		
 		// Wrap the entry in a Frame
-		Frame* frame = new Frame(mIOSAStream, GetFrameType(), theBufferControl->vbiTime, timingInfo, GetDiscontinuityFlags(), (UInt32)theBufferControl->droppedFrameCount, theBufferControl->firstVBITime, entry.bufferID, entry.dataLength, mIOSAStream.GetDataBuffer(entry.bufferID));
+		Frame* frame = new IOBackedFrame(mIOSAStream, GetFrameType(), theBufferControl->vbiTime, timingInfo, GetDiscontinuityFlags(), (UInt32)theBufferControl->droppedFrameCount, theBufferControl->firstVBITime, entry.bufferID, entry.dataLength, mIOSAStream.GetDataBuffer(entry.bufferID));
 
 		// Clear the discontinuity flags since any accumulated discontinuties have passed onward with the frame
 		SetDiscontinuityFlags(kCMIOSampleBufferNoDiscontinuities);

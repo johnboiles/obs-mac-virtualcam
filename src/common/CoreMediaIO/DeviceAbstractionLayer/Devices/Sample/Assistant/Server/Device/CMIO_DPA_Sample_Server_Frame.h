@@ -63,7 +63,6 @@
 #include "CAMutex.h"
 
 // System Includes
-#include <IOKit/stream/IOStreamLib.h>
 #include <CoreMediaIO/CMIOSampleBuffer.h>
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
@@ -75,11 +74,10 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	{		
 	public:
 	// Construction/Destruction
-										Frame(IOStreamRef stream, FrameType frameType, UInt64 hostTime, const CMA::SampleBuffer::TimingInfo& timingInfo, UInt32 discontinuityFlags, UInt32 droppedFrameCount, UInt64 firstFrameTime, IOStreamBufferID bufferID, size_t size, void* data);
+										Frame(FrameType frameType, UInt64 hostTime, const CMA::SampleBuffer::TimingInfo& timingInfo, UInt32 discontinuityFlags, UInt32 droppedFrameCount, UInt64 firstFrameTime, size_t size, void* data);
 		virtual							~Frame();										
 		
 	private:
-		IOStreamRef						mStream;
 		Frame&							operator=(Frame& that);							// Unimplemented - don't allow copying
 
 	// Attributes
@@ -130,7 +128,6 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		void*							Get() { return mFrameData; }
 
 	protected:
-		IOStreamBufferID				mBufferID;
 		size_t							mSize;
 		void*							mFrameData;
 
