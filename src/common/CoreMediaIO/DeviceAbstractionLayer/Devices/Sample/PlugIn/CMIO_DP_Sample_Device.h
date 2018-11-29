@@ -60,7 +60,6 @@
 
 // Public Utility Includes
 #include "CMIO_CMA_FormatDescription.h"
-#include "CMIO_IOKA_Object.h"
 
 // CA Public Utility Includes
 #include "CACFDictionary.h"
@@ -103,8 +102,10 @@ namespace CMIO { namespace DP { namespace Sample
 	class Device : public DP::Device
 	{
 	// Construction/Destruction
-	public:
-												Device(PlugIn& plugIn, CMIODeviceID deviceID, mach_port_t assistantPort, UInt64 guid, const io_string_t registryPath);
+	protected:
+												Device(PlugIn& plugIn, CMIODeviceID deviceID, mach_port_t assistantPort, UInt64 guid);
+    
+    public:
 		virtual									~Device();
 	
 		virtual void							Initialize();
@@ -113,7 +114,6 @@ namespace CMIO { namespace DP { namespace Sample
 
 	protected:
 		UInt64									mDeviceGUID;	// The 'pseduo-GUID' of the device returned from the Assistant
-		IOKA::Object							mRegistryEntry;	// The IOKit registry entry for the device
 
 	// Attributes
 	public:
@@ -160,10 +160,10 @@ namespace CMIO { namespace DP { namespace Sample
 	public:
 		DP::Control*							GetControlByControlID(UInt32 controlID) const;
 		virtual void							SetControlValue(UInt32 controlID, UInt32 value, UInt32* newValue);
-		virtual CFDictionaryRef					CopyControlDictionaryByControlID(UInt32 controlID) const;
+		virtual CFDictionaryRef 				CopyControlDictionaryByControlID(UInt32 controlID) const;
 
 	protected:
-		void									CreateRegistryControls();
+		virtual void							CreateRegistryControls();
 		void									CreatePluginControls();
 		void									ReleaseControls(bool reportDeath = false);
 
