@@ -222,6 +222,8 @@ namespace CMIO { namespace DPA { namespace Sample
 	struct DeviceState
 	{
 		UInt64		mGUID;								// The GUID of the device
+        Boolean     mIsIOBacked;                        // Whether the device is backed by an IOKit object
+                                                        // If not, mRegistryPath may be invalid
 		io_string_t	mRegistryPath;						// The registry path for the device 
 	};
 	typedef DeviceState* DeviceStatePtr;				// A typedef'd pointer for use by MIG

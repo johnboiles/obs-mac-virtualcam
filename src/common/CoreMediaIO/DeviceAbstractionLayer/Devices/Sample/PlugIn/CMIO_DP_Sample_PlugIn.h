@@ -96,7 +96,7 @@ namespace CMIO { namespace DP { namespace Sample
 		static void			DeviceEvent(PlugIn& plugIn);
 		void				UpdateDeviceStates();
 		Device&				GetDeviceByGUID(UInt64 guid) const;
- 		void				DeviceArrived(UInt64 guid, const io_string_t registryPath);
+ 		void				DeviceArrived(UInt64 guid, const io_string_t& registryPath, Boolean isIOBacked);
 		void				DeviceRemoved(Device& device);
 	};
 }}}

@@ -346,6 +346,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 			{
 				(*deviceStates)[index].mGUID = (**i).GetDeviceGUID();
 				(**i).GetRegistryPath((*deviceStates)[index].mRegistryPath);
+                (*deviceStates)[index].mIsIOBacked = true;
 				++index;
 			}
 		}

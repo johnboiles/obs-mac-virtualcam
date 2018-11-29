@@ -467,7 +467,7 @@ namespace CMIO { namespace DP { namespace Sample
 				catch (...)
 				{
 					// No device was found with the indicated GUID, so it is a new device
-					DeviceArrived(deviceStates[i].mGUID, deviceStates[i].mRegistryPath);
+					DeviceArrived(deviceStates[i].mGUID, deviceStates[i].mRegistryPath, deviceStates[i].mIsIOBacked);
 				}
 			}
 		}
@@ -476,7 +476,7 @@ namespace CMIO { namespace DP { namespace Sample
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// DeviceArrived()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	void PlugIn::DeviceArrived(UInt64 guid, const io_string_t registryPath)
+	void PlugIn::DeviceArrived(UInt64 guid, const io_string_t& registryPath, Boolean isIOBacked)
 	{
 		try
 		{	
