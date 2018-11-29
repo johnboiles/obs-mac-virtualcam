@@ -70,7 +70,7 @@ extern "C"
 			(void) mach_port_deallocate(mach_task_self(), assistantServicePort);
 
 
-			CMIO::DP::SampleVCam::PlugIn* plugIn = new CMIO::DP::SampleVCam::PlugIn(requestedTypeUUID);
+			CMIO::DP::Sample::PlugIn* plugIn = new CMIO::DP::Sample::PlugIn(requestedTypeUUID);
 			plugIn->Retain();
 			return plugIn->GetInterface();
 		}
