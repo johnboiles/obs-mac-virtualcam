@@ -113,12 +113,6 @@ namespace
 #pragma mark -
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
-	#pragma mark Static Globals
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// Static Globals
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	Assistant* Assistant::mInstance = 0;
-
 	#pragma mark -
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Assistant()
@@ -127,25 +121,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		mStateMutex("SampleAssistant state mutex"),
 		mPlugInBundle(CopyPlugInBundle()),
 		mPortSet(MACH_PORT_NULL),
-		mNotificationPortThread(true),
-		mDeviceAddedIterators(),
 		mDevices(),
 		mClientInfoMap(),
 		mDeviceStateNotifiers()
 	{
-		// Wait for the notification port thread to be running prior to continuing
-		while (PTA::NotificationPortThread::kStarting == mNotificationPortThread.GetState())
-			pthread_yield_np();
-
-		// Make sure the notification port is not invalid
-		ThrowIf(PTA::NotificationPortThread::kInvalid == mNotificationPortThread.GetState(), -1, "Notification thread invalid");
-		
 		// Create a port set to hold the service port, and each client's port
 		kern_return_t err = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_PORT_SET, &mPortSet);
 		ThrowIfKernelError(err, CAException(err), "Unable to create port set");
-		
-		// Initialize the notification for hot plugging of devices.  In addition to handling future hot plug events, this will also set up the devices that are currently plugged in
-		InitializeDeviceAddedNotification();
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -158,18 +140,6 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 			delete *i;
 	}
 	
-	#pragma mark -
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// Instance()
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	Assistant* Assistant::Instance()
-	{
-		if (0 == mInstance)
-			mInstance = new Assistant(); 
-		
-		return mInstance; 
-	}
-
 	#pragma mark -
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Connect()
@@ -742,147 +712,4 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		}
 	}
 
-
-	#pragma mark -
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// DeviceAdded()
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	void Assistant::DeviceArrived(Assistant& assistant, io_iterator_t iterator)
-	{
-		#if 0
-			// Wait forever until the Debugger can attach to the Assistant process
-			bool waiting = true;
-			while (waiting)
-			{
-				sleep(1);
-			}
-		#endif
-		
-		// Catch all exceptions since this is invoked via a call back and the exception cannot leave this routine 
-		try
-		{
-			// Grab the mutex for the Assistant's state
-			CAMutex::Locker locker(assistant.mStateMutex);
-			
-			// Get the current device count
-			UInt32 deviceCount = (UInt32)assistant.mDevices.size();
-			
-			while (true)
-			{
-				IOKA::Object registryEntry(IOIteratorNext(iterator));
-				if (not registryEntry.IsValid())
-					break;
-				
-				// Make sure the registry entry conforms to an IOVideoDevice
-				if (not registryEntry.ConformsTo("IOVideoDevice"))
-					continue;
-
-				Device* device = NULL;
-				
-				// Catch all exceptions so the iterator can be advanced to the next device in the event of any problems
-				try
-				{
-					// Create the new device
-					device = new Device(registryEntry, assistant.mNotificationPortThread);
-					
-					// Add it to the set of discovered devices whose capabilities are known
-					assistant.mDevices.insert(device);
-				}
-				catch (CAException& exception)
-				{
-					if (NULL != device)
-						delete device;
-				}
-			}
-			
-			// If any devices were successfully added, notify interested clients that a state change has taken place so they can call UpdateDeviceStates() at their convenience
-			if (deviceCount != assistant.mDevices.size())
-			{
-				// Send out the devices state changed message
-				for (ClientNotifiers::iterator i = assistant.mDeviceStateNotifiers.begin() ; i != assistant.mDeviceStateNotifiers.end() ; ++i)
-					assistant.SendDeviceStatesChangedMessage((*i).second);
-
-				// All the 'send-once' rights are now used up, so erase everything in the multimap 
-				assistant.mDeviceStateNotifiers.erase(assistant.mDeviceStateNotifiers.begin(), assistant.mDeviceStateNotifiers.end());
-			}
-		}
-		catch (...)
-		{
-		}
-	}
-
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// DeviceRemoved()
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	void Assistant::DeviceRemoved(Device& device)
-	{
-		// Catch all exceptions since exceptions cannot leave this routine 
-		try
-		{
-			// Grab the mutex for the Assistant's state
-			CAMutex::Locker locker(mStateMutex);
-			
-			// Iterate over the ClientInfoMap and remove this device from each clients' set of streams it was watching
-			for (ClientInfoMap::iterator i = mClientInfoMap.begin() ; i != mClientInfoMap.end() ; ++i)
-			{
-				while (true)
-				{
-					// See if this client was watching a stream from this device
-					StreamSpecifiers::iterator ii = std::find_if((*i).second->mStreamSpecifiers.begin(), (*i).second->mStreamSpecifiers.end(), StreamSpecifier::DeviceEqual(device));
-					if (ii == (*i).second->mStreamSpecifiers.end())
-						break;
-					
-					// This client had a stream that corresponded to this device, so erase it
-					(void) (*i).second->mStreamSpecifiers.erase(ii);
-				}
-			}
-
-			// Erase the device from the set of devices which the Assistant knows about
-			(void) mDevices.erase(&device);
-			
-			// Notify interested clients that a state change has taken place so they can call UpdateDeviceStates() at their convenience
-			for (ClientNotifiers::iterator i = mDeviceStateNotifiers.begin() ; i != mDeviceStateNotifiers.end() ; ++i)
-				SendDeviceStatesChangedMessage((*i).second);
-
-			// All the 'send-once' rights are now used up, so erase everything multimap 
-			mDeviceStateNotifiers.erase(mDeviceStateNotifiers.begin(), mDeviceStateNotifiers.end());
-		}
-		catch (...)
-		{
-		}
-	}
-
-	#pragma mark -
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// InitializeDeviceAddedNotification()
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	void Assistant::InitializeDeviceAddedNotification()
-	{
-		// Create a matching dictionary to specify that only Sample devices are of interest
-		CACFDictionary matchingDictionary(IOServiceMatching("IOVideoSampleDevice"), true);
-		ThrowIf(not matchingDictionary.IsValid(), -1, "Assistant::InitializeDeviceAddedNotification: unable to get service matching dictionary");
-
-		// Create the notification
-		CreateDeviceAddedNotification(matchingDictionary.GetCFMutableDictionary());
-	}
-
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// CreateDeviceAddedNotification()
-	//	Request device added notfication for the device specified in the provided matching dictionary.
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	void Assistant::CreateDeviceAddedNotification(CFMutableDictionaryRef matchingDictionary)
-	{
-		// IOServiceAddMatchingNotification 'eats' a matching dictionary, so up the retention count
-		CFRetain(matchingDictionary);
-
-		IOKA::Object iterator;
-		IOReturn ioReturn = IOServiceAddMatchingNotification(mNotificationPortThread.GetNotificationPort(), kIOMatchedNotification, matchingDictionary, reinterpret_cast<IOServiceMatchingCallback>(DeviceArrived), this, iterator.GetAddress());
-		ThrowIfError(ioReturn, CAException(ioReturn), "Assistant::CreateDeviceAddedNotification: IOServiceAddMatchingNotification() failed");
-			
-		mDeviceAddedIterators.push_back(iterator);
-		
-		// The iterator is returned unarmed, but full of the devices which matched the dictionary.  So manually invoke the DeviceArrived() routine to add all the devices already present and
-		// to arm the iterator for subsequent additions.
-		DeviceArrived(*this, iterator);
-	}
 }}}}
