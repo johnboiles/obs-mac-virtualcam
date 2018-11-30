@@ -207,7 +207,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//	and a return a send right to the client (via the MIG reply).  The Assistant will request a "no-sender" notification on that newly created port, thus allowing it to get a notification
 	//	in the event the client is terminated.
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::Connect(pid_t clientPID, mach_port_t* client)
+	kern_return_t Assistant::Connect(mach_port_t servicePort, pid_t clientPID, mach_port_t* client)
 	{
 		*client = MACH_PORT_NULL;
 		
@@ -362,7 +362,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// GetProperties()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::GetProperties(Client client, UInt64 guid, mach_port_t messagePort, UInt64 time, const PropertyAddress& matchAddress, PropertyAddress** addresses, mach_msg_type_number_t* length)
+	kern_return_t Assistant::GetProperties(Client client, UInt64 guid, mach_port_t messagePort, UInt64 time, CMIOObjectPropertyAddress matchAddress, PropertyAddress** addresses, mach_msg_type_number_t* length)
 	{
 		try
 		{
@@ -384,7 +384,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// GetPropertyState()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::GetPropertyState(Client client, UInt64 guid, const PropertyAddress& address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, UInt8** data, mach_msg_type_number_t* length)
+	kern_return_t Assistant::GetPropertyState(Client client, UInt64 guid, CMIOObjectPropertyAddress address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, UInt8** data, mach_msg_type_number_t* length)
 	{
 		try
 		{
@@ -406,7 +406,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// SetPropertyState()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::SetPropertyState(Client client, UInt64 guid, bool sendChangedNotifications, const PropertyAddress& address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, Byte* data, mach_msg_type_number_t length)
+	kern_return_t Assistant::SetPropertyState(Client client, UInt64 guid, UInt32 sendChangedNotifications, CMIOObjectPropertyAddress address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, Byte* data, mach_msg_type_number_t length)
 	{
 		try
 		{
@@ -547,7 +547,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// ProcessRS422Command()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::ProcessRS422Command(UInt64 guid, ByteArray512 command, mach_msg_type_number_t commandLength, UInt32 responseLength, UInt32 *responseUsed, UInt8** response, mach_msg_type_number_t *responseCount)
+	kern_return_t Assistant::ProcessRS422Command(Client client, UInt64 guid, ByteArray512 command, mach_msg_type_number_t commandLength, UInt32 responseLength, UInt32 *responseUsed, UInt8** response, mach_msg_type_number_t *responseCount)
 	{
 		try
 		{
@@ -704,7 +704,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// DeckJog()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	kern_return_t Assistant::DeckCueTo(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element, Float64 requestedTimecode, Boolean	playOnCue)
+	kern_return_t Assistant::DeckCueTo(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element, Float64 requestedTimecode, UInt32 playOnCue)
 	{
 		try
 		{

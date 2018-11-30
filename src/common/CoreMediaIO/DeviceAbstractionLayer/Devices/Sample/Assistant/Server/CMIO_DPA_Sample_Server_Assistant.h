@@ -53,6 +53,7 @@
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Internal Includes
+#include "CMIO_DPA_Sample_Server_MIGInterface.h"
 #include "CMIO_DPA_Sample_Server_Common.h"
 #include "CMIO_DPA_Sample_Shared.h"
 
@@ -75,7 +76,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
 	class Device;
 	
-	class Assistant
+    class Assistant: private CMIO::DPA::Sample::MIGInterface
 	{
 	// Construction/Destruction
 	public:
@@ -98,33 +99,28 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 
 	// Client Connection / Disconnection
 	public:
-		kern_return_t				Connect(pid_t client, mach_port_t* clientSendPort);
+        void                        ClientDied(mach_port_t clientPort);
+
+    // MIGInterface Implementation
+    public:
+        kern_return_t				Connect(mach_port_t servicePort, pid_t client, mach_port_t* clientSendPort);
 		kern_return_t				Disconnect(Client client);
-		void						ClientDied(mach_port_t clientPort);
-
-	// Client <-> Device Interaction
-	public:
 		kern_return_t				GetDeviceStates(Client client, mach_port_t messagePort, DeviceState** deviceStates, mach_msg_type_number_t* length);
-
-		kern_return_t				GetProperties(Client client, UInt64 guid, mach_port_t messagePort, UInt64 time, const PropertyAddress& matchAddress, PropertyAddress** addresses, mach_msg_type_number_t* length);
-		kern_return_t				GetPropertyState(Client client, UInt64 guid, const PropertyAddress& address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, UInt8** data, mach_msg_type_number_t* length);
-		kern_return_t				SetPropertyState(Client client, UInt64 guid, bool sendChangedNotifications, const PropertyAddress& address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, Byte* data, mach_msg_type_number_t length);
-
+		kern_return_t				GetProperties(Client client, UInt64 guid, mach_port_t messagePort, UInt64 time, CMIOObjectPropertyAddress matchAddress, PropertyAddress** addresses, mach_msg_type_number_t* length);
+		kern_return_t				GetPropertyState(Client client, UInt64 guid, CMIOObjectPropertyAddress address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, UInt8** data, mach_msg_type_number_t* length);
+		kern_return_t				SetPropertyState(Client client, UInt64 guid, UInt32 sendChangedNotifications, CMIOObjectPropertyAddress address, UInt8* qualifier, mach_msg_type_number_t qualifierLength, Byte* data, mach_msg_type_number_t length);
 		kern_return_t				GetControlList(Client client, UInt64 guid, UInt8** data, mach_msg_type_number_t* length);
 		kern_return_t				GetControls(Client client, UInt64 guid, mach_port_t messagePort, UInt64 time, ControlChanges** controlChanges, mach_msg_type_number_t* length);
 		kern_return_t				SetControl(Client client, UInt64 guid, UInt32 controlID, UInt32 value, UInt32* newValue);
-
 		kern_return_t				StartStream(Client client, UInt64 guid, mach_port_t messagePort, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
 		kern_return_t				StopStream(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
-
-		kern_return_t				ProcessRS422Command(UInt64 guid, ByteArray512 command, mach_msg_type_number_t commandLength, UInt32 responseLength, UInt32 *responseUsed, UInt8** response, mach_msg_type_number_t *responseCount);
-
+		kern_return_t				ProcessRS422Command(Client client, UInt64 guid, ByteArray512 command, mach_msg_type_number_t commandLength, UInt32 responseLength, UInt32 *responseUsed, UInt8** response, mach_msg_type_number_t *responseCount);
 		kern_return_t				StartDeckThreads(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
 		kern_return_t				StopDeckThreads(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
 		kern_return_t				DeckPlay(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
 		kern_return_t				DeckStop(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);
 		kern_return_t				DeckJog(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element, SInt32 speed);
-		kern_return_t				DeckCueTo(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element, Float64 requestedTimecode, Boolean playOnCue);
+		kern_return_t				DeckCueTo(Client client, UInt64 guid, CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element, Float64 requestedTimecode, UInt32 playOnCue);
 
 	private:
 		Device&						GetDeviceByGUID(UInt64 guid);
