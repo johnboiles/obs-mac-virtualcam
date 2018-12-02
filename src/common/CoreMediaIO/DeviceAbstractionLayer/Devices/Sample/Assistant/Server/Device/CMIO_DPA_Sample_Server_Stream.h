@@ -65,7 +65,7 @@
 
 // System Includes
 #include <CoreMedia/CMTime.h>
-
+#include <IOKit/video/IOVideoTypes.h>
 
 // Standard Library Includes
 #include <map>
@@ -166,6 +166,9 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		void							SetFrameRate(Float64 frameRate);
 		CMTime							GetNominalFrameDuration() { return mFrameRatesMap[mFrameType][mFrameRate]; }		
 
+    protected:
+        virtual void					SetStreamFormat(IOVideoStreamDescription *newStreamFormat) {}
+        
 	protected:
 		typedef std::set<FrameFormat, FrameFormat::Less> FrameFormats;
 		typedef std::map<Float64, CMTime> FrameRates;			

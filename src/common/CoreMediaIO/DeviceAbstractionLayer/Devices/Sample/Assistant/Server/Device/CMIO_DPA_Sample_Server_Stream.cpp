@@ -704,7 +704,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_10_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_10_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(mFrameRate);
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
@@ -714,7 +714,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						throw CAException(kCMIOHardwareIllegalOperationError);
 				}
 				
-				GetOwningDevice().GetIOVADevice().SetStreamFormat(CACFNumber(static_cast<CFNumberRef>(CFDictionaryGetValue(mStreamDictionary.GetCFDictionary(), CFSTR(kIOVideoStreamKey_StreamID))), false).GetSInt32(), &theNewFormat);
+				SetStreamFormat(&theNewFormat);
 
 				// Start the stream
 				Start(MACH_PORT_NULL, MACH_PORT_NULL, kCMIOSampleBufferDiscontinuityFlag_DataFormatChanged);
@@ -779,7 +779,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(mFrameRate);
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
@@ -814,7 +814,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_10_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_10_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(mFrameRate);
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
@@ -824,8 +824,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						throw CAException(kCMIOHardwareIllegalOperationError);
 				}
 				
-				GetOwningDevice().GetIOVADevice().SetStreamFormat(CACFNumber(static_cast<CFNumberRef>(CFDictionaryGetValue(mStreamDictionary.GetCFDictionary(), CFSTR(kIOVideoStreamKey_StreamID))), false).GetSInt32(), &theNewFormat);
-
+				SetStreamFormat(&theNewFormat);
 
 				// Update the shadow time for the format description since it changed
 				mProperties[PropertyAddress(kCMIOStreamPropertyFormatDescription, GetDevicePropertyScope(), GetStartingDeviceChannelNumber())].mShadowTime = CAHostTimeBase::GetTheCurrentTime();
@@ -980,7 +979,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_10_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_10_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(mFrameRate);
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
@@ -989,7 +988,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				}
 				printf("SetFrameRate newFormat.mVideoCodecType = %lu newFormat.mVideoCodecFlags = %x\n", (long unsigned int)theNewFormat.mVideoCodecType, (unsigned int)theNewFormat.mVideoCodecFlags);
                 
-				GetOwningDevice().GetIOVADevice().SetStreamFormat(CACFNumber(static_cast<CFNumberRef>(CFDictionaryGetValue(mStreamDictionary.GetCFDictionary(), CFSTR(kIOVideoStreamKey_StreamID))), false).GetSInt32(), &theNewFormat);
+				SetStreamFormat(&theNewFormat);
                 
 				Start(MACH_PORT_NULL, MACH_PORT_NULL, kCMIOSampleBufferDiscontinuityFlag_DataFormatChanged);
 
@@ -1050,7 +1049,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(frameRate);
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(frameRate);
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
@@ -1084,14 +1083,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 					case kYUV422_10_1920x1080:
 						theNewFormat.mVideoCodecType = kYUV422_10_1920x1080; 
-						theNewFormat.mVideoCodecFlags =FrameRateToCodecFlags(mFrameRate);  
+						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);  
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
-               }
+                }
 				
-				GetOwningDevice().GetIOVADevice().SetStreamFormat(CACFNumber(static_cast<CFNumberRef>(CFDictionaryGetValue(mStreamDictionary.GetCFDictionary(), CFSTR(kIOVideoStreamKey_StreamID))), false).GetSInt32(), &theNewFormat);
-                
+				SetStreamFormat(&theNewFormat);
                             
 				// Update the shadow time for the frame rate if it is different
 				mFrameRate = frameRate;

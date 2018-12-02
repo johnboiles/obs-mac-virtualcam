@@ -52,6 +52,8 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
         IOSA::PlugIn					mIOSPAlugIn;				// IOSA wrapper kIOStreamLibTypeID's IOCFPlugInInterface** 
         IOSA::Stream					mIOSAStream;				// IOSA wrapper for IOVideoStreamRef
 
+        virtual void					SetStreamFormat(IOVideoStreamDescription *newStreamFormat) override;
+
 	// Management
 	public:
         virtual void                    Start(Client client, mach_port_t messagePort, UInt32 initialDiscontinuityFlags) override;
