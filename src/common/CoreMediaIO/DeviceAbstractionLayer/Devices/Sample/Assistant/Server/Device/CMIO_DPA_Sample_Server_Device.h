@@ -57,11 +57,6 @@
 #include "CMIO_DPA_Sample_Server_IOBackedStream.h"
 #include "CMIO_DPA_Sample_Shared.h"
 
-// Public Utility Includes
-#include "CMIO_IOKA_PowerNotificationPort.h"
-#include "CMIO_IOKA_Object.h"
-#include "CMIO_IOVA_Assistance.h"
-
 // CA Public Utility Includes
 #include "CACFArray.h"
 #include "CACFDictionary.h"
@@ -70,18 +65,9 @@
 // System Includes
 #include <CoreMedia/CMTime.h>
 #include <CoreMediaIO/CMIOSampleBuffer.h>
-#include <IOKit/video/IOVideoTypes.h>
 
 // Standard Library Includes
 #include <map>
-
-namespace CMIO { namespace PTA
-{
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	// Types in the CMIO::PTA namespace
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	class NotificationPortThread;
-}}
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
@@ -121,24 +107,15 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Construction/Destruction
 	public:
-										Device(IOKA::Object& registryEntry, PTA::NotificationPortThread& notificationPortThread);
+										Device();
 		virtual							~Device();
 	
 	private:
 		Device&							operator=(Device& that); // Don't allow copying
 		
 	protected:
-		IOKA::Object					mRegistryEntry;				// The IOKit registry entry for the device
-		io_string_t						mRegistryPath;				// The registry path for the device
-        IOVA::PlugIn					mIOVAPlugIn;				// IOVA wrapper kIOVideoDeviceLibTypeID's IOCFPlugInInterface** 
-        IOVA::Device					mIOVADevice;				// IOVA wrapper for IOVideoDeviceRef
 		CAMutex							mStateMutex;				// Controls access to device's state
 
-	// Attributes
-	public:
-		void							GetRegistryPath(io_string_t path) const { (void) strlcpy(path, mRegistryPath, sizeof(io_string_t)); }
-		IOVA::Device&					GetIOVADevice() { return mIOVADevice; }
-	
 	// Device 'Guaranteed" Unique ID
 	public:
 		UInt64							GetDeviceGUID() const { return mDeviceGUID; }
@@ -160,7 +137,6 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		typedef std::map<UInt32, Stream*> StreamMap;
 		typedef std::map<Client, ClientStream*> ClientStreamMap;
 		
-		void							DiscoverStreams();
 		void							RemoveStreams();
 		Stream&							GetStreamByScopeAndElement(CMIOObjectPropertyScope scope, CMIOObjectPropertyElement element);		
 		Stream*							GetStreamByStreamID(UInt32 streamID);		
@@ -216,40 +192,17 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	// Controls
 	public:
 		void							GetControls(Client client, mach_port_t messagePort, UInt64 time, ControlChanges** controlChanges, mach_msg_type_number_t* length);
-		void							SetControl(Client client, UInt32 controlID, UInt32 value, UInt32* newValue);
+		virtual void					SetControl(Client client, UInt32 controlID, UInt32 value, UInt32* newValue);
 		
-		IOReturn						RS422Command(const UInt8 *command, UInt32 commandLength, UInt8 *response, UInt32 *responseLength);
+		kern_return_t					RS422Command(const UInt8 *command, UInt32 commandLength, UInt8 *response, UInt32 *responseLength);
 
 	protected:
 		void							SendControlStatesChangedMessage();
-		virtual void					InitializeControls();
 
 		CACFArray						mControlsList;
 		Controls						mControls;
 		ClientNotifiers					mControlStateNotifiers;				// Clients to notify when controls changed
 		CAMutex							mControlStateNotifiersMutex;
-		
-	
-	// Notifications
-	public:
-		PTA::NotificationPortThread&	GetNotificationThread()	{ return mNotificationThread; }
-	protected:
-        static void						IOVDeviceNotification(IOVideoDeviceRef deviceRef, Device& device, const IOVideoDeviceNotificationMessage& message);
-		void							DeviceNotification(const IOVideoDeviceNotification& notification);
-		void							StreamNotification(const IOVideoDeviceNotification& notification, Stream& stream);
-		void							ControlNotification(const IOVideoDeviceNotification& notification, UInt64 shadowTime);
-		static void						PowerNotification(Device& device, io_service_t unused, natural_t messageType, void* message);
-
-		PTA::NotificationPortThread&	mNotificationThread;		// Assistant's thread for getting IOKit notifications
-		IOKA::PowerNotificationPort		mPowerNotificationPort;		// For receiving power notifications
-
-	// Misc
-	protected:
-		bool							mSleeping;					// True when put to sleep
-		bool							mRestartStreamOnWake;		// True if the stream should be restarted upon waking from sleep
-	
-		void							Sleep();
-		void							Wake();
 	};
 }}}}
 #endif
