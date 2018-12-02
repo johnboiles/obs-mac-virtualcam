@@ -27,7 +27,8 @@
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
-	
+    class IOBackedDevice;
+    
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// IOBackedStream
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	{
 	// Construction/Destruction
 	public:
-										IOBackedStream(Device* device, IOKA::Object& registryEntry, CFDictionaryRef streamDictionary, CMIOObjectPropertyScope scope);
+										IOBackedStream(IOBackedDevice* device, IOKA::Object& registryEntry, CFDictionaryRef streamDictionary, CMIOObjectPropertyScope scope);
 		virtual							~IOBackedStream();
 
 	private:
@@ -46,6 +47,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 
 	// Attributes & Properties
 	public:
+        IOBackedDevice&					GetOwningDevice() { return *((IOBackedDevice*)mDevice); }
 		IOSA::Stream&					GetIOSAStream() { return mIOSAStream; }
 
 	protected:

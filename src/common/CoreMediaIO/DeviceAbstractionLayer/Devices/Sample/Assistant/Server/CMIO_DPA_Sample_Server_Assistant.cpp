@@ -285,8 +285,8 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 			for (Devices::const_iterator i = mDevices.begin() ; i != mDevices.end() ; ++i)
 			{
 				(*deviceStates)[index].mGUID = (**i).GetDeviceGUID();
-				(**i).GetRegistryPath((*deviceStates)[index].mRegistryPath);
-                (*deviceStates)[index].mIsIOBacked = true;
+                (*deviceStates)[index].mIsIOBacked = false;
+                
 				++index;
 			}
 		}
