@@ -25,6 +25,9 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	public:
 									VCamAssistant();
         static VCamAssistant*           sInstance;
+        
+    private:
+        void                            CreateDevices();
 	};
 }}}}
 #endif
