@@ -40,7 +40,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		virtual							~IOBackedStream();
 
 	private:
-		IOBackedStream&					operator=(Stream& that); // Don't allow copying
+		IOBackedStream&					operator=(IOBackedStream& that); // Don't allow copying
 
 	protected:
 		IOKA::Object					mRegistryEntry;				// The IOKit registry entry for the device
