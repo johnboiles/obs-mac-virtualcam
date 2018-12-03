@@ -63,6 +63,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 
         CACFDictionary streamDict;
         streamDict.AddArray(CFSTR(kIOVideoStreamKey_AvailableFormats), formats.GetCFArray());
+        streamDict.AddUInt32(CFSTR(kIOVideoStreamKey_StartingDeviceChannelNumber), 1);
 
         mInputStream = new VCamInputStream(this, streamDict.GetDict(), kCMIODevicePropertyScopeInput);
         mInputStreams[streamID] = mInputStream;
