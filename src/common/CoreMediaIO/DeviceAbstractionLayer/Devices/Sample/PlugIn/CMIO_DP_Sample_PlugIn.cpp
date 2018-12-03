@@ -79,7 +79,7 @@ namespace CMIO { namespace DP { namespace Sample
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// PlugIn()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	PlugIn::PlugIn(CFUUIDRef factoryUUID) :
+	PlugIn::PlugIn(CFUUIDRef factoryUUID, const char* assistantServiceName) :
 		DP::PlugIn(factoryUUID),
 		mAssistantPort(),
 		mDeviceEventPort(NULL),
@@ -87,6 +87,8 @@ namespace CMIO { namespace DP { namespace Sample
 		mAssistantCrashAnchorTime(CAHostTimeBase::GetCurrentTimeInNanos()),
 		mAssistantCrashCount(0)
 	{
+        mAssistantServiceName = new char[strlen(assistantServiceName) + 1];
+        strcpy(mAssistantServiceName, assistantServiceName);
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -101,6 +103,8 @@ namespace CMIO { namespace DP { namespace Sample
 			dispatch_release(mDeviceEventDispatchSource);
 			mDeviceEventDispatchSource = NULL;
 		}
+        
+        delete[] mAssistantServiceName;
 	}
 	
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -141,7 +145,7 @@ namespace CMIO { namespace DP { namespace Sample
 		dispatch_resume(mDeviceEventDispatchSource);
 
 		// Get the Mach port on which messages will be sent to the SampleAssistant
-		mAssistantPort.Reset(DPA::Sample::GetPort());
+		mAssistantPort.Reset(DPA::Sample::GetPort(mAssistantServiceName));
 
 		// Get the state of all the devices currently connected
 		UpdateDeviceStates();
@@ -397,7 +401,7 @@ namespace CMIO { namespace DP { namespace Sample
 						++plugIn.mAssistantCrashCount;
 						
 						// Get the Mach port on which messages will be sent to the SampleAssistant
-						plugIn.mAssistantPort.Reset(DPA::Sample::GetPort());
+						plugIn.mAssistantPort.Reset(DPA::Sample::GetPort(plugIn.mAssistantServiceName));
 
 						// Get the state of all the devices currently connected
 						plugIn.UpdateDeviceStates();

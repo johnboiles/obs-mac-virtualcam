@@ -69,8 +69,7 @@ extern "C"
 			// The service port is not longer needed so get rid of it
 			(void) mach_port_deallocate(mach_task_self(), assistantServicePort);
 
-
-			CMIO::DP::Sample::PlugIn* plugIn = new CMIO::DP::Sample::PlugIn(requestedTypeUUID);
+			CMIO::DP::Sample::PlugIn* plugIn = new CMIO::DP::Sample::PlugIn(requestedTypeUUID, assistantServiceName);
 			plugIn->Retain();
 			return plugIn->GetInterface();
 		}

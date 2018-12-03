@@ -69,7 +69,7 @@ namespace CMIO { namespace DP { namespace Sample
 	{
 	// Construction/Destruction
 	public:
-							PlugIn(CFUUIDRef factoryUUID);
+							PlugIn(CFUUIDRef factoryUUID, const char* assistantServiceName);
 		virtual				~PlugIn();
 
 		virtual void		InitializeWithObjectID(CMIOObjectID objectID);
@@ -90,6 +90,7 @@ namespace CMIO { namespace DP { namespace Sample
 		dispatch_source_t	mDeviceEventDispatchSource;	// Dispatch source for the device event port
 		UInt64				mAssistantCrashAnchorTime;	// Anchor time for tracking how often the Assistant crashes
 		UInt32				mAssistantCrashCount;		// Number of crashes since the crash anchor time
+        char*               mAssistantServiceName;
 
 	// Device Management
 	protected:

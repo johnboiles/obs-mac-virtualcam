@@ -116,7 +116,7 @@ namespace CMIO { namespace DPA { namespace Sample
 		void						SetAddress(vm_address_t storage) { mStorage = storage; }
 	};
 
-	mach_port_t			GetPort();
+    mach_port_t			GetPort(const char* assistantServiceName);
 	void				Disconnect(mach_port_t port);
 	void				GetDeviceStates(mach_port_t port, mach_port_t messagePort, AutoFreeUnboundedArray<DeviceState>& deviceStates);
 	void				GetProperties(mach_port_t port, UInt64 guid, mach_port_t messagePort, UInt64 time, const PropertyAddress& matchAddress, AutoFreeUnboundedArray<PropertyAddress>& addresses);

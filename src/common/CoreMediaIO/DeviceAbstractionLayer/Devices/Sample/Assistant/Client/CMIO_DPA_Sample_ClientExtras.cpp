@@ -76,7 +76,7 @@ namespace CMIO { namespace DPA { namespace Sample
 	//	Returns the port which the all messages will be sent to the SampleAssistant.  Under normal circumstances, the SampleAssistant service will have been registered with the bootstrap
 	//	via an appropriately configured plist in /Library/LaunchDaemons.
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	mach_port_t GetPort()
+	mach_port_t GetPort(const char* assistantServiceName)
 	{
 		mach_port_t port = MACH_PORT_NULL;
 		int connectionAttempts = 0;
@@ -84,8 +84,7 @@ namespace CMIO { namespace DPA { namespace Sample
 		while (MACH_PORT_NULL == port)
 		{
 			// Lookup the SampleAssistant service from the bootstrap mechanism
-			mach_port_t assistantServicePort;		
-			name_t assistantServiceName = "com.apple.cmio.DPA.Sample";
+			mach_port_t assistantServicePort;
 			kern_return_t err = bootstrap_look_up(bootstrap_port, assistantServiceName, &assistantServicePort);
 			ThrowIfKernelError(err, CAException(err), "CMIO::DPA::Sample::GetPort: bootstrap_look_up() failed");
 	
