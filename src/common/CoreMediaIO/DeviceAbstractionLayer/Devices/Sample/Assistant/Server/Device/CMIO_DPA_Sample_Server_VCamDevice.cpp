@@ -78,7 +78,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
         uint8_t* framebuffer = new uint8_t[vcamDevice->mFrameSize];
         
         while (true) {
-            usleep(1000 * 1000 / 120);
+            usleep(1000 * 1000 / 30);
             
             fseek(vcamDevice->mSequenceFile, (vcamDevice->mFrameIndex % vcamDevice->mFrameCount) * vcamDevice->mFrameSize, SEEK_SET);
             fread(framebuffer, 1, vcamDevice->mFrameSize, vcamDevice->mSequenceFile);
