@@ -889,7 +889,7 @@ namespace CMIO { namespace DP
 			OSStatus error = 0;
 			
 			// We can, so do so and toss the object
-			void* savedCommandState;
+            void* savedCommandState = nullptr;
 			if (StartCommandExecution(&savedCommandState))
 			{
 				try

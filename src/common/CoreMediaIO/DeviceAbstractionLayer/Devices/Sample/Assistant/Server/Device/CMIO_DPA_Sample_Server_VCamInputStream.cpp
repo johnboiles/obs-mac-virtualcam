@@ -216,20 +216,19 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		}
 
 		// Enqueue all the frame for all the clients that had room
-		for (std::vector<CMA::SimpleQueue<Frame*>*>::iterator i = queues.begin() ; i != queues.end() ; std::advance(i, 1))
+        for (std::vector<CMA::SimpleQueue<Frame*>*>::iterator i = queues.begin() ; i != queues.end() ; std::advance(i, 1)) {
 			(**i).Enqueue(frame);
+        }
 
 		// Make sure at least one client wanted the message
 		if (queues.empty())
 		{
 			// There were no clients to message this too, so invoke RemoveClient(MACH_PORT_NULL) on the frame to make it available for refilling 
 			frame->RemoveClient(MACH_PORT_NULL);
+            delete frame;
 		}
 		
-		if (true)
-		{
-			mDeck.FrameArrived();
-		}
+        mDeck.FrameArrived();
 		
 		// Notify all the client stream message threads that a frame is available
 		mFrameAvailableGuard.NotifyAll();		

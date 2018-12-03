@@ -513,6 +513,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
                 {
                     codecFlags = kSampleCodecFlags_24fps; 
                 }
+                    break;
                 case 23:
                 {
                     codecFlags = kSampleCodecFlags_24fps + kSampleCodecFlags_1001_1000_adjust; 
@@ -563,6 +564,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
             {
                 frameRate = 24.0; 
             }
+                break;
             case kSampleCodecFlags_24fps+kSampleCodecFlags_1001_1000_adjust:
             {
                 frameRate = 24.0*1000/1001; 
@@ -912,6 +914,8 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				// DoWhatYouWouldNeedToDoToProgramTheHardware();
 				// Send message to kext here to change the format
 				IOVideoStreamDescription theNewFormat;
+                bzero(&theNewFormat, sizeof(IOVideoStreamDescription));
+                
 				switch(mFrameType)
 				{
 					case kYUV422_720x480:
@@ -983,10 +987,9 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
-
-						
 				}
-				printf("SetFrameRate newFormat.mVideoCodecType = %lu newFormat.mVideoCodecFlags = %x\n", (long unsigned int)theNewFormat.mVideoCodecType, (unsigned int)theNewFormat.mVideoCodecFlags);
+				printf("SetFrameRate newFormat.mVideoCodecType = %lu newFormat.mVideoCodecFlags = %x\n",
+                       (long unsigned int)theNewFormat.mVideoCodecType, (unsigned int)theNewFormat.mVideoCodecFlags);
                 
 				SetStreamFormat(&theNewFormat);
                 
