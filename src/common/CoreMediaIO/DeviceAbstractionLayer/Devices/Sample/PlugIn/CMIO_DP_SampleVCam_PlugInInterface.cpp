@@ -5,7 +5,7 @@
 //  Created by Tamás Lustyik on 2018. 11. 28..
 //
 
-#include "CMIO_DP_SampleVCam_PlugIn.h"
+#include "CMIO_DP_Sample_PlugIn.h"
 
 // Public Utility Includes
 #include "CMIODebugMacros.h"

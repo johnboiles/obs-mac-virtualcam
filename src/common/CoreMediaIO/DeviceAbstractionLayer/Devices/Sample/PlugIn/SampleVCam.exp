@@ -1,0 +1,5 @@
+#	<codex>
+#	<abstract>Only the PlugIn "Factory Function" needs to be exported</abstract>
+#	</codex>
+
+_AppleCMIODPSampleVCamPlugIn
