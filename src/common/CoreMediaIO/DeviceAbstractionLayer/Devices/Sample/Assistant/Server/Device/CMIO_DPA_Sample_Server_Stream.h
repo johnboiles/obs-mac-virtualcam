@@ -167,7 +167,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		CMTime							GetNominalFrameDuration() { return mFrameRatesMap[mFrameType][mFrameRate]; }		
 
     protected:
-        virtual void					SetStreamFormat(IOVideoStreamDescription *newStreamFormat) {}
+        virtual void					SetStreamFormat(IOVideoStreamDescription *newStreamFormat) = 0;
         
 	protected:
 		typedef std::set<FrameFormat, FrameFormat::Less> FrameFormats;
