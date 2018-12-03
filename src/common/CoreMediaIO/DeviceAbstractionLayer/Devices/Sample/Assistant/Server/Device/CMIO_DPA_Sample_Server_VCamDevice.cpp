@@ -27,7 +27,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	{
 		CreateStreams();
         
-        mSequenceFile = fopen("/Library/CoreMediaIO/Plug-Ins/DAL/SampleVCam.plugin/Contents/Resources/ntsc_vyuy720x480.yuv", "rb");
+        mSequenceFile = fopen("/Library/CoreMediaIO/Plug-Ins/DAL/SampleVCam.plugin/Contents/Resources/ntsc2vuy720x480.yuv", "rb");
         mFrameSize = 720 * 480 * 2;
 
         fseek(mSequenceFile, 0, SEEK_END);
