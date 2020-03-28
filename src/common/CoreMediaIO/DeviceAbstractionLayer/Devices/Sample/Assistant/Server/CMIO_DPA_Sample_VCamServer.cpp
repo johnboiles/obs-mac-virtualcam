@@ -14,6 +14,7 @@
 // System Includes
 #include <servers/bootstrap.h>
 
+CMIO::DPA::Sample::Server::Device *virtualCamDevice;
 
 namespace
 {
@@ -50,9 +51,11 @@ using namespace CMIO::DPA::Sample::Server;
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // main()
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int main()
+void *virtualCamMain(void *)
 {
-	// Don't allow any exceptions to escape
+    DebugMessage("starting up");
+
+    // Don't allow any exceptions to escape
 	try
 	{
 		// Check in with the bootstrap port under the agreed upon name to get the servicePort with receive rights
@@ -62,7 +65,8 @@ int main()
 		if (BOOTSTRAP_SUCCESS != err)
 		{
 			DebugMessage("bootstrap_check_in() failed: 0x%x", err);
-			exit(43);
+            return;
+//			exit(43);
 		}
 	
 		#if 0
@@ -76,11 +80,13 @@ int main()
 
 		// Add the service port to the Assistant's port set
 		mach_port_t portSet = VCamAssistant::Instance()->GetPortSet();
+        virtualCamDevice = *(VCamAssistant::Instance()->mDevices.begin());
 		err = mach_port_move_member(mach_task_self(), servicePort, portSet);
 		if (KERN_SUCCESS != err)
 		{
 			DebugMessage("Unable to add service port to port set: 0x%x", err);
-			exit(2);
+            return;
+//			exit(2);
 		}
 
 		// Service incoming messages from the clients and notifications which were signed up for
@@ -91,11 +97,13 @@ int main()
 	}
 	catch (const CAException& exception)
 	{
-		exit(exception.GetError());
+        return;
+//        exit(exception.GetError());
 	}
 	catch (...)
 	{
 		DebugMessage("Terminated by an an unknown exception");
-		exit(44);
+        return;
+//		exit(44);
 	}
 }

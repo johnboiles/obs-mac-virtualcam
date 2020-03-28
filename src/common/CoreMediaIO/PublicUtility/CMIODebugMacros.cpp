@@ -69,9 +69,12 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <syslog.h>
+// TODO(johnboiles): Unify the logging to use OBS's method. The loglevel defines in syslog conflict with the ones in OBS.
+//#include <syslog.h>
 #include <time.h>
 #include <pthread.h>
+
+#define vsyslog()
 
 #if !USE_DTRACE_LOGGING
 	static bool sCMIODebug = false;
@@ -283,7 +286,7 @@ void DebugSysLogPrint(int logLevel, CFStringRef moduleKey, CFIndex debugLevel, c
 	{
 		va_list args;
 		va_start(args, message);
-		vsyslog(logLevel, message, args);
+		//vsyslog(logLevel, message, args);
 		va_end(args);
 	}
 }

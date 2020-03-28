@@ -35,18 +35,14 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 	private:
 		VCamDevice&					operator=(VCamDevice& that); // Don't allow copying
         
-    private:
+    // TODO(johnboiles): Instead of just exposing this to everyone, make a real accessor or something
+    public:
         VCamInputStream*            mInputStream;
         void						CreateStreams();
-        
-    private:
-        pthread_t                   mThread;
-        FILE*                       mSequenceFile;
-        size_t                      mFrameIndex;
+
+    // TODO(johnboiles): Instead of just exposing this to everyone, make a real accessor or something
+    public:
         size_t                      mFrameSize;
-        size_t                      mFrameCount;
-        
-        static void*                EmitFrame(void*);
 	};
 }}}}
 #endif

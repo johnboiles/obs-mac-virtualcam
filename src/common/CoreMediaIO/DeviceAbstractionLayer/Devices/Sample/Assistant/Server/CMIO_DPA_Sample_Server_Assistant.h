@@ -121,7 +121,8 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		void						SendDeviceStatesChangedMessage(mach_port_t destination);
 
 	// Device Mangagement
-    protected:
+    // TODO(johnboiles): Instead of just exposing this to everyone, make a real accessor or something
+    public:
 		typedef std::set<Device*>					Devices;
 		Devices						mDevices;
 

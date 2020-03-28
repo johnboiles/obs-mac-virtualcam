@@ -150,7 +150,9 @@ char * CMIOAsctime(void);
 //
 // Logging macros that ALWAYS log, irrespective of the DEBUG state
 //
-#include <syslog.h>
+// TODO(johnboiles): Unify the logging to use OBS's method. The loglevel defines in syslog conflict with the ones in OBS.
+//#include <syslog.h>
+#define syslog()
 
 #if USE_DTRACE_LOGGING
 	#define cmio_syslog(...)	do {char tempstr[1024]; snprintf(tempstr, 1024, __VA_ARGS__); syslog(LOG_NOTICE, "%s %s:%d:%s %s", CMIOAsctime(), CMIOFILE(__FILE__), __LINE__, __func__, tempstr); } while (0)

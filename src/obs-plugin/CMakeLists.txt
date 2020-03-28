@@ -103,7 +103,7 @@ set(mac-virtualcam_SOURCES
 	CoreAudio/PublicUtility/CACFDictionary.cpp
 	CoreAudio/PublicUtility/CACFArray.cpp
 	generated/CMIODPASampleServer.cpp
-    plugin-main.c)
+    plugin-main.cpp)
 
 
 #set_source_files_properties(av-virtualcam.mm
