@@ -105,10 +105,6 @@ set(mac-virtualcam_SOURCES
 	generated/CMIODPASampleServer.cpp
     plugin-main.cpp)
 
-
-#set_source_files_properties(av-virtualcam.mm
-#	PROPERTIES COMPILE_FLAGS "-fobjc-arc")
-	
 add_library(mac-virtualcam MODULE
 	${mac-virtualcam_SOURCES}
 	${mac-virtualcam_HEADERS})
