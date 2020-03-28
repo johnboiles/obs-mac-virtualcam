@@ -140,14 +140,14 @@ namespace CMIO
 		void									GetItemByIndex(UInt32 index, CMIOObjectPropertyAddress& address) const		{ if (index < mAddressList.size()) { address = mAddressList.at(index); } }
 		const CMIOObjectPropertyAddress*		GetItems() const															{ return &(*mAddressList.begin()); }
 		
-		bool									HasItem(const CMIOObjectPropertyAddress& address) const						{ AddressList::const_iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind1st(PropertyAddress::CongruentEqualTo(), address)); return theIterator != mAddressList.end(); }
-		bool									HasExactItem(const CMIOObjectPropertyAddress& address) const				{ AddressList::const_iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind1st(PropertyAddress::EqualTo(), address)); return theIterator != mAddressList.end(); }
+		bool									HasItem(const CMIOObjectPropertyAddress& address) const						{ AddressList::const_iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind(PropertyAddress::CongruentEqualTo(), address, std::placeholders::_1)); return theIterator != mAddressList.end(); }
+		bool									HasExactItem(const CMIOObjectPropertyAddress& address) const				{ AddressList::const_iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind(PropertyAddress::EqualTo(), address, std::placeholders::_1)); return theIterator != mAddressList.end(); }
 
 		void									AppendItem(const CMIOObjectPropertyAddress& address)						{ mAddressList.push_back(address); }
 		void									AppendUniqueItem(const CMIOObjectPropertyAddress& address)					{ if (!HasItem(address)) { mAddressList.push_back(address); } }
 		void									AppendUniqueExactItem(const CMIOObjectPropertyAddress& address)				{ if (!HasExactItem(address)) { mAddressList.push_back(address); } }
 		void									InsertItemAtIndex(UInt32 index, const CMIOObjectPropertyAddress& address)	{ if (index < mAddressList.size()) { AddressList::iterator theIterator = mAddressList.begin(); std::advance(theIterator, index); mAddressList.insert(theIterator, address); } else { mAddressList.push_back(address); } }
-		void									EraseExactItem(const CMIOObjectPropertyAddress& address)					{ AddressList::iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind1st(PropertyAddress::EqualTo(), address)); if (theIterator != mAddressList.end()) { mAddressList.erase(theIterator); } }
+		void									EraseExactItem(const CMIOObjectPropertyAddress& address)					{ AddressList::iterator theIterator = std::find_if(mAddressList.begin(), mAddressList.end(), std::bind(PropertyAddress::EqualTo(), address, std::placeholders::_1)); if (theIterator != mAddressList.end()) { mAddressList.erase(theIterator); } }
 		void									EraseItemAtIndex(UInt32 index)												{ if (index < mAddressList.size()) { AddressList::iterator theIterator = mAddressList.begin(); std::advance(theIterator, index); mAddressList.erase(theIterator); } }
 		void									EraseAllItems()																{ mAddressList.clear(); }
 

@@ -21,6 +21,7 @@
 
 // Public Utility Includes
 #include "CMIODebugMacros.h"
+#include "SamplePrefix.h"
 
 // CA Public Utility Includes
 #include "CACFNumber.h"
