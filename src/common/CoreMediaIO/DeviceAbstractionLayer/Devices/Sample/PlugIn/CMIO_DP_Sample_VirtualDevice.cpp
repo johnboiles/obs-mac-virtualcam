@@ -21,8 +21,8 @@ namespace CMIO { namespace DP { namespace Sample
     VirtualDevice::VirtualDevice(PlugIn& plugIn, CMIODeviceID deviceID, mach_port_t assistantPort, UInt64 guid):
         Device(plugIn, deviceID, assistantPort, guid)
     {
-        mDeviceUID = CFSTR("SampleVCam Video");
-        mDeviceName = CFSTR("SampleVCam");
+        mDeviceUID = CFSTR("OBS Virtual Camera Video");
+        mDeviceName = CFSTR("OBS Virtual Camera");
     }
     
 }}}
