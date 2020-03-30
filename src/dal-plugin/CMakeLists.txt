@@ -107,7 +107,9 @@ add_library(mac-virtualcam-plugin MODULE
 	${mac-virtualcam-plugin_SOURCES}
 	${mac-virtualcam-plugin_HEADERS})
 
-set_target_properties(mac-virtualcam-plugin PROPERTIES BUNDLE TRUE)
+set_target_properties(mac-virtualcam-plugin
+	PROPERTIES
+	BUNDLE TRUE)
 
 target_link_libraries(mac-virtualcam-plugin
 	${AVFOUNDATION}
@@ -124,11 +126,18 @@ target_link_options(mac-virtualcam-plugin
 	PUBLIC -exported_symbols_list ${PROJECT_SOURCE_DIR}/../CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam.exp
 )
 
+# Workaround because building from Xcode likes to put things in Debug and Release directories
+# TODO: This only supports Debug
+if (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+	set(TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/Debug")
+else (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+	set(TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+endif (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+
 add_custom_command(TARGET mac-virtualcam-plugin
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	POST_BUILD
-	COMMAND rm -rf mac-virtualcam-plugin.plugin || true
-	COMMAND cp -r ./mac-virtualcam-plugin.bundle ./mac-virtualcam-plugin.plugin
+	COMMAND rm -rf ${TARGET_DIR}/mac-virtualcam-plugin.plugin || true
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${TARGET_DIR}/mac-virtualcam-plugin.bundle ${TARGET_DIR}/mac-virtualcam-plugin.plugin
 	COMMENT "Rename bundle to plugin"
 )
 
@@ -137,16 +146,14 @@ add_custom_command(TARGET mac-virtualcam-plugin
 # builtin-infoPlistUtility ${PROJECT_SOURCE_DIR}/../CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o mac-virtualcam-plugin.bundle/Contents/Info.plist
 # Instead, just copy in one that was already generated from Xcode.
 add_custom_command(TARGET mac-virtualcam-plugin
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	POST_BUILD
-	COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist mac-virtualcam-plugin.plugin/Contents/Info.plist
+	COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${TARGET_DIR}/mac-virtualcam-plugin.plugin/Contents/Info.plist
 	DEPENDS {PROJECT_SOURCE_DIR}/Info.plist
 	COMMENT "Copy in Info.plist"
 )
 
 add_custom_command(TARGET mac-virtualcam-plugin
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	POST_BUILD
-	COMMAND /usr/bin/codesign --force --deep --sign - --timestamp=none mac-virtualcam-plugin.plugin
+	COMMAND /usr/bin/codesign --force --deep --sign - --timestamp=none ${TARGET_DIR}/mac-virtualcam-plugin.plugin
 	COMMENT "Codesign plugin"
 )
