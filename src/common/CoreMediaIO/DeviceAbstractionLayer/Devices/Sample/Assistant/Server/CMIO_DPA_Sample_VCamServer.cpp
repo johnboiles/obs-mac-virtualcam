@@ -65,7 +65,7 @@ void *virtualCamMain(void *)
 		if (BOOTSTRAP_SUCCESS != err)
 		{
 			DebugMessage("bootstrap_check_in() failed: 0x%x", err);
-            return;
+            return NULL;
 //			exit(43);
 		}
 	
@@ -85,7 +85,7 @@ void *virtualCamMain(void *)
 		if (KERN_SUCCESS != err)
 		{
 			DebugMessage("Unable to add service port to port set: 0x%x", err);
-            return;
+            return NULL;
 //			exit(2);
 		}
 
@@ -97,13 +97,13 @@ void *virtualCamMain(void *)
 	}
 	catch (const CAException& exception)
 	{
-        return;
+        return NULL;
 //        exit(exception.GetError());
 	}
 	catch (...)
 	{
 		DebugMessage("Terminated by an an unknown exception");
-        return;
+        return NULL;
 //		exit(44);
 	}
 }
