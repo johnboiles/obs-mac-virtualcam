@@ -22,7 +22,7 @@ git clone https://github.com/johnboiles/obs-mac-virtualcam.git
 cd obs-mac-virtualcam
 
 # Set an environment variable that points to the directory for your OBS clone
-export OBS_DIR=$PWD/..
+export OBS_DIR=$PWD/../obs-studio
 
 # Build the plugin
 mkdir build
