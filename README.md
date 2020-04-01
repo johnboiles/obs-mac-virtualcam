@@ -25,6 +25,8 @@ cd obs-mac-virtualcam
 export OBS_DIR=$PWD/..
 
 # Build the plugin
+mkdir build
+cd build
 cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib ..
 make -j
 ```
