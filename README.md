@@ -29,6 +29,16 @@ mkdir build
 cd build
 cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib ..
 make -j
+
+# Copy the OBS plugin to your local OBS build
+cp src/obs-plugin/mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
+
+# Copy the DAL plugin to the right place
+sudo cp -r src/dal-plugin/mac-virtualcam-plugin.plugin /Library/CoreMediaIO/Plug-Ins/DAL
+
+# Run your build of OBS
+cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
+./obs
 ```
 
 # TODO: Copy the plugin into the right place
