@@ -20,6 +20,7 @@ include_directories(${AVFOUNDATION}
                     ${COREMEDIAIO}
                     ${COCOA}
                     ${IOSURFACE}
+                    ${LIBOBS_INCLUDE_DIR}
                     ../common/CoreMediaIO/PublicUtility
                     ../common/CoreAudio/PublicUtility
                     ../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant
@@ -79,7 +80,6 @@ add_library(mac-virtualcam MODULE
 	${mac-virtualcam_HEADERS})
 
 target_link_libraries(mac-virtualcam
-	libobs
 	${AVFOUNDATION}
 	${COCOA}
 	${COREFOUNDATION}
@@ -87,4 +87,5 @@ target_link_libraries(mac-virtualcam
 	${COREVIDEO}
 	${COREMEDIAIO}
 	${IOSURFACE}
-	${IOKIT})
+	${IOKIT}
+	${LIBOBS_LIB})
