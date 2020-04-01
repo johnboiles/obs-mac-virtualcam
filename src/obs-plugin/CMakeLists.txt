@@ -1,5 +1,7 @@
 project(mac-virtualcam)
 
+find_package(Libobs REQUIRED)
+
 find_library(AVFOUNDATION AVFoundation)
 find_library(COCOA Cocoa)
 find_library(COREFOUNDATION CoreFoundation)
@@ -18,91 +20,58 @@ include_directories(${AVFOUNDATION}
                     ${COREMEDIAIO}
                     ${COCOA}
                     ${IOSURFACE}
-                    CoreMediaIO/PublicUtility
-                    CoreAudio/PublicUtility
-                    CoreMediaIO/PublicUtility/IOSurfaceAssistant
-                    CoreMediaIO/PublicUtility/POSIXThreadAssistant
-                    CoreMediaIO/PublicUtility/IOVideoAssistant
-                    CoreMediaIO/PublicUtility/IOStreamAssistant
-                    CoreMediaIO/PublicUtility/IOKitAssistant
-                    CoreMediaIO/PublicUtility/CoreMediaAssistant
-                    CoreMediaIO/PublicUtility/CoreVideoAssistant
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/Sample
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server
-                    CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device
-                    generated)
-
-set(mac-virtualcam_HEADERS
-	CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.h
-	CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.h
-	CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.h
-	CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.h
-	CoreMediaIO/PublicUtility/IOKitAssistant/CMIO_IOKA_NotificationPort.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FirstOutputPresentationTimeStamp.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Deck.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Base.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_ControlDictionary.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_ControlDictionary.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamInputStream.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Stream.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_VCamAssistant.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamDevice.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_MIGInterface.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Frame.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Deck.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Device.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_ClientStream.h
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_Assistant.h
-	CoreMediaIO/PublicUtility/DALAssistant/CMIO_DALA_Object.h
-	CoreMediaIO/PublicUtility/CMIODebugMacros.h
-	CoreAudio/PublicUtility/CAProcess.h
-	CoreAudio/PublicUtility/CAPThread.h
-	CoreAudio/PublicUtility/CAMutex.h
-	CoreAudio/PublicUtility/CAHostTimeBase.h
-	CoreAudio/PublicUtility/CAGuard.h
-	CoreAudio/PublicUtility/CACFString.h
-	CoreAudio/PublicUtility/CACFNumber.h
-	CoreAudio/PublicUtility/CACFDictionary.h
-	CoreAudio/PublicUtility/CACFArray.h)
+                    ../common/CoreMediaIO/PublicUtility
+                    ../common/CoreAudio/PublicUtility
+                    ../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant
+                    ../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant
+                    ../common/CoreMediaIO/PublicUtility/IOVideoAssistant
+                    ../common/CoreMediaIO/PublicUtility/IOStreamAssistant
+                    ../common/CoreMediaIO/PublicUtility/IOKitAssistant
+                    ../common/CoreMediaIO/PublicUtility/CoreMediaAssistant
+                    ../common/CoreMediaIO/PublicUtility/CoreVideoAssistant
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server
+                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device
+                    ./)
 
 set(mac-virtualcam_SOURCES
-	CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
-	CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
-	CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.cpp
-	CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.cpp
-	CoreMediaIO/PublicUtility/IOKitAssistant/CMIO_IOKA_NotificationPort.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FirstOutputPresentationTimeStamp.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Deck.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_VCamServer.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Base.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_ControlDictionary.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_ControlDictionary.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamInputStream.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Stream.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_VCamAssistant.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamDevice.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_MIGInterface.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Frame.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Deck.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Device.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_ClientStream.cpp
-	CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_Assistant.cpp
-	CoreMediaIO/PublicUtility/DALAssistant/CMIO_DALA_Object.cpp
-	CoreMediaIO/PublicUtility/CMIODebugMacros.cpp
-	CoreAudio/PublicUtility/CAProcess.cpp
-	CoreAudio/PublicUtility/CAPThread.cpp
-	CoreAudio/PublicUtility/CAMutex.cpp
-	CoreAudio/PublicUtility/CAHostTimeBase.cpp
-	CoreAudio/PublicUtility/CAGuard.cpp
-	CoreAudio/PublicUtility/CACFString.cpp
-	CoreAudio/PublicUtility/CACFNumber.cpp
-	CoreAudio/PublicUtility/CACFDictionary.cpp
-	CoreAudio/PublicUtility/CACFArray.cpp
-	generated/CMIODPASampleServer.cpp
+	../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
+	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
+	../common/CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.cpp
+	../common/CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.cpp
+	../common/CoreMediaIO/PublicUtility/IOKitAssistant/CMIO_IOKA_NotificationPort.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FirstOutputPresentationTimeStamp.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Deck.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_VCamServer.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Base.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_ControlDictionary.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_ControlDictionary.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamInputStream.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Stream.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_VCamAssistant.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamDevice.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_MIGInterface.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Frame.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Deck.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Device.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_ClientStream.cpp
+	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_Assistant.cpp
+	../common/CoreMediaIO/PublicUtility/DALAssistant/CMIO_DALA_Object.cpp
+	../common/CoreMediaIO/PublicUtility/CMIODebugMacros.cpp
+	../common/CoreAudio/PublicUtility/CAProcess.cpp
+	../common/CoreAudio/PublicUtility/CAPThread.cpp
+	../common/CoreAudio/PublicUtility/CAMutex.cpp
+	../common/CoreAudio/PublicUtility/CAHostTimeBase.cpp
+	../common/CoreAudio/PublicUtility/CAGuard.cpp
+	../common/CoreAudio/PublicUtility/CACFString.cpp
+	../common/CoreAudio/PublicUtility/CACFNumber.cpp
+	../common/CoreAudio/PublicUtility/CACFDictionary.cpp
+	../common/CoreAudio/PublicUtility/CACFArray.cpp
+	CMIODPASampleServer.cpp
     plugin-main.cpp)
 
 add_library(mac-virtualcam MODULE
@@ -119,5 +88,3 @@ target_link_libraries(mac-virtualcam
 	${COREMEDIAIO}
 	${IOSURFACE}
 	${IOKIT})
-
-install_obs_plugin_with_data(mac-virtualcam data)
