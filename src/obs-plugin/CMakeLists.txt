@@ -1,4 +1,4 @@
-project(mac-virtualcam)
+project(obs-plugin)
 
 find_package(Libobs REQUIRED)
 
@@ -39,7 +39,7 @@ include_directories(${AVFOUNDATION}
                     ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device
                     ./)
 
-set(mac-virtualcam_SOURCES
+set(obs-plugin_SOURCES
 	../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
 	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
 	../common/CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.cpp
@@ -75,11 +75,11 @@ set(mac-virtualcam_SOURCES
 	CMIODPASampleServer.cpp
     plugin-main.cpp)
 
-add_library(mac-virtualcam MODULE
-	${mac-virtualcam_SOURCES}
-	${mac-virtualcam_HEADERS})
+add_library(obs-plugin MODULE
+	${obs-plugin_SOURCES}
+	${obs-plugin_HEADERS})
 
-target_link_libraries(mac-virtualcam
+target_link_libraries(obs-plugin
 	${AVFOUNDATION}
 	${COCOA}
 	${COREFOUNDATION}
@@ -90,6 +90,6 @@ target_link_libraries(mac-virtualcam
 	${IOKIT}
 	${LIBOBS_LIB})
 
-set_target_properties(mac-virtualcam PROPERTIES
+set_target_properties(obs-plugin PROPERTIES
 	PREFIX ""
 	OUTPUT_NAME "obs-mac-virtualcam")

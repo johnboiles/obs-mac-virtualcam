@@ -1,4 +1,4 @@
-project(mac-virtualcam-plugin)
+project(dal-plugin)
 
 find_library(AVFOUNDATION AVFoundation)
 find_library(COCOA Cocoa)
@@ -40,7 +40,7 @@ include_directories(${AVFOUNDATION}
                     ../common/CoreMediaIO/PublicUtility/DALAssistant
                     ./)
 
-set(mac-virtualcam-plugin_SOURCES
+set(dal-plugin_SOURCES
 	../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
 	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
 	../common/CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.cpp
@@ -103,16 +103,16 @@ set(mac-virtualcam-plugin_SOURCES
 	../common/CoreAudio/PublicUtility/CACFArray.cpp
 	CMIODPASampleClient.cpp)
 
-add_library(mac-virtualcam-plugin MODULE
-	${mac-virtualcam-plugin_SOURCES}
-	${mac-virtualcam-plugin_HEADERS})
+add_library(dal-plugin MODULE
+	${dal-plugin_SOURCES}
+	${dal-plugin_HEADERS})
 
-set_target_properties(mac-virtualcam-plugin
+set_target_properties(dal-plugin
 	PROPERTIES
 	BUNDLE TRUE
 	OUTPUT_NAME "obs-mac-virtualcam")
 
-target_link_libraries(mac-virtualcam-plugin
+target_link_libraries(dal-plugin
 	${AVFOUNDATION}
 	${COCOA}
 	${COREFOUNDATION}
@@ -123,7 +123,7 @@ target_link_libraries(mac-virtualcam-plugin
 	${IOKIT})
 
 # Note: May not be necessary
-target_link_options(mac-virtualcam-plugin
+target_link_options(dal-plugin
 	PUBLIC -exported_symbols_list ${PROJECT_SOURCE_DIR}/../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam.exp
 )
 
@@ -135,7 +135,7 @@ else (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
 	set(TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 endif (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
 
-add_custom_command(TARGET mac-virtualcam-plugin
+add_custom_command(TARGET dal-plugin
 	POST_BUILD
 	COMMAND rm -rf ${TARGET_DIR}/obs-mac-virtualcam.plugin || true
 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${TARGET_DIR}/obs-mac-virtualcam.bundle ${TARGET_DIR}/obs-mac-virtualcam.plugin
@@ -146,14 +146,14 @@ add_custom_command(TARGET mac-virtualcam-plugin
 # not sure where to find that binary. If we had access to it, the command would look something like:
 # builtin-infoPlistUtility ${PROJECT_SOURCE_DIR}/../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o mac-virtualcam.bundle/Contents/Info.plist
 # Instead, just copy in one that was already generated from Xcode.
-add_custom_command(TARGET mac-virtualcam-plugin
+add_custom_command(TARGET dal-plugin
 	POST_BUILD
 	COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${TARGET_DIR}/obs-mac-virtualcam.plugin/Contents/Info.plist
 	DEPENDS {PROJECT_SOURCE_DIR}/Info.plist
 	COMMENT "Copy in Info.plist"
 )
 
-add_custom_command(TARGET mac-virtualcam-plugin
+add_custom_command(TARGET dal-plugin
 	POST_BUILD
 	COMMAND /usr/bin/codesign --force --deep --sign - --timestamp=none ${TARGET_DIR}/obs-mac-virtualcam.plugin
 	COMMENT "Codesign plugin"
