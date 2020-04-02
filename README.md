@@ -54,3 +54,7 @@ cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
 * OBS crashes when an app using the virtual camera is closed ([#1](https://github.com/johnboiles/obs-mac-virtualcam/issues/1))
 * Resolution is hardcoded to 720x480
 * If OBS is closed when an app is opened, the virtual camera may not show up
+
+## License
+
+As the goal of this repo is to eventually get merged into [obsproject/obs-studio](https://github.com/obsproject/obs-studio/) (or die because someone made a better implementation), the license for this code mirrors the GPLv2 license for that project.
