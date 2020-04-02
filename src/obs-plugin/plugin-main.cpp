@@ -64,8 +64,7 @@ extern CMIO::DPA::Sample::Server::VCamDevice *virtualCamDevice;
 static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 {
     uint8_t *outData = frame->data[0];
-    UInt64 vbiTime = CAHostTimeBase::GetCurrentTimeInNanos();
-    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, vbiTime);
+    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, frame->timestamp);
 }
 
 struct obs_output_info virtualcam_output_info = {
