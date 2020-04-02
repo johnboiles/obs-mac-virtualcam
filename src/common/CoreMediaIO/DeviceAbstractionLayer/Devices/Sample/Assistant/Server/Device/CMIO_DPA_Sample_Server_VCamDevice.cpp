@@ -46,10 +46,10 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
         UInt32 streamID = 0;
         
         CACFDictionary format;
-        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecType), kYUV422_720x480);
+        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecType), kYUV422_1280x720);
         format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecFlags), kSampleCodecFlags_30fps | kSampleCodecFlags_1001_1000_adjust);
-        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Width), 720);
-        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Height), 480);
+        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Width), 1280);
+        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Height), 720);
 
         CACFArray formats;
         formats.AppendDictionary(format.GetDict());

@@ -42,8 +42,8 @@ static bool virtualcam_output_start(void *data)
     // TODO(johnboiles): Right now we're hardcoded for 720x480 but that should probably change
     struct video_scale_info conversion = {};
     conversion.format = VIDEO_FORMAT_UYVY;
-    conversion.width = 720;
-    conversion.height = 480;
+    conversion.width = 1280;
+    conversion.height = 720;
     obs_output_set_video_conversion(output, &conversion);
     if (!obs_output_begin_data_capture(output, 0)) {
         return false;
