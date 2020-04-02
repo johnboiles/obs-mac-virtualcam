@@ -89,3 +89,7 @@ target_link_libraries(mac-virtualcam
 	${IOSURFACE}
 	${IOKIT}
 	${LIBOBS_LIB})
+
+set_target_properties(mac-virtualcam PROPERTIES
+	PREFIX ""
+	OUTPUT_NAME "obs-mac-virtualcam")
