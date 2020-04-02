@@ -1,8 +1,14 @@
 # OBS (macOS) Virtual Camera
 
-NOTE: You probably don't want to be using this repo just yet unless you know what you are doing. Right now the [instructions](https://github.com/obsproject/rfcs/pull/15#issuecomment-606201708) here are an easier way to try this code out.
+Creates a virtual webcam device from the output of OBS. Especially useful for streaming smooth, composited video into Zoom, Hangouts, Jitsi etc. Like [CatxFish/obs-virtual-cam](https://github.com/CatxFish/obs-virtual-cam) but for macOS.
+
+![Mar-28-2020 01-55-07](https://user-images.githubusercontent.com/218876/77819715-279b8700-709a-11ea-8885-aa15051665ee.gif)
+
+This code was spun out of this OBS Project [RFC](https://github.com/obsproject/rfcs/pull/15) which was itself spun out of [this issue](https://github.com/obsproject/obs-studio/issues/2568) from @tobi. This was intended as a proof of concept to inform technical decisions in that RFC, but who knows, maybe it will be useful to you in its current state. The goal is for this (or something with equivalent functionality) to eventually be merged into the core OBS codebase 🤞.
 
 ## Building
+
+To use this plugin, you'll need to clone and build OBS locally, build this plugin, copy it to the right places, then run your local build of OBS:
 
 ```
 # Clone and build OBS
@@ -31,7 +37,7 @@ cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS
 make -j
 
 # Copy the OBS plugin to your local OBS build
-cp src/obs-plugin/mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
+cp src/obs-plugin/obs-mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
 
 # Copy the DAL plugin to the right place
 sudo cp -r src/dal-plugin/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
@@ -40,3 +46,9 @@ sudo cp -r src/dal-plugin/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-In
 cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
 ./obs
 ```
+
+## Known Issues
+
+* OBS crashes when an app using the virtual camera is closed ([#1](https://github.com/johnboiles/obs-mac-virtualcam/issues/1))
+* Resolution is hardcoded to 720x480
+* If OBS is closed when an app is opened, the virtual camera may not show up
