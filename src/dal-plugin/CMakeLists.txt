@@ -129,11 +129,11 @@ target_link_options(dal-plugin
 
 # Workaround because building from Xcode likes to put things in Debug and Release directories
 # TODO: This only supports Debug
-if (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+if (XCODE)
 	set(TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/Debug")
-else (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+else (XCODE)
 	set(TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}")
-endif (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
+endif (XCODE)
 
 add_custom_command(TARGET dal-plugin
 	POST_BUILD
