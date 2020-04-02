@@ -34,11 +34,9 @@ make -j
 cp src/obs-plugin/mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
 
 # Copy the DAL plugin to the right place
-sudo cp -r src/dal-plugin/mac-virtualcam-plugin.plugin /Library/CoreMediaIO/Plug-Ins/DAL
+sudo cp -r src/dal-plugin/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
 
 # Run your build of OBS
 cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
 ./obs
 ```
-
-# TODO: Copy the plugin into the right place

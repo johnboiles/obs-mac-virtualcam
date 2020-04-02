@@ -109,7 +109,8 @@ add_library(mac-virtualcam-plugin MODULE
 
 set_target_properties(mac-virtualcam-plugin
 	PROPERTIES
-	BUNDLE TRUE)
+	BUNDLE TRUE
+	OUTPUT_NAME "obs-mac-virtualcam")
 
 target_link_libraries(mac-virtualcam-plugin
 	${AVFOUNDATION}
@@ -136,24 +137,24 @@ endif (CPACK_CMAKE_GENERATOR STREQUAL "Xcode")
 
 add_custom_command(TARGET mac-virtualcam-plugin
 	POST_BUILD
-	COMMAND rm -rf ${TARGET_DIR}/mac-virtualcam-plugin.plugin || true
-	COMMAND ${CMAKE_COMMAND} -E copy_directory ${TARGET_DIR}/mac-virtualcam-plugin.bundle ${TARGET_DIR}/mac-virtualcam-plugin.plugin
+	COMMAND rm -rf ${TARGET_DIR}/obs-mac-virtualcam.plugin || true
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${TARGET_DIR}/obs-mac-virtualcam.bundle ${TARGET_DIR}/obs-mac-virtualcam.plugin
 	COMMENT "Rename bundle to plugin"
 )
 
 # Note: Xcode seems to run a command `builtin-infoPlistUtility` to generate the Info.plist, but I'm
 # not sure where to find that binary. If we had access to it, the command would look something like:
-# builtin-infoPlistUtility ${PROJECT_SOURCE_DIR}/../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o mac-virtualcam-plugin.bundle/Contents/Info.plist
+# builtin-infoPlistUtility ${PROJECT_SOURCE_DIR}/../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o mac-virtualcam.bundle/Contents/Info.plist
 # Instead, just copy in one that was already generated from Xcode.
 add_custom_command(TARGET mac-virtualcam-plugin
 	POST_BUILD
-	COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${TARGET_DIR}/mac-virtualcam-plugin.plugin/Contents/Info.plist
+	COMMAND cp ${PROJECT_SOURCE_DIR}/Info.plist ${TARGET_DIR}/obs-mac-virtualcam.plugin/Contents/Info.plist
 	DEPENDS {PROJECT_SOURCE_DIR}/Info.plist
 	COMMENT "Copy in Info.plist"
 )
 
 add_custom_command(TARGET mac-virtualcam-plugin
 	POST_BUILD
-	COMMAND /usr/bin/codesign --force --deep --sign - --timestamp=none ${TARGET_DIR}/mac-virtualcam-plugin.plugin
+	COMMAND /usr/bin/codesign --force --deep --sign - --timestamp=none ${TARGET_DIR}/obs-mac-virtualcam.plugin
 	COMMENT "Codesign plugin"
 )
