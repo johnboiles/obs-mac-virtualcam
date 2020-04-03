@@ -55,6 +55,30 @@ cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
 * Resolution is hardcoded to 720x480
 * If OBS is closed when an app is opened, the virtual camera may not show up
 
+## Development
+
+Please help me make this thing not janky!
+
+### Using the cmake Xcode generator
+
+You can use cmake to generate an `xcodeproj` file to open all the files in Xcode:
+
+    # Set an environment variable that points to the directory for your OBS clone
+    export OBS_DIR=$PWD/../obs-studio
+
+    mkdir xcode
+    cd xcode
+    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -G Xcode ..
+
+You can then use Xcode to build your binaries (which will include debug symbols). To copy them into the right place you need a slightly different command. From the `xcode` directory created previously:
+
+    # Copy over the OBS plugin
+    cp src/obs-plugin/Debug/obs-mac-virtualcam.so $OBS_DIR/xcode/rundir/Debug/obs-plugins
+    # Copy the DAL plugin to the system
+    sudo cp -r src/dal-plugin/Debug/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
+
+You can go even further and attach the Xcode debugger to OBS and step through the code in this plugin. In Xcode, go to `Debug` -> `Attach to Process by PID or Name...`, then enter `obs` and debug the process as `root`. Then run OBS and you should be able to hit breakpoints set inside the plugin code.
+
 ## License
 
 As the goal of this repo is to eventually get merged into [obsproject/obs-studio](https://github.com/obsproject/obs-studio/) (or die because someone made a better implementation), the license for this code mirrors the GPLv2 license for that project.
