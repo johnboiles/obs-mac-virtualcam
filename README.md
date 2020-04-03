@@ -8,6 +8,12 @@ This code was spun out of this OBS Project [RFC](https://github.com/obsproject/r
 
 This is heavily based on [Apple's CoreMediaIO sample code](https://developer.apple.com/library/archive/samplecode/CoreMediaIO/Introduction/Intro.html) which has been [modernized by @lvsti](https://github.com/lvsti/CoreMediaIO-DAL-Example)
 
+## Known Issues
+
+* OBS crashes when an app using the virtual camera is closed ([#1](https://github.com/johnboiles/obs-mac-virtualcam/issues/1))
+* Resolution is hardcoded to 1280x720
+* If OBS is closed when an app is opened, the virtual camera may not show up
+
 ## Building
 
 To use this plugin, you'll need to clone and build OBS locally, build this plugin, copy it to the right places, then run your local build of OBS:
@@ -47,11 +53,7 @@ To use this plugin, you'll need to clone and build OBS locally, build this plugi
     cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
     ./obs
 
-## Known Issues
-
-* OBS crashes when an app using the virtual camera is closed ([#1](https://github.com/johnboiles/obs-mac-virtualcam/issues/1))
-* Resolution is hardcoded to 720x480
-* If OBS is closed when an app is opened, the virtual camera may not show up
+Now open your favorite video streaming app (or fully close it then re-open it to make sure it reloads any loaded video plugins). You _should_ be able to pick 'OBS Virtual Camera' as a source.
 
 ## Development
 
