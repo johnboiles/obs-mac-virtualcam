@@ -12,42 +12,40 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 
 To use this plugin, you'll need to clone and build OBS locally, build this plugin, copy it to the right places, then run your local build of OBS:
 
-```
-# Clone and build OBS
-git clone --recursive https://github.com/johnboiles/obs-studio.git
-cd obs-studio
+    # Clone and build OBS
+    git clone --recursive https://github.com/johnboiles/obs-studio.git
+    cd obs-studio
 
-# Follow normal OBS build steps
-brew install FFmpeg x264 Qt5 cmake mbedtls swig
-mkdir build
-cd build
-export QTDIR=/usr/local/opt/qt
-cmake .. && make -j
+    # Follow normal OBS build steps
+    brew install FFmpeg x264 Qt5 cmake mbedtls swig
+    mkdir build
+    cd build
+    export QTDIR=/usr/local/opt/qt
+    cmake .. && make -j
 
-# Clone this repo
-cd ../..
-git clone https://github.com/johnboiles/obs-mac-virtualcam.git
-cd obs-mac-virtualcam
+    # Clone this repo
+    cd ../..
+    git clone https://github.com/johnboiles/obs-mac-virtualcam.git
+    cd obs-mac-virtualcam
 
-# Set an environment variable that points to the directory for your OBS clone
-export OBS_DIR=$PWD/../obs-studio
+    # Set an environment variable that points to the directory for your OBS clone
+    export OBS_DIR=$PWD/../obs-studio
 
-# Build the plugin
-mkdir build
-cd build
-cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib ..
-make -j
+    # Build the plugin
+    mkdir build
+    cd build
+    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib ..
+    make -j
 
-# Copy the OBS plugin to your local OBS build
-cp src/obs-plugin/obs-mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
+    # Copy the OBS plugin to your local OBS build
+    cp src/obs-plugin/obs-mac-virtualcam.so $OBS_DIR/build/rundir/RelWithDebInfo/obs-plugins/
 
-# Copy the DAL plugin to the right place
-sudo cp -r src/dal-plugin/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
+    # Remove any existing plugin and copy the DAL plugin to the right place
+    sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/obs-mac-virtualcam.plugin && sudo cp -r src/dal-plugin/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
 
-# Run your build of OBS
-cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
-./obs
-```
+    # Run your build of OBS
+    cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
+    ./obs
 
 ## Known Issues
 
@@ -74,10 +72,16 @@ You can then use Xcode to build your binaries (which will include debug symbols)
 
     # Copy over the OBS plugin
     cp src/obs-plugin/Debug/obs-mac-virtualcam.so $OBS_DIR/xcode/rundir/Debug/obs-plugins
-    # Copy the DAL plugin to the system
-    sudo cp -r src/dal-plugin/Debug/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
+    # Remove any existing plugin and copy the DAL plugin to the right place
+    sudo rm -rf /Library/CoreMediaIO/Plug-Ins/DAL/obs-mac-virtualcam.plugin && sudo cp -r src/dal-plugin/Debug/obs-mac-virtualcam.plugin /Library/CoreMediaIO/Plug-Ins/DAL
 
-You can go even further and attach the Xcode debugger to OBS and step through the code in this plugin. In Xcode, go to `Debug` -> `Attach to Process by PID or Name...`, then enter `obs` and debug the process as `root`. Then run OBS and you should be able to hit breakpoints set inside the plugin code.
+### Debugging the OBS plugin
+
+To debug the OBS plugin (`obs-mac-virtualcam.so`), you can attach the Xcode debugger to the OBS process. This allows you to step through the OBS plugin code In Xcode, go to `Debug` -> `Attach to Process by PID or Name...`, then enter `obs` and debug the process as `root`. Then run OBS and you should be able to hit breakpoints set inside the plugin code.
+
+### Debugging the DAL plugin
+
+Debugging the DAL plugin (`obs-mac-virtualcam.plugin`) is a little trickier. You need to attach the Xcode debugger to a host process that loads the plugin. One option is to build another copy of OBS (without `obs-mac-virtualcam.so`), attach the debugger to that process, then add the virtual camera as a Video Capture Device there. You should then be able to step through code on the DAL plugin.
 
 ## License
 
