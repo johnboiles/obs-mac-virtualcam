@@ -40,7 +40,7 @@ To use this plugin, you'll need to clone and build OBS locally, build this plugi
     # Build the plugin
     mkdir build
     cd build
-    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib ..
+    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt ..
     make -j
 
     # Copy the OBS plugin to your local OBS build
@@ -53,7 +53,7 @@ To use this plugin, you'll need to clone and build OBS locally, build this plugi
     cd $OBS_DIR/build/rundir/RelWithDebInfo/bin
     ./obs
 
-Now open your favorite video streaming app (or fully close it then re-open it to make sure it reloads any loaded video plugins). You _should_ be able to pick 'OBS Virtual Camera' as a source.
+Now in OBS go to `Tools`->`Start Virtual Camera`, then open your favorite video streaming app (or fully close it then re-open it to make sure it reloads any loaded video plugins). You _should_ be able to pick `OBS Virtual Camera` as a source.
 
 ## Development
 
@@ -65,10 +65,12 @@ You can use cmake to generate an `xcodeproj` file to open all the files in Xcode
 
     # Set an environment variable that points to the directory for your OBS clone
     export OBS_DIR=$PWD/../obs-studio
+    # Set an environment variable pointing to QT
+    export QTDIR=/usr/local/opt/qt
 
     mkdir xcode
     cd xcode
-    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs cmake -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -G Xcode ..
+    cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt -G Xcode ..
 
 You can then use Xcode to build your binaries (which will include debug symbols). To copy them into the right place you need a slightly different command. From the `xcode` directory created previously:
 

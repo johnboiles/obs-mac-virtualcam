@@ -1,6 +1,9 @@
 #include <obs-module.h>
 #include <obs.hpp>
 #include <pthread.h>
+#include <QMainWindow.h>
+#include <QAction.h>
+#include <obs-frontend-api.h>
 #include "CMIO_DPA_Sample_Server_VCamDevice.h"
 #include "CMIO_DPA_Sample_Server_VCamInputStream.h"
 #include "CAHostTimeBase.h"
@@ -13,6 +16,8 @@ MODULE_EXPORT const char *obs_module_description(void)
 }
 
 obs_output_t *output;
+// Tools menu action for starting and stopping the virtual camera
+QAction *action;
 
 static const char *virtualcam_output_get_name(void *type_data)
 {
@@ -39,7 +44,7 @@ static bool virtualcam_output_start(void *data)
     pthread_t thread1;
     pthread_create(&thread1, NULL, virtualCamMain, (void *)"Thread 1");
 
-    // TODO(johnboiles): Right now we're hardcoded for 720x480 but that should probably change
+    // TODO(johnboiles): Right now we're hardcoded for 1280x720 but that should probably change
     struct video_scale_info conversion = {};
     conversion.format = VIDEO_FORMAT_UYVY;
     conversion.width = 1280;
@@ -82,13 +87,27 @@ void start()
 {
     OBSData settings;
     output = obs_output_create("virtualcam_output", "virtualcam_output", settings, NULL);
-    bool started = obs_output_start(output);
     obs_data_release(settings);
 }
 
 bool obs_module_load(void)
 {
-    blog(LOG_DEBUG, "LOADING VIRTUALCAM");
+    blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
+
+    QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
+    action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("Start Virtual Camera"));
+    auto menu_cb = []
+    {
+        if (obs_output_active(output)) {
+            action->setText(obs_module_text("Start Virtual Camera"));
+            obs_output_stop(output);
+        } else {
+            action->setText(obs_module_text("Stop Virtual Camera"));
+            obs_output_start(output);
+        }
+    };
+    action->connect(action, &QAction::triggered, menu_cb);
+
     obs_register_output(&virtualcam_output_info);
 
     start();
