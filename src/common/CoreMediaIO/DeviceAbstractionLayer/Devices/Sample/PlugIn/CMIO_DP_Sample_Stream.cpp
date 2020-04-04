@@ -80,6 +80,15 @@
 // System Includes
 #include <IOKit/audio/IOAudioTypes.h>
 
+//Again too many probably --gxalpha
+#include <iostream>
+#include <obs.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sstream>
+//#include <video-io.h>
+
 namespace
 {
 	const UInt64 kClockTimescale = 8000;
@@ -106,6 +115,7 @@ namespace CMIO { namespace DP { namespace Sample
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Stream()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+FrameType getFrameType();
 	Stream::Stream(CMIOStreamID streamID, PlugIn& plugIn, Device& owningDevice, CMIOObjectPropertyScope scope, UInt32 startingDeviceChannelNumber) :
 		DP::Stream(streamID, plugIn, owningDevice, scope, startingDeviceChannelNumber),
 		mStreamName(CFSTR("Sample Stream"), false),
@@ -119,7 +129,7 @@ namespace CMIO { namespace DP { namespace Sample
 		mScheduledOutputNotificationProc(NULL),
 		mDeck(NULL),
 		mFormatPairs(),
-		mFrameType(DPA::Sample::kYUV422_1280x720),
+		mFrameType(DPA::Sample::getFrameType()),
 		mDeckPropertyListeners(),
 		mMessageThread(),
 		mBufferQueue(CMA::SimpleQueue<CMSampleBufferRef>::Create(NULL, 30)),
@@ -135,6 +145,32 @@ namespace CMIO { namespace DP { namespace Sample
 		mSyncClock(true)
 	{
 	}
+FrameType getFrameType()
+{
+    obs_video_info ovi;
+    obs_get_video_info(&ovi);
+    stringstream stream;
+    stream << ovi.output_width << "x" << ovi.output_height;
+    string res = stream.str();
+    
+    FrameType frametype;
+    
+    //If-Ladder, yay!
+    if (strcmp("720x480", res.c_str())==0) {
+        frametype = kYUV422_720x480;
+    } else if (strcmp("720x486", res.c_str())==0) {
+        frametype = kYUV422_720x486;
+    } else if (strcmp("720x576", res.c_str())==0) {
+        frametype = kYUV422_720x576;
+    } else if (strcmp("1280x720", res.c_str())==0) {
+        frametype = kYUV422_1280x720;
+    } else if (strcmp("1920x1080", res.c_str())==0) {
+        frametype = kYUV422_1920x1080;
+    } else {
+        //ERROR
+    }
+    return frametype
+}
 	
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
