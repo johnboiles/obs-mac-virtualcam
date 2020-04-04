@@ -248,11 +248,6 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		// If there are still clients connected to the Assistant, simply return
 		if (not mClientInfoMap.empty())
 			return;
-			
-		// There are no more clients, so exit the SampleAssistant server process.
-		// The "com.apple.cmio.DPA.Sample" service will still be registered with the bootstrap_look_up mechanism, so the next time a client needs to establish a connection it will
-		// cause the SampleAssistant server process to be restarted.
-		exit(0);
 	}
 
 	#pragma mark -
