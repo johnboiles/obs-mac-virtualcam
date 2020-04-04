@@ -49,6 +49,7 @@ extern void *virtualCamMain(void *ptr);
 
 
 static string knownResoultions[] = {    //Resolutions which are specifies in the enum "FrameType" in CMIO_DPA_Sample_Shared.h
+    "640x360",
     "720x480",
     "720x486",
     "720x576",

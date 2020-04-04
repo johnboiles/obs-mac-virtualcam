@@ -68,7 +68,9 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
         FrameType frametype;
         
         //If-Ladder, yay!
-        if (strcmp("720x480", res.c_str())==0) {
+        if (strcmp("640x360", res.c_str())==0) {
+            frametype = kYUV422_640x360;
+        } else if (strcmp("720x480", res.c_str())==0) {
             frametype = kYUV422_720x480;
         } else if (strcmp("720x486", res.c_str())==0) {
             frametype = kYUV422_720x486;

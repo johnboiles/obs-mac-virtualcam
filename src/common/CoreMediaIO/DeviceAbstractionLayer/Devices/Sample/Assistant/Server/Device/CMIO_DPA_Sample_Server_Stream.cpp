@@ -99,7 +99,9 @@ CMIO::DPA::Sample::FrameType getFrameType()
     CMIO::DPA::Sample::FrameType frametype;
     
     //If-Ladder, yay!
-    if (strcmp("720x480", res.c_str())==0) {
+    if (strcmp("640x360", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_640x360;
+    } else if (strcmp("720x480", res.c_str())==0) {
         frametype = CMIO::DPA::Sample::kYUV422_720x480;
     } else if (strcmp("720x486", res.c_str())==0) {
         frametype = CMIO::DPA::Sample::kYUV422_720x486;
@@ -186,6 +188,12 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						
 						switch (codecType)
 						{
+                            case kYUV422_640x360:
+                                {
+                                    mFrameFormats.insert(FrameFormat((CMIO::DPA::Sample::FrameType)codecType, kCMVideoCodecType_422YpCbCr8, formatWidth, formatHeight));
+                                    mFrameRatesMap[(CMIO::DPA::Sample::FrameType)codecType][(30000.0 / 1001.0)] = CMTimeMake(1000, 30001);
+                                }
+                                break;
 							case kYUV422_720x480:
 								{
 									mFrameFormats.insert(FrameFormat((CMIO::DPA::Sample::FrameType)codecType, kCMVideoCodecType_422YpCbCr8, formatWidth, formatHeight));
@@ -247,6 +255,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						formatCACFDictionary.GetUInt32(CFSTR(kIOVideoStreamFormatKey_Height), formatHeight);
 						switch(codecType)
 						{
+                            case kYUV422_640x360:
 							case kYUV422_720x480:
                             case kYUV422_720x486:
                             case kYUV422_720x576:
@@ -257,6 +266,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
                                
 							}
 								break;
+                            case kYUV422_10_640x360:
                             case kYUV422_10_720x480:
                             case kYUV422_10_720x486:
                             case kYUV422_10_720x576:
@@ -331,6 +341,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
                         {
                             switch(codecType)
                             {
+                                case kYUV422_640x360:
                                 case kYUV422_720x480:
                                 case kYUV422_720x486:
                                 case kYUV422_720x576:
@@ -341,6 +352,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
                                     
                                 }
                                     break;
+                                case kYUV422_10_640x360:
                                 case kYUV422_10_720x480:
                                 case kYUV422_10_720x486:
                                 case kYUV422_10_720x576:
@@ -682,6 +694,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				IOVideoStreamDescription theNewFormat;
 				switch(mFrameType)
 				{
+                    case kYUV422_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                    break;
+                        
 					case kYUV422_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
@@ -717,6 +736,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						theNewFormat.mHeight = 1080;
 						break;
 
+                    case kYUV422_10_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_10_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
                     case kYUV422_10_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_10_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
@@ -792,6 +818,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				IOVideoStreamDescription theNewFormat;
 				switch(mFrameType)
 				{
+                    case kYUV422_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
 					case kYUV422_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
@@ -827,6 +860,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						theNewFormat.mHeight = 1080;
 						break;
 
+                    case kYUV422_10_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_10_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
                     case kYUV422_10_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_10_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
@@ -959,6 +999,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
                 
 				switch(mFrameType)
 				{
+                    case kYUV422_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(frameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
 					case kYUV422_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(frameRate);
@@ -994,6 +1041,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						theNewFormat.mHeight = 1080;
 						break;
  
+                    case kYUV422_10_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_10_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
                     case kYUV422_10_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_10_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
@@ -1063,6 +1117,13 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				IOVideoStreamDescription theNewFormat;
 				switch(mFrameType)
 				{
+                    case kYUV422_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(frameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
 					case kYUV422_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(frameRate);
@@ -1097,6 +1158,14 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 						theNewFormat.mWidth = 1920;
 						theNewFormat.mHeight = 1080;
 						break;
+                        
+                    case kYUV422_10_640x360:
+                        theNewFormat.mVideoCodecType = kYUV422_10_640x360;
+                        theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
+                        theNewFormat.mWidth = 640;
+                        theNewFormat.mHeight = 360;
+                        break;
+                        
                     case kYUV422_10_720x480:
 						theNewFormat.mVideoCodecType = kYUV422_10_720x480; 
 						theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
