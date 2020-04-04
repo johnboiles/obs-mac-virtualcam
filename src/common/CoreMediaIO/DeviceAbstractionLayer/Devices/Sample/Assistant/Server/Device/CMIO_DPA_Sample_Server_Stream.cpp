@@ -76,6 +76,47 @@
 
 #define kMaxRequestsPerCallback 4
 
+
+//Probably too many includes, I'm sorry -- gxalpha
+#include <iostream>
+#include <obs.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sstream>
+using namespace std;
+
+
+CMIO::DPA::Sample::FrameType getFrameType()
+{
+    cout << "[Debug]: Called getFrameType() in CMIO_DPA_Sample_Server_Stream.cpp" << endl;
+    obs_video_info ovi;
+    obs_get_video_info(&ovi);
+    stringstream stream;
+    stream << ovi.output_width << "x" << ovi.output_height;
+    string res = stream.str();
+    
+    CMIO::DPA::Sample::FrameType frametype;
+    
+    //If-Ladder, yay!
+    if (strcmp("720x480", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_720x480;
+    } else if (strcmp("720x486", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_720x486;
+    } else if (strcmp("720x576", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_720x576;
+    } else if (strcmp("1280x720", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_1280x720;
+    } else if (strcmp("1920x1080", res.c_str())==0) {
+        frametype = CMIO::DPA::Sample::kYUV422_1920x1080;
+    } else {
+        //ERROR
+    }
+    cout << "[Debug]: Called getFrameType() in CMIO_DPA_Sample_Server_Stream.cpp. Successfully." << endl;
+    
+    return frametype;
+}
+
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
 	#pragma mark -
@@ -104,7 +145,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		mEndOfData(false),
 		mUnderrunCount(0),
 		mFrameFormats(),
-		mFrameType(kYUV422_10_720x486),     //This shouldn't matter as it isn't at 720p at the moment either
+		mFrameType(getFrameType()),     //~This shouldn't matter as it isn't at 720p at the moment either~ //ok maybe it does matter
 		mFrameRatesMap(),
 		mFrameRate(30000.0 / 1001.0),
 		mNominalFrameDuration(CMTimeMake(1001, 30000)),

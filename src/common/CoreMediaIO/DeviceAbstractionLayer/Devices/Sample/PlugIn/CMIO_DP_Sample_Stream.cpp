@@ -150,6 +150,7 @@ DPA::Sample::FrameType getFrameType();
 
 DPA::Sample::FrameType getFrameType()
 {
+    cout << "[Debug]: Called getFrameType() in CMIO_DP_Sample_Stream.cpp" << endl;
     obs_video_info ovi;
     obs_get_video_info(&ovi);
     stringstream stream;
@@ -172,6 +173,8 @@ DPA::Sample::FrameType getFrameType()
     } else {
         //ERROR
     }
+    cout << "[Debug]: Called getFrameType() in CMIO_DP_Sample_Stream.cpp. Successfully." << endl;
+    
     return frametype;
 }
 	
