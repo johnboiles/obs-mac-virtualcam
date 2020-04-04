@@ -12,6 +12,10 @@ find_library(COREMEDIAIO CoreMediaIO)
 find_library(IOSURFACE IOSurface)
 find_library(IOKIT IOKit)
 
+set(CMAKE_PREFIX_PATH "${QTDIR}")
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+
 include_directories(${AVFOUNDATION}
                     ${COCOA}
                     ${COREFOUNDATION}
@@ -21,6 +25,9 @@ include_directories(${AVFOUNDATION}
                     ${COCOA}
                     ${IOSURFACE}
                     ${LIBOBS_INCLUDE_DIR}
+                    "${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
+                    ${Qt5Core_INCLUDES}
+                    ${Qt5Widgets_INCLUDES}
                     ../common/CoreMediaIO/PublicUtility
                     ../common/CoreAudio/PublicUtility
                     ../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant
@@ -73,7 +80,7 @@ set(obs-plugin_SOURCES
 	../common/CoreAudio/PublicUtility/CACFDictionary.cpp
 	../common/CoreAudio/PublicUtility/CACFArray.cpp
 	CMIODPASampleServer.cpp
-    plugin-main.cpp)
+	plugin-main.cpp)
 
 add_library(obs-plugin MODULE
 	${obs-plugin_SOURCES}
@@ -88,7 +95,10 @@ target_link_libraries(obs-plugin
 	${COREMEDIAIO}
 	${IOSURFACE}
 	${IOKIT}
-	${LIBOBS_LIB})
+	${LIBOBS_LIB}
+	${OBS_FRONTEND_LIB}
+	Qt5::Core
+	Qt5::Widgets)
 
 set_target_properties(obs-plugin PROPERTIES
 	PREFIX ""
