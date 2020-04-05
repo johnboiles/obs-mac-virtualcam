@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sstream>
+#include <QMessageBox>
 //#include <video-io.h>
 
 using namespace std;
@@ -132,11 +133,14 @@ bool obs_module_load(void)
                 action->setText(obs_module_text("Stop Virtual Camera"));
                 obs_output_start(output);
             } else {
-                std::cout << "Resolution not supported. Please use one of the following:" << endl;
-                for(string res : knownResoultions){
-                    std::cout << res << endl;
-                }
                 
+                stringstream msg;
+                msg << "Resolution not supported. Please use one of the following:" << endl;
+                for(string res : knownResoultions){
+                    msg << res << endl;
+                }
+                QMessageBox msgBox;
+                msgBox.setText(msg.str());
             }
             
         }
