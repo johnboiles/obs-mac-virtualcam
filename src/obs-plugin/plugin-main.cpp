@@ -140,9 +140,10 @@ bool obs_module_load(void)
                 for(string res : knownResoultions){
                     msg << res << endl;
                 }
-                QString qstr = QString::fromStdString(msg.str())
+                QString qstr = QString::fromStdString(msg.str());
                 QMessageBox msgBox;
                 msgBox.setText(qstr);
+                msgBox.open();
             }
             
         }
