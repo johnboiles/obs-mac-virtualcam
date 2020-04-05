@@ -136,14 +136,16 @@ bool obs_module_load(void)
             } else {
                 
                 stringstream msg;
-                msg << "Resolution not supported. Please use one of the following:" << endl;
+                msg << "Your output resolution not supported. Please use one of the following:" << endl;
                 for(string res : knownResoultions){
                     msg << res << endl;
                 }
+                QString title = "Unsupported resolution";
                 QString qstr = QString::fromStdString(msg.str());
                 QMessageBox msgBox;
-                msgBox.setText(qstr);
-                msgBox.open();
+                msgBox.setText(title);
+                msgBox.setInformativeText(qstr);
+                msgBox.exec();
             }
             
         }
