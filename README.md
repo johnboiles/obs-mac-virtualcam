@@ -19,7 +19,7 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 To use this plugin, you'll need to clone and build OBS locally, build this plugin, copy it to the right places, then run your local build of OBS:
 
     # Clone and build OBS
-    git clone --recursive https://github.com/johnboiles/obs-studio.git
+    git clone --recursive https://github.com/obsproject/obs-studio.git
     cd obs-studio
 
     # Follow normal OBS build steps
