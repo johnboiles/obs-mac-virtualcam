@@ -82,12 +82,12 @@
 
 //Again too many probably --gxalpha
 #include <iostream>
-#include <obs.h>    //How do I include this here? --gxalpha
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sstream>
+//#include <obs.h>
+//#include <string.h>
+//#include <sstream>
 //#include <video-io.h>
+//#include <stdlib.h>
+//#include <stdio.h>
 using namespace std;
 
 namespace
@@ -150,17 +150,17 @@ DPA::Sample::FrameType getFrameType();
 
 DPA::Sample::FrameType getFrameType()
 {
-    cout << "[Debug] REE: Called getFrameType() in CMIO_DP_Sample_Stream.cpp" << endl;
-    obs_video_info ovi;
+    cout << "[Debug] (THIS NEVER GETS CALLED, for whatever reason): Called getFrameType() in CMIO_DP_Sample_Stream.cpp" << endl;
+    /*obs_video_info ovi;
     obs_get_video_info(&ovi);
     stringstream stream;
     stream << ovi.output_width << "x" << ovi.output_height;
-    string res = stream.str();
+    string res = stream.str();*/
     
     DPA::Sample::FrameType frametype;
     
     //If-Ladder, yay!
-    if (strcmp("640x360", res.c_str())==0) {
+    /*if (strcmp("640x360", res.c_str())==0) {
         frametype = DPA::Sample::kYUV422_640x360;
     } else if (strcmp("720x480", res.c_str())==0) {
         frametype = DPA::Sample::kYUV422_720x480;
@@ -175,7 +175,7 @@ DPA::Sample::FrameType getFrameType()
     } else {
         //ERROR
     }
-    cout << "[Debug]: Called getFrameType() in CMIO_DP_Sample_Stream.cpp. Successfully." << endl;
+    cout << "[Debug]: Called getFrameType() in CMIO_DP_Sample_Stream.cpp. Successfully." << endl;*/
     
     return frametype;
 }

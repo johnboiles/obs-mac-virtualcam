@@ -103,3 +103,5 @@ target_link_libraries(obs-plugin
 set_target_properties(obs-plugin PROPERTIES
 	PREFIX ""
 	OUTPUT_NAME "obs-mac-virtualcam")
+
+#install_obs_plugin_with_data(obs-plugin data)    <---Can't find this command. Sad.

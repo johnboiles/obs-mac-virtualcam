@@ -15,7 +15,6 @@
 #include <sstream>
 #include <QMessageBox>
 #include <QString>
-//#include <video-io.h>
 
 using namespace std;
 
@@ -33,6 +32,7 @@ QAction *action;
 static const char *virtualcam_output_get_name(void *type_data)
 {
     (void)type_data;
+    //return obs_module_text("Plugin_Name"); //If someone gets the localization to work, replace the lower commands with those I commented out (for me, cmake said it doesn't know the command "install_obs_plugin_with_data". I probably just didn't sleep enough, but someones gonna figure out my mistake at some point, I hope) --gxalpha
     return obs_module_text("macOS Virtual Webcam");
 }
 
@@ -123,24 +123,29 @@ bool obs_module_load(void)
     blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
 
     QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
+    //action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("VirtualCamera_Start"));
     action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("Start Virtual Camera"));
     auto menu_cb = []
     {
         if (obs_output_active(output)) {
+            //action->setText(obs_module_text("VirtualCamera_Start"));
             action->setText(obs_module_text("Start Virtual Camera"));
             obs_output_stop(output);
         } else {
             if(isSupportedResolution()){
+                //action->setText(obs_module_text("VirtualCamera_Stop"));
                 action->setText(obs_module_text("Stop Virtual Camera"));
                 obs_output_start(output);
             } else {
                 
                 stringstream msg;
-                msg << "Your output resolution not supported. Please use one of the following:" << endl;
+                //msg << obs_module_text("UnsupportedResolution_Main") << endl;
+                msg << obs_module_text("Your output resolution not supported. Please use one of the following:") << endl;
                 for(string res : knownResoultions){
                     msg << res << endl;
                 }
-                QString title = "Unsupported resolution";
+                //QString title = QString::fromStdString(obs_module_text("UnsupportedResolution_Title"));
+                QString title = QString::fromStdString(obs_module_text("Unsupported resolution"));
                 QString qstr = QString::fromStdString(msg.str());
                 QMessageBox msgBox;
                 msgBox.setText(title);
@@ -162,7 +167,6 @@ bool obs_module_load(void)
 bool isSupportedResolution()
 {
     
-    //obs_get_video()->video_ouput_info.width; <--- Maybe someone gets this to work, I didn't xD (Would be using the settings api which would be more elegant)
     obs_video_info ovi;
     obs_get_video_info(&ovi);
     std::cout << "Base Resolution: " << ovi.base_width << "x" << ovi.base_height << endl;
