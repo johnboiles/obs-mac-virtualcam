@@ -6,9 +6,44 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2930F4DE2441626200403930 /* Device.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2930F4DD2441626200403930 /* Device.mm */; };
+		2930F4E124417F7E00403930 /* ObjectStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2930F4E024417F7E00403930 /* ObjectStore.mm */; };
+		2930F4E4244182FD00403930 /* Stream.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2930F4E3244182FD00403930 /* Stream.mm */; };
+		29F2120F24402F8D00805A6D /* PlugInInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29F2120E24402F8D00805A6D /* PlugInInterface.mm */; };
+		29F21212244031C300805A6D /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F21211244031C300805A6D /* CoreMediaIO.framework */; };
+		29F21214244031ED00805A6D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F21213244031ED00805A6D /* CoreFoundation.framework */; };
+		29F21216244031F500805A6D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F21215244031F500805A6D /* CoreMedia.framework */; };
+		29F2122F2440358C00805A6D /* PlugInMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29F2122E2440358C00805A6D /* PlugInMain.mm */; };
+		29F212352440366000805A6D /* PlugIn.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29F212342440366000805A6D /* PlugIn.mm */; };
+		29F2123724406AF200805A6D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F2123624406AF200805A6D /* CoreVideo.framework */; };
+		29F2123924406AF800805A6D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F2123824406AF800805A6D /* CoreGraphics.framework */; };
+		29F2123B24406B0300805A6D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F2123A24406B0300805A6D /* AppKit.framework */; };
+		29F2123D24406B7400805A6D /* hi.png in Resources */ = {isa = PBXBuildFile; fileRef = 29F2123C24406B7400805A6D /* hi.png */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		2930F4DC2441626200403930 /* Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
+		2930F4DD2441626200403930 /* Device.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Device.mm; sourceTree = "<group>"; };
+		2930F4DF24417F7E00403930 /* ObjectStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectStore.h; sourceTree = "<group>"; };
+		2930F4E024417F7E00403930 /* ObjectStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectStore.mm; sourceTree = "<group>"; };
+		2930F4E2244182FD00403930 /* Stream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stream.h; sourceTree = "<group>"; };
+		2930F4E3244182FD00403930 /* Stream.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Stream.mm; sourceTree = "<group>"; };
+		2930F4E52441998900403930 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		29F2120424402B9300805A6D /* CMIOMinimalSample.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CMIOMinimalSample.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		29F2120724402B9300805A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		29F2120D24402F8D00805A6D /* PlugInInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlugInInterface.h; sourceTree = "<group>"; };
+		29F2120E24402F8D00805A6D /* PlugInInterface.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PlugInInterface.mm; sourceTree = "<group>"; };
+		29F21211244031C300805A6D /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = System/Library/Frameworks/CoreMediaIO.framework; sourceTree = SDKROOT; };
+		29F21213244031ED00805A6D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		29F21215244031F500805A6D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		29F2122E2440358C00805A6D /* PlugInMain.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = PlugInMain.mm; sourceTree = "<group>"; };
+		29F212332440366000805A6D /* PlugIn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlugIn.h; sourceTree = "<group>"; };
+		29F212342440366000805A6D /* PlugIn.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlugIn.mm; sourceTree = "<group>"; };
+		29F2123624406AF200805A6D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		29F2123824406AF800805A6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		29F2123A24406B0300805A6D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		29F2123C24406B7400805A6D /* hi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hi.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16,6 +51,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29F2123B24406B0300805A6D /* AppKit.framework in Frameworks */,
+				29F2123924406AF800805A6D /* CoreGraphics.framework in Frameworks */,
+				29F2123724406AF200805A6D /* CoreVideo.framework in Frameworks */,
+				29F21214244031ED00805A6D /* CoreFoundation.framework in Frameworks */,
+				29F21216244031F500805A6D /* CoreMedia.framework in Frameworks */,
+				29F21212244031C300805A6D /* CoreMediaIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27,6 +68,7 @@
 			children = (
 				29F2120624402B9300805A6D /* CMIOMinimalSample */,
 				29F2120524402B9300805A6D /* Products */,
+				29F21210244031C300805A6D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,9 +83,35 @@
 		29F2120624402B9300805A6D /* CMIOMinimalSample */ = {
 			isa = PBXGroup;
 			children = (
+				29F2123C24406B7400805A6D /* hi.png */,
 				29F2120724402B9300805A6D /* Info.plist */,
+				2930F4E52441998900403930 /* Logging.h */,
+				29F2122E2440358C00805A6D /* PlugInMain.mm */,
+				29F2120D24402F8D00805A6D /* PlugInInterface.h */,
+				29F2120E24402F8D00805A6D /* PlugInInterface.mm */,
+				2930F4DF24417F7E00403930 /* ObjectStore.h */,
+				2930F4E024417F7E00403930 /* ObjectStore.mm */,
+				29F212332440366000805A6D /* PlugIn.h */,
+				29F212342440366000805A6D /* PlugIn.mm */,
+				2930F4DC2441626200403930 /* Device.h */,
+				2930F4DD2441626200403930 /* Device.mm */,
+				2930F4E2244182FD00403930 /* Stream.h */,
+				2930F4E3244182FD00403930 /* Stream.mm */,
 			);
 			path = CMIOMinimalSample;
+			sourceTree = "<group>";
+		};
+		29F21210244031C300805A6D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29F2123A24406B0300805A6D /* AppKit.framework */,
+				29F2123824406AF800805A6D /* CoreGraphics.framework */,
+				29F2123624406AF200805A6D /* CoreVideo.framework */,
+				29F21215244031F500805A6D /* CoreMedia.framework */,
+				29F21213244031ED00805A6D /* CoreFoundation.framework */,
+				29F21211244031C300805A6D /* CoreMediaIO.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -103,6 +171,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29F2123D24406B7400805A6D /* hi.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +182,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29F2120F24402F8D00805A6D /* PlugInInterface.mm in Sources */,
+				29F212352440366000805A6D /* PlugIn.mm in Sources */,
+				29F2122F2440358C00805A6D /* PlugInMain.mm in Sources */,
+				2930F4DE2441626200403930 /* Device.mm in Sources */,
+				2930F4E124417F7E00403930 /* ObjectStore.mm in Sources */,
+				2930F4E4244182FD00403930 /* Stream.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +308,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 62G85M9ZN5;
 				INFOPLIST_FILE = CMIOMinimalSample/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnboiles.CMIOMinimalSample;
@@ -247,6 +323,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 62G85M9ZN5;
 				INFOPLIST_FILE = CMIOMinimalSample/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnboiles.CMIOMinimalSample;

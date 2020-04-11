@@ -20,7 +20,21 @@
 	<string>1</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2020 John Boiles . All rights reserved.</string>
-	<key>NSPrincipalClass</key>
-	<string></string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>8457B77A-D0304458-B136-8BB5335F4512 </key>
+		<string>PlugInMain</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>30010C1C-93BF-11D8-8B5B-000A95AF9C6A</key>
+		<array>
+			<string>8457B77A-D0304458-B136-8BB5335F4512 </string>
+		</array>
+	</dict>
+	<key>CMIOHardwareAssistantServiceNames</key>
+	<array>
+		<string>com.johnboiles.FakeAssistant</string>
+	</array>
 </dict>
 </plist>
