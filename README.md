@@ -6,6 +6,21 @@ This example project is intended to present the simplest possible implementation
 
 The goal is for this plugin to serve static frames as a virtual webcam to host software (QuickTime, OBS, Chrome, etc)
 
+## Other Examples
+
+Other projects that have implemented a DAL plugin are probably going to give the most insight as to what is missing here.
+
+These projects are direct copies of [Apple's own sample code](https://developer.apple.com/library/archive/samplecode/CoreMediaIO/Introduction/Intro.html).
+
+* [lvsti/CoreMediaIO-DAL-Example](https://github.com/lvsti/CoreMediaIO-DAL-Example)
+* [johnboiles/obs-mac-virtualcam](https://github.com/johnboiles/obs-mac-virtualcam) - A fork of @lvsti's repo but adapted to work with OBS.
+
+This project seems significantly different than the Apple sample code in its implementation.
+
+* [webcamoid/webcamoid](https://github.com/webcamoid/webcamoid)
+
+Other examples would be helpful!
+
 ## Developing
 
 To try this out:
