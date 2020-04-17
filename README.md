@@ -13,6 +13,8 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 * OBS crashes when an app using the virtual camera is closed ([#1](https://github.com/johnboiles/obs-mac-virtualcam/issues/1))
 * Resolution is hardcoded to 1280x720
 * If OBS is closed when an app is opened, the virtual camera may not show up
+* Can't click menu bar after program start ([OBS Issue])(https://github.com/obsproject/obs-studio/issues/2678).  **NOTE:** This is not an issue with this plugin, but it does make it more difficult to turn on the Virtual Camera created by this plugin.
+* DAL plugin unable to run because of codesigning issues (for example unable to see Virtual Camera in Zoom). See [#4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for a workaround
 
 ## Building
 
