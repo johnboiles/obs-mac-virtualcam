@@ -28,6 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon;
 
+- (void)startServingFrames;
+
+- (void)stopServingFrames;
+
 @end
 
 NS_ASSUME_NONNULL_END

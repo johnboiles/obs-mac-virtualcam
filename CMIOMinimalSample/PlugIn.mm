@@ -79,7 +79,7 @@
             return;
         default:
             DLog(@"PlugIn unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
-                                                                         return;
+            return;
         };
 }
 

@@ -200,6 +200,10 @@ OSStatus HardwarePlugIn_StreamCopyBufferQueue(CMIOHardwarePlugInRef self, CMIOSt
 #pragma mark CMIODevice Operations
 OSStatus HardwarePlugIn_DeviceStartStream(CMIOHardwarePlugInRef self, CMIODeviceID deviceID, CMIOStreamID streamID) {
     DLogFunc(@"self=%p", self);
+
+    Stream *stream = (Stream *)[ObjectStore GetObjectWithId:streamID];
+    [stream startServingFrames];
+
     return kCMIOHardwareNoError;
 }
 
@@ -215,6 +219,10 @@ OSStatus HardwarePlugIn_DeviceResume(CMIOHardwarePlugInRef self, CMIODeviceID de
 
 OSStatus HardwarePlugIn_DeviceStopStream(CMIOHardwarePlugInRef self, CMIODeviceID deviceID, CMIOStreamID streamID) {
     DLogFunc(@"self=%p", self);
+
+    Stream *stream = (Stream *)[ObjectStore GetObjectWithId:streamID];
+    [stream stopServingFrames];
+
     return kCMIOHardwareNoError;
 }
 

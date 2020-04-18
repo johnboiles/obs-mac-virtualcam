@@ -46,8 +46,15 @@
 
 - (void)startServingFrames {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(fillFrame) userInfo:nil repeats:YES];
+        if (!self.frameTimer) {
+            self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(fillFrame) userInfo:nil repeats:YES];
+        }
     });
+}
+
+- (void)stopServingFrames {
+    [self.frameTimer invalidate];
+    self.frameTimer = nil;
 }
 
 - (CMSimpleQueueRef)queue {
@@ -73,8 +80,6 @@
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon {
     self.alteredProc = alteredProc;
     self.alteredRefCon = alteredRefCon;
-
-    [self startServingFrames];
 
     // Retain this since it's a copy operation
     CFRetain(self.queue);

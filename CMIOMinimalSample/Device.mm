@@ -249,6 +249,7 @@
         case kCMIODevicePropertyDeviceMaster:
             *static_cast<pid_t*>(data) = self.masterPid;
             *dataUsed = sizeof(pid_t);
+            break;
 
         default:
             DLog(@"Device unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
