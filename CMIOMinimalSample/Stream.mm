@@ -24,17 +24,25 @@
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
+    CFTypeRef _clock;
 }
 
 @property CMIODeviceStreamQueueAlteredProc alteredProc;
 @property void * alteredRefCon;
 @property (readonly) CMSimpleQueueRef queue;
 @property NSTimer *frameTimer;
-@property (readonly, getter=getCLock) CFTypeRef clock;
+@property (readonly) CFTypeRef clock;
 
 @end
 
 @implementation Stream
+
+- (void)dealloc {
+    CMIOStreamClockInvalidate(_clock);
+    CFRelease(_clock);
+    CFRelease(_queue);
+    [self.frameTimer invalidate];
+}
 
 - (void)startServingFrames {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -50,6 +58,16 @@
         }
     }
     return _queue;
+}
+
+- (CFTypeRef)clock {
+    if (_clock == NULL) {
+        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("ItsaClock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
+        if (err != noErr) {
+            DLog(@"Error %d from CMIOStreamClockCreate", err);
+        }
+    }
+    return _clock;
 }
 
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon {
@@ -134,16 +152,6 @@
         DLog(@"Error %d from CMVideoFormatDescriptionCreate", err);
     }
     return formatDescription;
-}
-
-- (CFTypeRef)getClock {
-    if (!_clock) {
-        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("ItsaClock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
-        if (err != noErr) {
-            DLog(@"Error %d from CMIOStreamClockCreate", err);
-        }
-    }
-    return _clock;
 }
 
 #pragma mark - CMIOObject
@@ -242,7 +250,7 @@
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyClock:
-            *static_cast<CFTypeRef*>(data) = [self getClock];
+            *static_cast<CFTypeRef*>(data) = self.clock;
             *dataUsed = sizeof(CFTypeRef);
             break;
         default:
