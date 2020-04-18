@@ -45,6 +45,7 @@
 - (CMSimpleQueueRef)queue {
     if (_queue == NULL) {
         CMSimpleQueueCreate(kCFAllocatorDefault, 10, &_queue);
+        CFRetain(_queue);
     }
     return _queue;
 }
@@ -117,7 +118,7 @@
 
     // Inform the clients that the queue has been altered
     if (self.alteredProc != NULL) {
-        (self.alteredProc)(1, buffer, self.alteredRefCon);
+        (self.alteredProc)(self.objectId, buffer, self.alteredRefCon);
     }
 }
 
