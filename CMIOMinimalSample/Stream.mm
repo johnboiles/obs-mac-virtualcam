@@ -44,8 +44,10 @@
 
 - (CMSimpleQueueRef)queue {
     if (_queue == NULL) {
-        CMSimpleQueueCreate(kCFAllocatorDefault, 10, &_queue);
-        CFRetain(_queue);
+        OSStatus err = CMSimpleQueueCreate(kCFAllocatorDefault, 30, &_queue);
+        if (err != noErr) {
+            DLog(@"Err %d in CMSimpleQueueCreate", err);
+        }
     }
     return _queue;
 }
@@ -55,6 +57,9 @@
     self.alteredRefCon = alteredRefCon;
 
     [self startServingFrames];
+
+    // Retain this since it's a copy operation
+    CFRetain(self.queue);
 
     return self.queue;
 }
@@ -211,7 +216,7 @@
             *dataUsed = sizeof(UInt32);
             break;
         case kCMIOStreamPropertyFormatDescriptions:
-            CFTypeRef formatDescriptions[1];
+            CMVideoFormatDescriptionRef formatDescriptions[1];
             formatDescriptions[0] = [self getFormatDescription];
             *static_cast<CFArrayRef*>(data) = CFArrayCreate(kCFAllocatorDefault, (const void **)formatDescriptions, 1, &kCFTypeArrayCallBacks);
             *dataUsed = sizeof(CFArrayRef);
