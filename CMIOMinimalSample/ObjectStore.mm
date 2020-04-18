@@ -217,10 +217,10 @@
             return @"kCMIOHardwarePropertyAllowScreenCaptureDevices";
         case kCMIOHardwarePropertyAllowWirelessScreenCaptureDevices:
             return @"kCMIOHardwarePropertyAllowWirelessScreenCaptureDevices";
-
         default:
-            return @"Unknown Device Selector";
-    }
+            uint8_t *chars = (uint8_t *)&selector;
+            return [NSString stringWithFormat:@"Unknown selector: %c%c%c%c", chars[0], chars[1], chars[2], chars[3]];
+        }
 }
 
 + (ObjectStore *)SharedObjectStore {

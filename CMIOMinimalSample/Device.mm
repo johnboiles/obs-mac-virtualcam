@@ -25,6 +25,7 @@
 
 @interface Device ()
 @property BOOL excludeNonDALAccess;
+@property pid_t masterPid;
 @end
 
 
@@ -129,6 +130,10 @@
         case kCMIODevicePropertyLinkedCoreAudioDeviceUID:
             answer = sizeof(CFStringRef);
             break;
+
+        case kCMIODevicePropertyDeviceMaster:
+            answer = sizeof(pid_t);
+            break;
             
         default:
             DLog(@"Device unhandled getPropertyDataSizeWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
@@ -218,7 +223,6 @@
             break;
             
         case kCMIODevicePropertyStreams:
-            DLog(@"kCMIODevicePropertyStreams");
             *static_cast<CMIOObjectID*>(data) = self.streamId;
             *dataUsed = sizeof(CMIOObjectID);
             break;
@@ -241,7 +245,11 @@
             *static_cast<Boolean*>(data) = false;
             *dataUsed = sizeof(Boolean);
             break;
-            
+
+        case kCMIODevicePropertyDeviceMaster:
+            *static_cast<pid_t*>(data) = self.masterPid;
+            *dataUsed = sizeof(pid_t);
+
         default:
             DLog(@"Device unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
             break;
@@ -266,11 +274,12 @@
         case kCMIODevicePropertyHogMode:
         case kCMIODevicePropertyLatency:
         case kCMIODevicePropertyStreams:
-        case kCMIODevicePropertyStreamConfiguration:
         case kCMIODevicePropertyExcludeNonDALAccess:
         case kCMIODevicePropertyCanProcessAVCCommand:
         case kCMIODevicePropertyCanProcessRS422Command:
+        case kCMIODevicePropertyDeviceMaster:
             return true;
+        case kCMIODevicePropertyStreamConfiguration:
         case kCMIODevicePropertyLinkedCoreAudioDeviceUID:
             return false;
         default:
@@ -303,6 +312,7 @@
         case kCMIODevicePropertyLinkedCoreAudioDeviceUID:
             return false;
         case kCMIODevicePropertyExcludeNonDALAccess:
+        case kCMIODevicePropertyDeviceMaster:
             return true;
         default:
             DLog(@"Device unhandled isPropertySettableWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
@@ -315,6 +325,9 @@
     switch (address.mSelector) {
         case kCMIODevicePropertyExcludeNonDALAccess:
             self.excludeNonDALAccess = (*static_cast<const UInt32*>(data) != 0);
+            break;
+        case kCMIODevicePropertyDeviceMaster:
+            self.masterPid = *static_cast<const pid_t*>(data);
             break;
         default:
             DLog(@"Device unhandled setPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);

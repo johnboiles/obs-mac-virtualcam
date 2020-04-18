@@ -30,6 +30,7 @@
 		2930F4E2244182FD00403930 /* Stream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Stream.h; sourceTree = "<group>"; };
 		2930F4E3244182FD00403930 /* Stream.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Stream.mm; sourceTree = "<group>"; };
 		2930F4E52441998900403930 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
+		29E38E5F244AC84900153404 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		29F2120424402B9300805A6D /* CMIOMinimalSample.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CMIOMinimalSample.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		29F2120724402B9300805A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29F2120D24402F8D00805A6D /* PlugInInterface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlugInInterface.h; sourceTree = "<group>"; };
@@ -85,6 +86,7 @@
 			children = (
 				29F2123C24406B7400805A6D /* hi.png */,
 				29F2120724402B9300805A6D /* Info.plist */,
+				29E38E5F244AC84900153404 /* README.md */,
 				2930F4E52441998900403930 /* Logging.h */,
 				29F2122E2440358C00805A6D /* PlugInMain.mm */,
 				29F2120D24402F8D00805A6D /* PlugInInterface.h */,

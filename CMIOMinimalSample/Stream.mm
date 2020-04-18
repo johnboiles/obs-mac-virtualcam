@@ -30,13 +30,16 @@
 @property void * alteredRefCon;
 @property (readonly) CMSimpleQueueRef queue;
 @property NSTimer *frameTimer;
+@property (readonly, getter=getCLock) CFTypeRef clock;
 
 @end
 
 @implementation Stream
 
 - (void)startServingFrames {
-    self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(fillFrame) userInfo:nil repeats:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(fillFrame) userInfo:nil repeats:YES];
+    });
 }
 
 - (CMSimpleQueueRef)queue {
@@ -118,6 +121,25 @@
     }
 }
 
+- (CMVideoFormatDescriptionRef)getFormatDescription {
+    CMVideoFormatDescriptionRef formatDescription;
+    OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_422YpCbCr8, 1280, 720, NULL, &formatDescription);
+    if (err != noErr) {
+        DLog(@"Error %d from CMVideoFormatDescriptionCreate", err);
+    }
+    return formatDescription;
+}
+
+- (CFTypeRef)getClock {
+    if (!_clock) {
+        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("ItsaClock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
+        if (err != noErr) {
+            DLog(@"Error %d from CMIOStreamClockCreate", err);
+        }
+    }
+    return _clock;
+}
+
 #pragma mark - CMIOObject
 
 - (UInt32)getPropertyDataSizeWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData {
@@ -144,6 +166,19 @@
             return sizeof(UInt32);
         case kCMIOStreamPropertyLatency:
             return sizeof(UInt32);
+        case kCMIOStreamPropertyFormatDescriptions:
+            return sizeof(CFArrayRef);
+        case kCMIOStreamPropertyFormatDescription:
+            return sizeof(CMFormatDescriptionRef);
+        case kCMIOStreamPropertyFrameRateRanges:
+            return sizeof(AudioValueRange);
+        case kCMIOStreamPropertyFrameRate:
+        case kCMIOStreamPropertyFrameRates:
+            return sizeof(Float64);
+        case kCMIOStreamPropertyMinimumFrameRate:
+            return sizeof(Float64);
+        case kCMIOStreamPropertyClock:
+            return sizeof(CFTypeRef);
         default:
             DLog(@"Stream unhandled getPropertyDataSizeWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
             return 0;
@@ -174,6 +209,36 @@
             *static_cast<UInt32*>(data) = 1;
             *dataUsed = sizeof(UInt32);
             break;
+        case kCMIOStreamPropertyFormatDescriptions:
+            CFTypeRef formatDescriptions[1];
+            formatDescriptions[0] = [self getFormatDescription];
+            *static_cast<CFArrayRef*>(data) = CFArrayCreate(kCFAllocatorDefault, (const void **)formatDescriptions, 1, &kCFTypeArrayCallBacks);
+            *dataUsed = sizeof(CFArrayRef);
+            break;
+        case kCMIOStreamPropertyFormatDescription:
+            *static_cast<CMVideoFormatDescriptionRef*>(data) = [self getFormatDescription];
+            *dataUsed = sizeof(CMVideoFormatDescriptionRef);
+            break;
+        case kCMIOStreamPropertyFrameRateRanges:
+            AudioValueRange range;
+            range.mMinimum = 30;
+            range.mMaximum = 30;
+            *static_cast<AudioValueRange*>(data) = range;
+            *dataUsed = sizeof(AudioValueRange);
+            break;
+        case kCMIOStreamPropertyFrameRate:
+        case kCMIOStreamPropertyFrameRates:
+            *static_cast<Float64*>(data) = 30;
+            *dataUsed = sizeof(Float64);
+            break;
+        case kCMIOStreamPropertyMinimumFrameRate:
+            *static_cast<Float64*>(data) = 30;
+            *dataUsed = sizeof(Float64);
+            break;
+        case kCMIOStreamPropertyClock:
+            *static_cast<CFTypeRef*>(data) = [self getClock];
+            *dataUsed = sizeof(CFTypeRef);
+            break;
         default:
             DLog(@"Stream unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
     };
@@ -183,6 +248,13 @@
     switch (address.mSelector){
         case kCMIOObjectPropertyName:
         case kCMIOObjectPropertyElementName:
+        case kCMIOStreamPropertyFormatDescriptions:
+        case kCMIOStreamPropertyFormatDescription:
+        case kCMIOStreamPropertyFrameRateRanges:
+        case kCMIOStreamPropertyFrameRate:
+        case kCMIOStreamPropertyFrameRates:
+        case kCMIOStreamPropertyMinimumFrameRate:
+        case kCMIOStreamPropertyClock:
             return true;
         case kCMIOObjectPropertyManufacturer:
         case kCMIOObjectPropertyElementCategoryName:
