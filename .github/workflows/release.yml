@@ -46,11 +46,23 @@ jobs:
 
     - name: Copy artifacts
       run: |
-        mkdir artifacts
-        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/
-        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/
+        mkdir -p artifacts/dal-plugin
+        mkdir -p artifacts/obs-plugin
+
+        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/dal-plugin/
+        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/obs-plugin/
 
     - uses: actions/upload-artifact@v1
       with:
-        name: build-artifacts
+        name: obs-mac-virtualcam
         path: artifacts
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: obs-mac-virtualcam-dal-plugin
+        path: artifacts/dal-plugin
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: obs-mac-virtualcam-obs-plugin
+        path: artifacts/obs-plugin
