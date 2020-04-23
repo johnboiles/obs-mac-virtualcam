@@ -121,7 +121,7 @@ DPA::Sample::FrameType getFrameType();
 		mScheduledOutputNotificationProc(NULL),
 		mDeck(NULL),
 		mFormatPairs(),
-		mFrameType(getFrameType()),
+		mFrameType(DPA::Sample::kYUV422_1280x720),  // Has no affect. It is currently unclear why.
 		mDeckPropertyListeners(),
 		mMessageThread(),
 		mBufferQueue(CMA::SimpleQueue<CMSampleBufferRef>::Create(NULL, 30)),
@@ -138,13 +138,6 @@ DPA::Sample::FrameType getFrameType();
 	{
 	}
 
-DPA::Sample::FrameType getFrameType()
-{
-    //This never gets called, for whatever reason
-    DPA::Sample::FrameType frametype;
-    return frametype;
-}
-	
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// ~Stream()

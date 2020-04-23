@@ -134,7 +134,6 @@ bool obs_module_load(void)
                 for(string res : knownResolutions){
                     msg << res << endl;
                 }
-                //QString title = QString::fromStdString(obs_module_text("UnsupportedResolution_Title"));
                 QString title = QString::fromStdString(obs_module_text("Unsupported resolution"));
                 QString qstr = QString::fromStdString(msg.str());
                 QMessageBox msgBox;
