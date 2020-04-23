@@ -2,8 +2,6 @@
 
 This example project is intended to present the simplest possible implementation of a CoreMediaIO DAL plugin for creating a virtual webcam on macOS. Apple provides [sample code](https://developer.apple.com/library/archive/samplecode/CoreMediaIO/Introduction/Intro.html) ([also modernized by @lvsti](https://github.com/lvsti/CoreMediaIO-DAL-Example)) but it's extremely painful to read and modify.
 
-**This plugin currently does not work**, but I think it's close. Any help making it work would be much appreciated.
-
 The goal is for this plugin to serve static frames as a virtual webcam to host software (QuickTime, OBS, Chrome, etc)
 
 ## Other Examples
