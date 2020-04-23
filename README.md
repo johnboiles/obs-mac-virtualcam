@@ -17,6 +17,8 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 
 ## Reporting Issues / Bugs / Improvements
 
+> 🚀 Wonder How to contribute? Have look at our [notes for contributors](./CONTRIBUTING.md).
+
 This plugin is still very much a work in progress. If you are having an issue there's a good chance someone has already run into the same thing. Please search past [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) before reporting a new one.
 
 Also please confirm that your issue is related to this plugin and not a general OBS problem before opening an issue – try to build OBS locally (but not this plugin) and see if the issue persists. If it does, please don't open an issue here; Instead go open an issue on [obsproject/obs-studio](https://github.com/johnboiles/obs-mac-virtualcam/issues).
