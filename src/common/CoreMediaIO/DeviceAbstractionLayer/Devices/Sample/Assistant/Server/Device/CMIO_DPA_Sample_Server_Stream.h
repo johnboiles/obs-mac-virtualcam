@@ -71,6 +71,9 @@
 #include <map>
 #include <list>
 
+
+CMIO::DPA::Sample::FrameType getFrameType();
+
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

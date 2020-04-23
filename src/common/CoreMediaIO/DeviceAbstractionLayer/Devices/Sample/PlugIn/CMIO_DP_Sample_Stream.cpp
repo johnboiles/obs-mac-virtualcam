@@ -106,6 +106,8 @@ namespace CMIO { namespace DP { namespace Sample
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// Stream()
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DPA::Sample::FrameType getFrameType();
+
 	Stream::Stream(CMIOStreamID streamID, PlugIn& plugIn, Device& owningDevice, CMIOObjectPropertyScope scope, UInt32 startingDeviceChannelNumber) :
 		DP::Stream(streamID, plugIn, owningDevice, scope, startingDeviceChannelNumber),
 		mStreamName(CFSTR("Sample Stream"), false),
@@ -119,7 +121,7 @@ namespace CMIO { namespace DP { namespace Sample
 		mScheduledOutputNotificationProc(NULL),
 		mDeck(NULL),
 		mFormatPairs(),
-		mFrameType(DPA::Sample::kYUV422_1280x720),
+		mFrameType(DPA::Sample::kYUV422_1280x720),  // Has no affect. It is currently unclear why.
 		mDeckPropertyListeners(),
 		mMessageThread(),
 		mBufferQueue(CMA::SimpleQueue<CMSampleBufferRef>::Create(NULL, 30)),
@@ -135,7 +137,7 @@ namespace CMIO { namespace DP { namespace Sample
 		mSyncClock(true)
 	{
 	}
-	
+
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// ~Stream()
