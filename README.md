@@ -11,9 +11,14 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 ## Known Issues
 
 * Resolution is hardcoded to 1280×720
-* If OBS is closed when an app is opened, the virtual camera may not show up
+* If OBS is closed (or the Virtual Camera output not started) when an app is opened, the virtual camera may not show up
 * Can't click menu bar after program start [(OBS Issue #2678)](https://github.com/obsproject/obs-studio/issues/2678).  **NOTE:** This is not an issue with this plugin, but it does make it more difficult to turn on the Virtual Camera created by this plugin.
 * DAL plugin unable to run because of codesigning issues (for example unable to see Virtual Camera in latest version of Zoom). See [issue #4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for a workaround
+* DAL plugin does not work in Discord ([issue #37](https://github.com/johnboiles/obs-mac-virtualcam/issues/37))
+
+## Discussion / Support
+
+The official place for discussion and chat related to this plugin is in the `#plugins-and-tools` channel in the [OBS Studio Discord](https://discord.gg/obsproject). 
 
 ## Reporting Issues / Bugs / Improvements
 
@@ -21,7 +26,7 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 
 This plugin is still very much a work in progress. If you are having an issue there's a good chance someone has already run into the same thing. Please search past [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) before reporting a new one.
 
-Also please confirm that your issue is related to this plugin and not a general OBS problem before opening an issue – try to build OBS locally (but not this plugin) and see if the issue persists. If it does, please don't open an issue here; Instead go open an issue on [obsproject/obs-studio](https://github.com/johnboiles/obs-mac-virtualcam/issues).
+Also please confirm that your issue is related to this plugin and not a general OBS problem before opening an issue – try to build OBS locally (but not this plugin) and see if the issue persists. If it does, please don't open an issue here; Instead go open an issue on [obsproject/obs-studio](https://github.com/johnboiles/obs-mac-virtualcam/issues). The same goes for supporting other plugins; it's outside of the scope of this project to tell you how to build other OBS plugins (e.g. Browser Source, Speex, etc).
 
 If you still believe you have found an unreported issue related to this plugin, please open an issue! When you do, include any relevant terminal log, crash log, screen recording and/or screenshots.
 
