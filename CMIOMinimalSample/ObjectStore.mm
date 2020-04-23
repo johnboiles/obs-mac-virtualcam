@@ -225,8 +225,8 @@
 
 + (ObjectStore *)SharedObjectStore {
     static ObjectStore *sObjectStore = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    static dispatch_once_t sOnceToken;
+    dispatch_once(&sOnceToken, ^{
         sObjectStore = [[self alloc] init];
     });
     return sObjectStore;

@@ -18,8 +18,10 @@
 //  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
 
 #import "Device.h"
+
 #import <CoreFoundation/CoreFoundation.h>
 #include <IOKit/audio/IOAudioTypes.h>
+
 #import "PlugIn.h"
 #import "Logging.h"
 
@@ -31,116 +33,61 @@
 
 @implementation Device
 
-+ (Device *)SharedDevice {
-    static Device *sDevice = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sDevice = [[self alloc] init];
-    });
-    return sDevice;
-}
-
 // Note that the DAL's API calls HasProperty before calling GetPropertyDataSize. This means that it can be assumed that address is valid for the property involved.
 - (UInt32)getPropertyDataSizeWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData {
-    UInt32 answer = 0;
 
     switch (address.mSelector) {
         case kCMIOObjectPropertyName:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIOObjectPropertyManufacturer:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIOObjectPropertyElementCategoryName:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIOObjectPropertyElementNumberName:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIODevicePropertyPlugIn:
-            answer = sizeof(CMIOObjectID);
-            break;
-            
+            return sizeof(CMIOObjectID);
         case kCMIODevicePropertyDeviceUID:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIODevicePropertyModelUID:
-            answer = sizeof(CFStringRef);
-            break;
-            
+            return sizeof(CFStringRef);
         case kCMIODevicePropertyTransportType:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyDeviceIsAlive:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyDeviceHasChanged:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyDeviceIsRunning:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyDeviceIsRunningSomewhere:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyDeviceCanBeDefaultDevice:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyHogMode:
-            answer = sizeof(pid_t);
-            break;
-            
+            return sizeof(pid_t);
         case kCMIODevicePropertyLatency:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyStreams:
             // Only one stream
-            answer = sizeof(CMIOStreamID) * 1;
-            break;
-            
+            return sizeof(CMIOStreamID) * 1;
         case kCMIODevicePropertyStreamConfiguration:
             // Only one stream
-            answer = sizeof(UInt32) + (sizeof(UInt32) * 1);
-            break;
-            
+            return sizeof(UInt32) + (sizeof(UInt32) * 1);
         case kCMIODevicePropertyExcludeNonDALAccess:
-            answer = sizeof(UInt32);
-            break;
-            
+            return sizeof(UInt32);
         case kCMIODevicePropertyCanProcessAVCCommand:
-            answer = sizeof(Boolean);
-            break;
-            
+            return sizeof(Boolean);
         case kCMIODevicePropertyCanProcessRS422Command:
-            answer = sizeof(Boolean);
-            break;
-            
+            return sizeof(Boolean);
         case kCMIODevicePropertyLinkedCoreAudioDeviceUID:
-            answer = sizeof(CFStringRef);
-            break;
-
+            return sizeof(CFStringRef);
         case kCMIODevicePropertyDeviceMaster:
-            answer = sizeof(pid_t);
-            break;
-            
+            return sizeof(pid_t);
         default:
             DLog(@"Device unhandled getPropertyDataSizeWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
-            break;
     };
 
-    return answer;
+    return 0;
 }
 
 // Note that the DAL's API calls HasProperty before calling GetPropertyData. This means that it can be assumed that address is valid for the property involved.
@@ -155,104 +102,84 @@
             *static_cast<CFStringRef*>(data) = CFSTR("johnboiles");
             *dataUsed = sizeof(CFStringRef);
             break;
-            
         case kCMIOObjectPropertyElementCategoryName:
-            *static_cast<CFStringRef*>(data) = CFSTR("?? wtf");
+            *static_cast<CFStringRef*>(data) = CFSTR("catname");
             *dataUsed = sizeof(CFStringRef);
             break;
-            
         case kCMIOObjectPropertyElementNumberName:
             *static_cast<CFStringRef*>(data) = CFSTR("element number name");
             *dataUsed = sizeof(CFStringRef);
             break;
-            
         case kCMIODevicePropertyPlugIn:
-            *static_cast<CMIOObjectID*>(data) = [[PlugIn SharedPlugIn] objectId];
+            *static_cast<CMIOObjectID*>(data) = self.pluginId;
             *dataUsed = sizeof(CMIOObjectID);
             break;
-            
         case kCMIODevicePropertyDeviceUID:
             *static_cast<CFStringRef*>(data) = CFSTR("CMIO Simple Device");
             *dataUsed = sizeof(CFStringRef);
             break;
-            
         case kCMIODevicePropertyModelUID:
             *static_cast<CFStringRef*>(data) = CFSTR("CMIO Simple Model");
             *dataUsed = sizeof(CFStringRef);
             break;
-            
         case kCMIODevicePropertyTransportType:
-            *static_cast<UInt32*>(data) = kIOAudioDeviceTransportTypePCI;
-//            *static_cast<UInt32*>(data) = kIOAudioDeviceTransportTypeBuiltIn;
+            *static_cast<UInt32*>(data) = kIOAudioDeviceTransportTypeBuiltIn;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyDeviceIsAlive:
             *static_cast<UInt32*>(data) = 1;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyDeviceHasChanged:
             *static_cast<UInt32*>(data) = 0;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyDeviceIsRunning:
             *static_cast<UInt32*>(data) = 1;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyDeviceIsRunningSomewhere:
             *static_cast<UInt32*>(data) = 1;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyDeviceCanBeDefaultDevice:
             *static_cast<UInt32*>(data) = 1;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyHogMode:
             *static_cast<pid_t*>(data) = -1;
             *dataUsed = sizeof(pid_t);
             break;
-            
         case kCMIODevicePropertyLatency:
             *static_cast<UInt32*>(data) = 0;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyStreams:
             *static_cast<CMIOObjectID*>(data) = self.streamId;
             *dataUsed = sizeof(CMIOObjectID);
             break;
-            
         case kCMIODevicePropertyStreamConfiguration:
-            DLog(@"kCMIODevicePropertyStreamConfiguration");
+            DLog(@"TODO kCMIODevicePropertyStreamConfiguration");
             break;
-
         case kCMIODevicePropertyExcludeNonDALAccess:
-            *static_cast<UInt32*>(data) = 0;
+            *static_cast<UInt32*>(data) = self.excludeNonDALAccess ? 1 : 0;
             *dataUsed = sizeof(UInt32);
             break;
-            
         case kCMIODevicePropertyCanProcessAVCCommand:
             *static_cast<Boolean*>(data) = false;
             *dataUsed = sizeof(Boolean);
             break;
-            
         case kCMIODevicePropertyCanProcessRS422Command:
             *static_cast<Boolean*>(data) = false;
             *dataUsed = sizeof(Boolean);
             break;
-
         case kCMIODevicePropertyDeviceMaster:
             *static_cast<pid_t*>(data) = self.masterPid;
             *dataUsed = sizeof(pid_t);
             break;
-
         default:
             DLog(@"Device unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            *dataUsed = 0;
             break;
     };
 }
@@ -322,7 +249,7 @@
 }
 
 - (void)setPropertyDataWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData dataSize:(UInt32)dataSize data:(nonnull const void *)data {
-                
+
     switch (address.mSelector) {
         case kCMIODevicePropertyExcludeNonDALAccess:
             self.excludeNonDALAccess = (*static_cast<const UInt32*>(data) != 0);

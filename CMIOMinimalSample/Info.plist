@@ -32,9 +32,5 @@
 			<string>8457B77A-D0304458-B136-8BB5335F4512 </string>
 		</array>
 	</dict>
-	<key>CMIOHardwareAssistantServiceNames</key>
-	<array>
-		<string>com.johnboiles.FakeAssistant</string>
-	</array>
 </dict>
 </plist>

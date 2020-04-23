@@ -18,9 +18,11 @@
 //  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
 
 #import "Stream.h"
-#import "Logging.h"
+
 #import <AppKit/AppKit.h>
 #import <mach/mach_time.h>
+
+#import "Logging.h"
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
@@ -38,10 +40,14 @@
 @implementation Stream
 
 - (void)dealloc {
+    DLog(@"Stream Dealloc");
     CMIOStreamClockInvalidate(_clock);
     CFRelease(_clock);
+    _clock = NULL;
     CFRelease(_queue);
+    _queue = NULL;
     [self.frameTimer invalidate];
+    self.frameTimer = nil;
 }
 
 - (void)startServingFrames {
@@ -69,7 +75,7 @@
 
 - (CFTypeRef)clock {
     if (_clock == NULL) {
-        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("ItsaClock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
+        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("CMIOMinimalSample::Stream::clock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
         if (err != noErr) {
             DLog(@"Error %d from CMIOStreamClockCreate", err);
         }
@@ -229,9 +235,7 @@
             *dataUsed = sizeof(UInt32);
             break;
         case kCMIOStreamPropertyFormatDescriptions:
-            CMVideoFormatDescriptionRef formatDescriptions[1];
-            formatDescriptions[0] = [self getFormatDescription];
-            *static_cast<CFArrayRef*>(data) = CFArrayCreate(kCFAllocatorDefault, (const void **)formatDescriptions, 1, &kCFTypeArrayCallBacks);
+            *static_cast<CFArrayRef*>(data) = (__bridge_retained CFArrayRef)[NSArray arrayWithObject:(__bridge_transfer NSObject *)[self getFormatDescription]];
             *dataUsed = sizeof(CFArrayRef);
             break;
         case kCMIOStreamPropertyFormatDescription:
@@ -247,11 +251,11 @@
             break;
         case kCMIOStreamPropertyFrameRate:
         case kCMIOStreamPropertyFrameRates:
-            *static_cast<Float64*>(data) = 30;
+            *static_cast<Float64*>(data) = 30.0;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyMinimumFrameRate:
-            *static_cast<Float64*>(data) = 30;
+            *static_cast<Float64*>(data) = 30.0;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyClock:
@@ -260,6 +264,7 @@
             break;
         default:
             DLog(@"Stream unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            *dataUsed = 0;
     };
 }
 

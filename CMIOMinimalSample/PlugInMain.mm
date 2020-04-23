@@ -18,6 +18,7 @@
 //  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
 
 #import <CoreMediaIO/CMIOHardwarePlugin.h>
+
 #import "PlugInInterface.h"
 #import "Logging.h"
 

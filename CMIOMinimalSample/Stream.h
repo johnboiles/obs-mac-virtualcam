@@ -18,6 +18,7 @@
 //  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
+
 #import "ObjectStore.h"
 
 NS_ASSUME_NONNULL_BEGIN

@@ -18,15 +18,17 @@
 //  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
 
 #import "PlugIn.h"
+
 #import <CoreMediaIO/CMIOHardwarePlugin.h>
+
 #import "Logging.h"
 
 @implementation PlugIn
 
 + (PlugIn *)SharedPlugIn {
     static PlugIn *sPlugIn = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    static dispatch_once_t sOnceToken;
+    dispatch_once(&sOnceToken, ^{
         sPlugIn = [[self alloc] init];
     });
     return sPlugIn;
@@ -74,7 +76,6 @@
     switch (address.mSelector) {
         case kCMIOObjectPropertyName:
             *static_cast<CFStringRef*>(data) = CFSTR("CMIOMinimalSample Plugin");
-            CFRetain(*static_cast<CFStringRef*>(data));
             *dataUsed = sizeof(CFStringRef);
             return;
         default:
