@@ -17,14 +17,8 @@
 #include "CAHostTimeBase.h"
 
 
-//Probably too many includes, I'm sorry -- gxalpha
-#include <iostream>
 #include <obs.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sstream>
-using namespace std;
+#include "CMIO_DPA_Sample_Server_Stream.h"
 
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
@@ -61,32 +55,9 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
         
         obs_video_info ovi;
         obs_get_video_info(&ovi);
-        stringstream stream;
-        stream << ovi.output_width << "x" << ovi.output_height;
-        string res = stream.str();
-        
-        FrameType frametype;
-        
-        //If-Ladder, yay!
-        if (strcmp("640x360", res.c_str())==0) {
-            frametype = kYUV422_640x360;
-        } else if (strcmp("720x480", res.c_str())==0) {
-            frametype = kYUV422_720x480;
-        } else if (strcmp("720x486", res.c_str())==0) {
-            frametype = kYUV422_720x486;
-        } else if (strcmp("720x576", res.c_str())==0) {
-            frametype = kYUV422_720x576;
-        } else if (strcmp("1280x720", res.c_str())==0) {
-            frametype = kYUV422_1280x720;
-        } else if (strcmp("1920x1080", res.c_str())==0) {
-            frametype = kYUV422_1920x1080;
-        } else {
-            //ERROR
-        }
-        
-        
+
         CACFDictionary format;
-        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecType), frametype);
+        format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecType), getFrameType());
         format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_CodecFlags), kSampleCodecFlags_30fps | kSampleCodecFlags_1001_1000_adjust);  //TODO FPS
         format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Width), ovi.output_width);
         format.AddUInt32(CFSTR(kIOVideoStreamFormatKey_Height), ovi.output_height);

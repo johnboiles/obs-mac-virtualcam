@@ -77,19 +77,13 @@
 #define kMaxRequestsPerCallback 4
 
 
-//Probably too many includes, I'm sorry -- gxalpha
-#include <iostream>
 #include <obs.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <sstream>
 using namespace std;
 
 
 CMIO::DPA::Sample::FrameType getFrameType()
 {
-    cout << "[Debug]: Called getFrameType() in CMIO_DPA_Sample_Server_Stream.cpp" << endl;
     obs_video_info ovi;
     obs_get_video_info(&ovi);
     stringstream stream;
@@ -114,7 +108,6 @@ CMIO::DPA::Sample::FrameType getFrameType()
     } else {
         //ERROR
     }
-    cout << "[Debug]: Called getFrameType() in CMIO_DPA_Sample_Server_Stream.cpp. Successfully." << endl;
     
     return frametype;
 }
@@ -147,7 +140,7 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		mEndOfData(false),
 		mUnderrunCount(0),
 		mFrameFormats(),
-		mFrameType(getFrameType()),     //~This shouldn't matter as it isn't at 720p at the moment either~ //ok maybe it does matter
+		mFrameType(getFrameType()),
 		mFrameRatesMap(),
 		mFrameRate(30000.0 / 1001.0),
 		mNominalFrameDuration(CMTimeMake(1001, 30000)),

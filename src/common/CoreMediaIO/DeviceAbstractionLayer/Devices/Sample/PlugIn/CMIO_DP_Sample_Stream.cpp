@@ -80,16 +80,6 @@
 // System Includes
 #include <IOKit/audio/IOAudioTypes.h>
 
-//Again too many probably --gxalpha
-#include <iostream>
-//#include <obs.h>
-//#include <string.h>
-//#include <sstream>
-//#include <video-io.h>
-//#include <stdlib.h>
-//#include <stdio.h>
-using namespace std;
-
 namespace
 {
 	const UInt64 kClockTimescale = 8000;
@@ -150,33 +140,8 @@ DPA::Sample::FrameType getFrameType();
 
 DPA::Sample::FrameType getFrameType()
 {
-    cout << "[Debug] (THIS NEVER GETS CALLED, for whatever reason): Called getFrameType() in CMIO_DP_Sample_Stream.cpp" << endl;
-    /*obs_video_info ovi;
-    obs_get_video_info(&ovi);
-    stringstream stream;
-    stream << ovi.output_width << "x" << ovi.output_height;
-    string res = stream.str();*/
-    
+    //This never gets called, for whatever reason
     DPA::Sample::FrameType frametype;
-    
-    //If-Ladder, yay!
-    /*if (strcmp("640x360", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_640x360;
-    } else if (strcmp("720x480", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_720x480;
-    } else if (strcmp("720x486", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_720x486;
-    } else if (strcmp("720x576", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_720x576;
-    } else if (strcmp("1280x720", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_1280x720;
-    } else if (strcmp("1920x1080", res.c_str())==0) {
-        frametype = DPA::Sample::kYUV422_1920x1080;
-    } else {
-        //ERROR
-    }
-    cout << "[Debug]: Called getFrameType() in CMIO_DP_Sample_Stream.cpp. Successfully." << endl;*/
-    
     return frametype;
 }
 	
