@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout obs-studio
+      uses: actions/checkout@v2
+      with:
+        repository: obsproject/obs-studio
+        path: obs-studio
+        submodules: recursive
+        ref: 25.0.7
+
+    - name: Checkout obs-mac-virtualcam
+      uses: actions/checkout@v2
+      with:
+        path: obs-mac-virtualcam
+
+    - name: Install OBS deps
+      run: |
+        brew install FFmpeg x264 Qt5 cmake mbedtls swig
+
+    - name: Build OBS
+      run: |
+        mkdir obs-studio/build
+        cd obs-studio/build
+
+        export QTDIR=/usr/local/opt/qt 
+        cmake ..
+        make -j
+
+    - name: Build the plugin
+      run: |
+        mkdir obs-mac-virtualcam/build
+        cd obs-mac-virtualcam/build
+
+        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt ..
+        make -j
+
+    - name: Fix runtime QT deps
+      run: |
+        install_name_tool \
+          -change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
+            @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
+          -change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
+            @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
+          -change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
+            @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
+          obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
+
+    - name: Copy artifacts
+      run: |
+        mkdir -p artifacts/dal-plugin
+        mkdir -p artifacts/obs-plugin
+
+        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/dal-plugin/
+        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/obs-plugin/
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: obs-mac-virtualcam
+        path: artifacts
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: obs-mac-virtualcam-dal-plugin
+        path: artifacts/dal-plugin
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: obs-mac-virtualcam-obs-plugin
+        path: artifacts/obs-plugin
