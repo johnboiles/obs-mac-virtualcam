@@ -223,6 +223,24 @@
         }
 }
 
++ (BOOL)IsBridgedTypeForSelector:(CMIOObjectPropertySelector)selector {
+    switch (selector) {
+        case kCMIOObjectPropertyName:
+        case kCMIOObjectPropertyManufacturer:
+        case kCMIOObjectPropertyElementName:
+        case kCMIOObjectPropertyElementCategoryName:
+        case kCMIOObjectPropertyElementNumberName:
+        case kCMIODevicePropertyDeviceUID:
+        case kCMIODevicePropertyModelUID:
+        case kCMIOStreamPropertyFormatDescriptions:
+        case kCMIOStreamPropertyFormatDescription:
+        case kCMIOStreamPropertyClock:
+            return YES;
+        default:
+            return NO;
+        }
+}
+
 + (ObjectStore *)SharedObjectStore {
     static ObjectStore *sObjectStore = nil;
     static dispatch_once_t sOnceToken;

@@ -202,8 +202,13 @@ OSStatus HardwarePlugIn_ObjectGetPropertyData(CMIOHardwarePlugInRef self, CMIOOb
 
     [object getPropertyDataWithAddress:*address qualifierDataSize:qualifierDataSize qualifierData:qualifierData dataSize:dataSize dataUsed:dataUsed data:data];
 
-    UInt32 *dataInt = (UInt32 *)data;
-    DLogFunc(@"%@(%d) %@ self=%p data(int)=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataInt);
+    if ([ObjectStore IsBridgedTypeForSelector:address->mSelector]) {
+        id dataObj = (__bridge NSObject *)*static_cast<CFTypeRef*>(data);
+        DLogFunc(@"%@(%d) %@ self=%p data(id)=%@", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, dataObj);
+    } else {
+        UInt32 *dataInt = (UInt32 *)data;
+        DLogFunc(@"%@(%d) %@ self=%p data(int)=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataInt);
+    }
 
     return kCMIOHardwareNoError;
 }

@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)StringFromPropertySelector:(CMIOObjectPropertySelector)selector;
 
++ (BOOL)IsBridgedTypeForSelector:(CMIOObjectPropertySelector)selector;
+
 - (NSObject<CMIOObject> *)getObject:(CMIOObjectID)objectID;
 
 - (void)setObject:(id<CMIOObject>)object forObjectId:(CMIOObjectID)objectId;
