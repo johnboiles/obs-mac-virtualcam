@@ -21,12 +21,14 @@
 
 #import <AppKit/AppKit.h>
 #import <mach/mach_time.h>
+#include <CoreMediaIO/CMIOSampleBuffer.h>
 
 #import "Logging.h"
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
     CFTypeRef _clock;
+    NSImage *_testImage;
 }
 
 @property CMIODeviceStreamQueueAlteredProc alteredProc;
@@ -34,6 +36,8 @@
 @property (readonly) CMSimpleQueueRef queue;
 @property NSTimer *frameTimer;
 @property (readonly) CFTypeRef clock;
+@property UInt64 sequenceNumber;
+@property (readonly) NSImage *testImage;
 
 @end
 
@@ -83,6 +87,14 @@
     return _clock;
 }
 
+- (NSImage *)testImage {
+    if (_testImage == nil) {
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        _testImage = [bundle imageForResource:@"hi"];
+    }
+    return _testImage;
+}
+
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon {
     self.alteredProc = alteredProc;
     self.alteredRefCon = alteredRefCon;
@@ -130,23 +142,37 @@
         DLog(@"Queue is full, bailing out");
     }
 
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSImage *myImage = [bundle imageForResource:@"hi"];
-    
-    CVPixelBufferRef pixelBuffer = [self CVPixelBufferRefFromUiImage:myImage];
-    CMTimeScale scale = CMTimeScale(NSEC_PER_SEC);
-    UInt64 time = mach_absolute_time();
-    CMTime pts = CMTimeMake(time, scale);
+    CVPixelBufferRef pixelBuffer = [self CVPixelBufferRefFromUiImage:self.testImage];
+    CMTimeScale scale = NSEC_PER_SEC;
+    CMTime hostTime = CMTimeMake(mach_absolute_time(), scale);
+    CMTime pts = hostTime;
     CMSampleTimingInfo timing;
-    timing.duration = kCMTimeInvalid;
+    timing.duration = CMTimeMake(1000, 1000 * 30);
     timing.presentationTimeStamp = pts;
     timing.decodeTimeStamp = kCMTimeInvalid;
-    
+    OSStatus err = CMIOStreamClockPostTimingEvent(timing.presentationTimeStamp, mach_absolute_time(), true, self.clock);
+    if (err != noErr) {
+        DLog(@"CMIOStreamClockPostTimingEvent err %d", err);
+    }
+
     CMFormatDescriptionRef format;
     CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixelBuffer, &format);
-    
+
+    self.sequenceNumber = CMIOGetNextSequenceNumber(self.sequenceNumber);
+
     CMSampleBufferRef buffer;
-    CMSampleBufferCreateReadyWithImageBuffer(kCFAllocatorDefault, pixelBuffer, format, &timing, &buffer);
+    err = CMIOSampleBufferCreateForImageBuffer(
+        kCFAllocatorDefault,
+        pixelBuffer,
+        format,
+        &timing,
+        self.sequenceNumber,
+        kCMIOSampleBufferNoDiscontinuities,
+        &buffer
+    );
+    if (err != noErr) {
+        DLog(@"CMIOSampleBufferCreateForImageBuffer err %d", err);
+    }
 
     CMSimpleQueueEnqueue(self.queue, buffer);
 
@@ -260,6 +286,12 @@
             break;
         case kCMIOStreamPropertyClock:
             *static_cast<CFTypeRef*>(data) = self.clock;
+            // This one was incredibly tricky and cost me many hours to find. It seems that DAL expects
+            // the clock to be retained when returned. It's unclear why, and that seems inconsistent
+            // with other properties that don't have the same behavior. But this is what Apple's sample
+            // code does.
+            // https://github.com/lvsti/CoreMediaIO-DAL-Example/blob/0392cb/Sources/Extras/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Clock.cpp#L75
+            CFRetain(*static_cast<CFTypeRef*>(data));
             *dataUsed = sizeof(CFTypeRef);
             break;
         default:
