@@ -105,7 +105,7 @@
     return self.queue;
 }
 
-- (CVPixelBufferRef)CVPixelBufferRefFromUiImage:(NSImage *)img {
+- (CVPixelBufferRef)CreateCVPixelBufferRefFromUiImage:(NSImage *)img {
 
     CGSize size = img.size;
     NSRect rect = NSMakeRect(0, 0, img.size.width, img.size.height);
@@ -142,7 +142,7 @@
         DLog(@"Queue is full, bailing out");
     }
 
-    CVPixelBufferRef pixelBuffer = [self CVPixelBufferRefFromUiImage:self.testImage];
+    CVPixelBufferRef pixelBuffer = [self CreateCVPixelBufferRefFromUiImage:self.testImage];
     CMTimeScale scale = NSEC_PER_SEC;
     CMTime hostTime = CMTimeMake(mach_absolute_time(), scale);
     CMTime pts = hostTime;
@@ -170,6 +170,8 @@
         kCMIOSampleBufferNoDiscontinuities,
         &buffer
     );
+    CFRelease(pixelBuffer);
+    CFRelease(format);
     if (err != noErr) {
         DLog(@"CMIOSampleBufferCreateForImageBuffer err %d", err);
     }
