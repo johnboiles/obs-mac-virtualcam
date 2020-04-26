@@ -35,4 +35,4 @@ Also take a look at [Cameo](https://github.com/lvsti/Cameo) by @lvsti. It allows
 
 ## License
 
-This software is licensed as GPLv2 (as it may someday become a part of [obsproject/obs-studio](https://github.com/obsproject/obs-studio) via [johnboiles/obs-mac-virtualcam](https://github.com/johnboiles/obs-mac-virtualcam)).
+This software is licensed as MIT. Do what you want with it! But please, if you find ways to improve this software, or you find bugs, please open a [Pull Request](https://github.com/johnboiles/coremediaio-dal-minimal-example/pulls) so others can benefit from it!
