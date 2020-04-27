@@ -29,12 +29,12 @@
     CMSimpleQueueRef _queue;
     CFTypeRef _clock;
     NSImage *_testImage;
+    dispatch_source_t _frameDispatchSource;
 }
 
 @property CMIODeviceStreamQueueAlteredProc alteredProc;
 @property void * alteredRefCon;
 @property (readonly) CMSimpleQueueRef queue;
-@property NSTimer *frameTimer;
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
 @property (readonly) NSImage *testImage;
@@ -43,6 +43,25 @@
 
 @implementation Stream
 
+- (instancetype _Nonnull)init {
+    self = [super init];
+    if (self) {
+        _frameDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
+                                                     dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+
+        double interval = 1.0 / 30.0;
+        dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+        uint64_t intervalTime = (int64_t)(interval * NSEC_PER_SEC);
+        dispatch_source_set_timer(_frameDispatchSource, startTime, intervalTime, 0);
+
+        __weak typeof(self) wself = self;
+        dispatch_source_set_event_handler(_frameDispatchSource, ^{
+            [wself fillFrame];
+        });
+    }
+    return self;
+}
+
 - (void)dealloc {
     DLog(@"Stream Dealloc");
     CMIOStreamClockInvalidate(_clock);
@@ -50,21 +69,15 @@
     _clock = NULL;
     CFRelease(_queue);
     _queue = NULL;
-    [self.frameTimer invalidate];
-    self.frameTimer = nil;
+    dispatch_suspend(_frameDispatchSource);
 }
 
 - (void)startServingFrames {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (!self.frameTimer) {
-            self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(fillFrame) userInfo:nil repeats:YES];
-        }
-    });
+    dispatch_resume(_frameDispatchSource);
 }
 
 - (void)stopServingFrames {
-    [self.frameTimer invalidate];
-    self.frameTimer = nil;
+    dispatch_suspend(_frameDispatchSource);
 }
 
 - (CMSimpleQueueRef)queue {

@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property CMIOStreamID objectId;
 
+- (instancetype _Nonnull)init;
+
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon;
 
 - (void)startServingFrames;
