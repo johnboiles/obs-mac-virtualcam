@@ -118,17 +118,15 @@
     return self.queue;
 }
 
-- (CVPixelBufferRef)CreateCVPixelBufferRefFromUiImage:(NSImage *)img {
-
-    CGSize size = img.size;
-    NSRect rect = NSMakeRect(0, 0, img.size.width, img.size.height);
-    CGImageRef image = [img CGImageForProposedRect:&rect context:nil hints:nil];
+- (CVPixelBufferRef)createPixelBufferWithTestAnimation {
+    int width = 1280;
+    int height = 720;
 
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
     CVPixelBufferRef pxbuffer = NULL;
-    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, size.width, size.height, kCVPixelFormatType_32ARGB, (__bridge CFDictionaryRef) options, &pxbuffer);
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, (__bridge CFDictionaryRef) options, &pxbuffer);
 
     NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
 
@@ -137,10 +135,23 @@
     NSParameterAssert(pxdata != NULL);
 
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(pxdata, size.width, size.height, 8, 4*size.width, rgbColorSpace, kCGImageAlphaPremultipliedFirst);
+    CGContextRef context = CGBitmapContextCreate(pxdata, width, height, 8, CVPixelBufferGetBytesPerRow(pxbuffer), rgbColorSpace, kCGImageAlphaPremultipliedFirst | kCGImageByteOrder32Big);
     NSParameterAssert(context);
 
-    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+    double time = double(mach_absolute_time()) / NSEC_PER_SEC;
+    CGFloat pos = CGFloat(time - floor(time));
+
+    CGColorRef whiteColor = CGColorCreateGenericRGB(1, 1, 1, 1);
+    CGColorRef redColor = CGColorCreateGenericRGB(1, 0, 0, 1);
+
+    CGContextSetFillColorWithColor(context, whiteColor);
+    CGContextFillRect(context, CGRectMake(0, 0, width, height));
+
+    CGContextSetFillColorWithColor(context, redColor);
+    CGContextFillRect(context, CGRectMake(pos * width, 310, 100, 100));
+
+    CGColorRelease(whiteColor);
+    CGColorRelease(redColor);
 
     CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
@@ -155,7 +166,7 @@
         DLog(@"Queue is full, bailing out");
     }
 
-    CVPixelBufferRef pixelBuffer = [self CreateCVPixelBufferRefFromUiImage:self.testImage];
+    CVPixelBufferRef pixelBuffer = [self createPixelBufferWithTestAnimation];
     CMTimeScale scale = NSEC_PER_SEC;
     CMTime hostTime = CMTimeMake(mach_absolute_time(), scale);
     CMTime pts = hostTime;
