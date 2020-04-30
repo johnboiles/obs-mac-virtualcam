@@ -12,5 +12,6 @@ Please note that this list is not complete.
 |QuickTime Player|Yes|
 |Photo Booth|No|
 |Safari|No (?)|
+|Amazon Chime|Yes(?)*|
 
-*May not always work. If it doesn't, please take a look at [this](https://github.com/johnboiles/obs-mac-virtualcam/issues/23) issue
+*May not always work. If it doesn't, please take a look at [this](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) issue
