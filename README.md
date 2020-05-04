@@ -44,6 +44,7 @@ cd obs-studio
 brew install FFmpeg x264 Qt5 cmake mbedtls swig
 mkdir build
 cd build
+# Note: if you installed homebrew to a custom location, this will be $BREW_INSTALL_PATH/opt/qt
 export QTDIR=/usr/local/opt/qt
 cmake .. && make -j
 
@@ -58,7 +59,7 @@ export OBS_DIR=$PWD/../obs-studio
 # Build the plugin
 mkdir build
 cd build
-cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt ..
+cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=$QTDIR..
 make -j
 
 # Copy the OBS plugin to your local OBS build
@@ -90,7 +91,7 @@ export QTDIR=/usr/local/opt/qt
 
 mkdir xcode
 cd xcode
-cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt -G Xcode ..
+cmake -DLIBOBS_INCLUDE_DIR:STRING=$OBS_DIR/libobs -DLIBOBS_LIB:STRING=$OBS_DIR/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$OBS_DIR/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=$QTDIR -G Xcode ..
 ```
 
 You can then use Xcode to build your binaries (which will include debug symbols). To copy them into the right place you need a slightly different command. From the `xcode` directory created previously:
