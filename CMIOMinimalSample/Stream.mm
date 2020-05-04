@@ -43,15 +43,17 @@
 
 @implementation Stream
 
+#define FPS 30
+#define FPS_FLOAT 30.0
+
 - (instancetype _Nonnull)init {
     self = [super init];
     if (self) {
         _frameDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
 
-        double interval = 1.0 / 30.0;
         dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
-        uint64_t intervalTime = (int64_t)(interval * NSEC_PER_SEC);
+        uint64_t intervalTime = (int64_t)(NSEC_PER_SEC / FPS);
         dispatch_source_set_timer(_frameDispatchSource, startTime, intervalTime, 0);
 
         __weak typeof(self) wself = self;
@@ -82,7 +84,8 @@
 
 - (CMSimpleQueueRef)queue {
     if (_queue == NULL) {
-        OSStatus err = CMSimpleQueueCreate(kCFAllocatorDefault, 30, &_queue);
+        // Allocate a one-second long queue, which we can use our FPS constant for.
+        OSStatus err = CMSimpleQueueCreate(kCFAllocatorDefault, FPS, &_queue);
         if (err != noErr) {
             DLog(@"Err %d in CMSimpleQueueCreate", err);
         }
@@ -162,19 +165,29 @@
 }
 
 - (void)fillFrame {
-    if (CMSimpleQueueGetFullness(self.queue) == 1.0) {
+    if (CMSimpleQueueGetFullness(self.queue) >= 1.0) {
         DLog(@"Queue is full, bailing out");
+        return;
     }
 
     CVPixelBufferRef pixelBuffer = [self createPixelBufferWithTestAnimation];
-    CMTimeScale scale = NSEC_PER_SEC;
-    CMTime hostTime = CMTimeMake(mach_absolute_time(), scale);
-    CMTime pts = hostTime;
+
+    // The timing here is quite important. For frames to be delivered correctly and successfully be recorded by apps
+    // like QuickTime Player, we need to be accurate in both our timestamps _and_ have a sensible scale. Using large
+    // timestamps and scales like mach_absolute_time() and NSEC_PER_SEC will work for display, but will error out
+    // when trying to record.
+    //
+    // Instead, we start our presentation times from zero (using the sequence number as a base), and use a scale that's
+    // a multiple of our framerate. This has been observed in parts of AVFoundation and lets us be frame-accurate even
+    // on non-round framerates (i.e., we can use a scale of 2997 for 29,97 fps content if we want to).
+    CMTimeScale scale = FPS * 10;
+    CMTime frameDuration = CMTimeMake(scale / FPS, scale);
+    CMTime pts = CMTimeMake(frameDuration.value * self.sequenceNumber, scale);
     CMSampleTimingInfo timing;
-    timing.duration = CMTimeMake(1000, 1000 * 30);
+    timing.duration = frameDuration;
     timing.presentationTimeStamp = pts;
-    timing.decodeTimeStamp = kCMTimeInvalid;
-    OSStatus err = CMIOStreamClockPostTimingEvent(timing.presentationTimeStamp, mach_absolute_time(), true, self.clock);
+    timing.decodeTimeStamp = pts;
+    OSStatus err = CMIOStreamClockPostTimingEvent(pts, mach_absolute_time(), true, self.clock);
     if (err != noErr) {
         DLog(@"CMIOStreamClockPostTimingEvent err %d", err);
     }
@@ -296,18 +309,18 @@
             break;
         case kCMIOStreamPropertyFrameRateRanges:
             AudioValueRange range;
-            range.mMinimum = 30;
-            range.mMaximum = 30;
+            range.mMinimum = FPS;
+            range.mMaximum = FPS;
             *static_cast<AudioValueRange*>(data) = range;
             *dataUsed = sizeof(AudioValueRange);
             break;
         case kCMIOStreamPropertyFrameRate:
         case kCMIOStreamPropertyFrameRates:
-            *static_cast<Float64*>(data) = 30.0;
+            *static_cast<Float64*>(data) = FPS_FLOAT;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyMinimumFrameRate:
-            *static_cast<Float64*>(data) = 30.0;
+            *static_cast<Float64*>(data) = FPS_FLOAT;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyClock:
