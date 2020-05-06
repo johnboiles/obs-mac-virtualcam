@@ -78,8 +78,6 @@
 
 #include <obs.h>
 
-int getObsOutputWidth();
-int getObsOutputHeight();
 
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
@@ -616,22 +614,25 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				// DoWhatYouWouldNeedToDoToProgramTheHardware();
 				// Send message to kext here to change the format
 				IOVideoStreamDescription theNewFormat;
+                
+                obs_video_info ovi;
+                obs_get_video_info(&ovi);
 				switch(mFrameType)
 				{
           
                     case kYUV422_ALL:
                         theNewFormat.mVideoCodecType = kYUV422_ALL;
                         theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                        theNewFormat.mWidth = getObsOutputWidth();
-                        theNewFormat.mHeight = getObsOutputHeight();
+                        theNewFormat.mWidth = ovi.output_width;
+                        theNewFormat.mHeight = ovi.output_height;
                         break;
 
                    
                     case kYUV422_10_ALL:
                         theNewFormat.mVideoCodecType = kYUV422_10_ALL;
                         theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                        theNewFormat.mWidth = getObsOutputWidth();
-                        theNewFormat.mHeight = getObsOutputHeight();
+                        theNewFormat.mWidth = ovi.output_width;
+                        theNewFormat.mHeight = ovi.output_height;
                         break;
 						
 					default:
@@ -672,22 +673,26 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				// DoWhatYouWouldNeedToDoToProgramTheHardware();
 				// Send message to kext here to change the format
 				IOVideoStreamDescription theNewFormat;
+                
+                
+                obs_video_info ovi;
+                obs_get_video_info(&ovi);
 				switch(mFrameType)
 				{
                     
                     case kYUV422_ALL:
                         theNewFormat.mVideoCodecType = kYUV422_ALL;
                         theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                        theNewFormat.mWidth = getObsOutputWidth();
-                        theNewFormat.mHeight = getObsOutputHeight();
+                        theNewFormat.mWidth = ovi.output_width;
+                        theNewFormat.mHeight = ovi.output_height;
                         break;
 
                         
                     case kYUV422_10_ALL:
                         theNewFormat.mVideoCodecType = kYUV422_10_ALL;
                         theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                        theNewFormat.mWidth = getObsOutputWidth();
-                        theNewFormat.mHeight = getObsOutputHeight();
+                        theNewFormat.mWidth = ovi.output_width;
+                        theNewFormat.mHeight = ovi.output_height;
                         break;
 						
 					default:
@@ -785,22 +790,24 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				IOVideoStreamDescription theNewFormat;
                 bzero(&theNewFormat, sizeof(IOVideoStreamDescription));
                 
+                obs_video_info ovi;
+                obs_get_video_info(&ovi);
 				switch(mFrameType)
 				{
                         
                     case kYUV422_ALL:
                          theNewFormat.mVideoCodecType = kYUV422_ALL;
                          theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                         theNewFormat.mWidth = getObsOutputWidth();
-                         theNewFormat.mHeight = getObsOutputHeight();
+                         theNewFormat.mWidth = ovi.output_width;
+                         theNewFormat.mHeight = ovi.output_height;
                          break;
 
                     
                      case kYUV422_10_ALL:
                          theNewFormat.mVideoCodecType = kYUV422_10_ALL;
                          theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                         theNewFormat.mWidth = getObsOutputWidth();
-                         theNewFormat.mHeight = getObsOutputHeight();
+                         theNewFormat.mWidth = ovi.output_width;
+                         theNewFormat.mHeight = ovi.output_height;
                          break;
                         
                   
@@ -838,21 +845,27 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 				// DoWhatYouWouldNeedToDoToProgramTheHardware();
 				// Send message to kext here to change the format
 				IOVideoStreamDescription theNewFormat;
+                
+                
+                
+            
 				switch(mFrameType)
 				{
+                        obs_video_info ovi;
+                        obs_get_video_info(&ovi);
                     case kYUV422_ALL:
                          theNewFormat.mVideoCodecType = kYUV422_ALL;
                          theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                         theNewFormat.mWidth = getObsOutputWidth();
-                         theNewFormat.mHeight = getObsOutputHeight();
+                         theNewFormat.mWidth = ovi.output_width;
+                         theNewFormat.mHeight = ovi.output_height;
                          break;
 
                     
                      case kYUV422_10_ALL:
                          theNewFormat.mVideoCodecType = kYUV422_10_ALL;
                          theNewFormat.mVideoCodecFlags = FrameRateToCodecFlags(mFrameRate);
-                         theNewFormat.mWidth = getObsOutputWidth();
-                         theNewFormat.mHeight = getObsOutputHeight();
+                         theNewFormat.mWidth = ovi.output_width;
+                         theNewFormat.mHeight = ovi.output_height;
                          break;
                 }
 				
@@ -1092,16 +1105,3 @@ namespace CMIO { namespace DPA { namespace Sample { namespace Server
 		GetOwningDevice().SendPropertyStatesChangedMessage();
 	}
 }}}}
-
-int getObsOutputWidth()
-{
-    obs_video_info ovi;
-    obs_get_video_info(&ovi);
-    return ovi.output_width;
-}
-int getObsOutputHeight()
-{
-    obs_video_info ovi;
-    obs_get_video_info(&ovi);
-    return ovi.output_height;
-}

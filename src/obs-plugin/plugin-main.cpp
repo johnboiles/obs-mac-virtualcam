@@ -48,10 +48,12 @@ static bool virtualcam_output_start(void *data)
     pthread_t thread1;
     pthread_create(&thread1, NULL, virtualCamMain, (void *)"Thread 1");
 
+    obs_video_info ovi;
+    obs_get_video_info(&ovi);
     struct video_scale_info conversion = {};
     conversion.format = VIDEO_FORMAT_UYVY;
-    conversion.width = getObsOutputWidth();
-    conversion.height = getObsOutputHeight();
+    conversion.width = ovi.output_width;
+    conversion.height = ovi.output_height;
     obs_output_set_video_conversion(output, &conversion);
     if (!obs_output_begin_data_capture(output, 0)) {
         return false;

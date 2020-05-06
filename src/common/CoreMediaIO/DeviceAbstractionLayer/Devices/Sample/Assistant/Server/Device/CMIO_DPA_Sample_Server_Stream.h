@@ -72,10 +72,6 @@
 #include <list>
 
 
-int getObsOutputWidth();
-int getObsOutputHeight();
-
-
 namespace CMIO { namespace DPA { namespace Sample { namespace Server
 {
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
