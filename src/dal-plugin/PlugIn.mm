@@ -23,6 +23,15 @@
 
 #import "Logging.h"
 
+@interface PlugIn () {
+    MachClient *_machClient;
+    dispatch_source_t _machConnectDispatchSource;
+    BOOL _connected;
+}
+
+@end
+
+
 @implementation PlugIn
 
 + (PlugIn *)SharedPlugIn {
@@ -34,10 +43,40 @@
     return sPlugIn;
 }
 
+- (instancetype)init {
+    if (self = [super init]) {
+        _machConnectDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+        uint64_t intervalTime = (int64_t)(5 * NSEC_PER_SEC);
+        dispatch_source_set_timer(_machConnectDispatchSource, startTime, intervalTime, 0);
+        __weak typeof(self) wself = self;
+        dispatch_source_set_event_handler(_machConnectDispatchSource, ^{
+            if (![[wself machClient] isConnected]) {
+                DLog(@"Server is not available");
+                return;
+            }
+            if (!_connected) {
+                DLog(@"Attempting connection");
+                [[wself machClient] sendConnectMessage];
+                _connected = YES;
+            }
+        });
+        dispatch_resume(_machConnectDispatchSource);
+    }
+    return self;
+}
+
 - (void)initialize {
 }
 
 - (void)teardown {
+}
+
+- (MachClient *)machClient {
+    if (_machClient == nil) {
+        _machClient = [[MachClient alloc] init];
+    }
+    return _machClient;
 }
 
 #pragma mark - CMIOObject

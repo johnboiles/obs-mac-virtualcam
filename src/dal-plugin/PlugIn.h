@@ -21,12 +21,14 @@
 #import <CoreMediaIO/CMIOHardwarePlugIn.h>
 
 #import "ObjectStore.h"
+#import "MachClient.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PlugIn : NSObject <CMIOObject>
 
 @property CMIOObjectID objectId;
+@property (readonly) MachClient *machClient;
 
 + (PlugIn *)SharedPlugIn;
 

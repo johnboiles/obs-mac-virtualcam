@@ -19,15 +19,25 @@ include_directories(${AVFOUNDATION}
                     ${COREMEDIAIO}
                     ${COCOA}
                     ${IOSURFACE}
-                    ./)
+                    ./
+                    ../common)
 
 set(dal-plugin_SOURCES
+	Logging.h
 	PlugInMain.mm
+	PlugInInterface.h
 	PlugInInterface.mm
+	ObjectStore.h
 	ObjectStore.mm
+	PlugIn.h
 	PlugIn.mm
+	Device.h
 	Device.mm
-	Stream.mm)
+	Stream.h
+	Stream.mm
+	MachClient.h
+	MachClient.mm
+	../common/MachProtocol.h)
 
 add_library(dal-plugin MODULE
 	${dal-plugin_SOURCES}

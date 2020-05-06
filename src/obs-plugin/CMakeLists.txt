@@ -28,10 +28,14 @@ include_directories(${AVFOUNDATION}
                     "${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
                     ${Qt5Core_INCLUDES}
                     ${Qt5Widgets_INCLUDES}
-                    ./)
+                    ./
+                    ../common)
 
 set(obs-plugin_SOURCES
-	plugin-main.cpp)
+	plugin-main.mm
+	MachServer.h
+	MachServer.mm
+	../common/MachProtocol.h)
 
 add_library(obs-plugin MODULE
 	${obs-plugin_SOURCES}
@@ -53,4 +57,6 @@ target_link_libraries(obs-plugin
 
 set_target_properties(obs-plugin PROPERTIES
 	PREFIX ""
-	OUTPUT_NAME "obs-mac-virtualcam")
+	OUTPUT_NAME "obs-mac-virtualcam"
+	COMPILE_FLAGS "-std=gnu++14 -stdlib=libc++ -fobjc-arc -fobjc-weak"
+)

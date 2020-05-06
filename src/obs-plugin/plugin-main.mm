@@ -8,6 +8,8 @@
 #include <sstream>
 #include <QMessageBox>
 #include <QString>
+#include <CoreFoundation/CoreFoundation.h>
+#include "MachServer.h"
 
 using namespace std;
 
@@ -21,6 +23,7 @@ MODULE_EXPORT const char *obs_module_description(void)
 obs_output_t *output;
 // Tools menu action for starting and stopping the virtual camera
 QAction *action;
+static MachServer *sMachServer;
 
 static const char *virtualcam_output_get_name(void *type_data)
 {
@@ -31,6 +34,7 @@ static const char *virtualcam_output_get_name(void *type_data)
 static void *virtualcam_output_create(obs_data_t *settings, obs_output_t *output)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_create");
+    sMachServer = [[MachServer alloc] init];
 }
 
 static void virtualcam_output_destroy(void *data)
@@ -51,7 +55,7 @@ static bool virtualcam_output_start(void *data)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_start");
     
-    // TODO: Initialize IPC code
+    [sMachServer run];
 
     obs_video_info ovi;
     obs_get_video_info(&ovi);
@@ -79,6 +83,7 @@ static void virtualcam_output_raw_video(void *data, struct video_data *frame)
     uint8_t *outData = frame->data[0];
     // TODO: Send frame here
 //    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, frame->timestamp);
+    [sMachServer sendFrame];
 }
 
 struct obs_output_info virtualcam_output_info = {

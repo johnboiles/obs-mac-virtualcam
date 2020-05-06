@@ -154,7 +154,8 @@ Boolean  HardwarePlugIn_ObjectHasProperty(CMIOHardwarePlugInRef self, CMIOObject
 
     Boolean answer = [object hasPropertyWithAddress:*address];
 
-    DLogFunc(@"%@(%d) %@ self=%p hasProperty=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, answer);
+    // Disabling Noisy logs
+    // DLogFunc(@"%@(%d) %@ self=%p hasProperty=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, answer);
 
     return answer;
 }
@@ -186,7 +187,8 @@ OSStatus HardwarePlugIn_ObjectGetPropertyDataSize(CMIOHardwarePlugInRef self, CM
 
     *dataSize = [object getPropertyDataSizeWithAddress:*address qualifierDataSize:qualifierDataSize qualifierData:qualifierData];
 
-    DLogFunc(@"%@(%d) %@ self=%p size=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataSize);
+    // Disabling Noisy logs
+    // DLogFunc(@"%@(%d) %@ self=%p size=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataSize);
 
     return kCMIOHardwareNoError;
 }
@@ -202,13 +204,14 @@ OSStatus HardwarePlugIn_ObjectGetPropertyData(CMIOHardwarePlugInRef self, CMIOOb
 
     [object getPropertyDataWithAddress:*address qualifierDataSize:qualifierDataSize qualifierData:qualifierData dataSize:dataSize dataUsed:dataUsed data:data];
 
-    if ([ObjectStore IsBridgedTypeForSelector:address->mSelector]) {
-        id dataObj = (__bridge NSObject *)*static_cast<CFTypeRef*>(data);
-        DLogFunc(@"%@(%d) %@ self=%p data(id)=%@", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, dataObj);
-    } else {
-        UInt32 *dataInt = (UInt32 *)data;
-        DLogFunc(@"%@(%d) %@ self=%p data(int)=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataInt);
-    }
+    // Disabling Noisy logs
+    // if ([ObjectStore IsBridgedTypeForSelector:address->mSelector]) {
+    //     id dataObj = (__bridge NSObject *)*static_cast<CFTypeRef*>(data);
+    //     DLogFunc(@"%@(%d) %@ self=%p data(id)=%@", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, dataObj);
+    // } else {
+    //     UInt32 *dataInt = (UInt32 *)data;
+    //     DLogFunc(@"%@(%d) %@ self=%p data(int)=%d", NSStringFromClass([object class]), objectID, [ObjectStore StringFromPropertySelector:address->mSelector], self, *dataInt);
+    // }
 
     return kCMIOHardwareNoError;
 }
