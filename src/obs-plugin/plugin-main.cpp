@@ -4,9 +4,6 @@
 #include <QMainWindow.h>
 #include <QAction.h>
 #include <obs-frontend-api.h>
-#include "CMIO_DPA_Sample_Server_VCamDevice.h"
-#include "CMIO_DPA_Sample_Server_VCamInputStream.h"
-#include "CAHostTimeBase.h"
 #include <obs.h>
 #include <sstream>
 #include <QMessageBox>
@@ -41,10 +38,6 @@ static void virtualcam_output_destroy(void *data)
     blog(LOG_DEBUG, "VIRTUALCAM output_destroy");
 }
 
-// TODO(johnboiles): Janky to extern this
-extern void *virtualCamMain(void *ptr);
-
-
 static string knownResolutions[] = {    //Resolutions which are specifies in the enum "FrameType" in CMIO_DPA_Sample_Shared.h
     "640x360",
     "720x480",
@@ -54,13 +47,11 @@ static string knownResolutions[] = {    //Resolutions which are specifies in the
     "1920x1080"
 };
 
-
 static bool virtualcam_output_start(void *data)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_start");
     
-    pthread_t thread1;
-    pthread_create(&thread1, NULL, virtualCamMain, (void *)"Thread 1");
+    // TODO: Initialize IPC code
 
     obs_video_info ovi;
     obs_get_video_info(&ovi);
@@ -83,13 +74,11 @@ static void virtualcam_output_stop(void *data, uint64_t ts)
     obs_output_end_data_capture(output);
 }
 
-// TODO(johnboiles): Janky to extern this. Make classes and stuff.
-extern CMIO::DPA::Sample::Server::VCamDevice *virtualCamDevice;
-
 static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 {
     uint8_t *outData = frame->data[0];
-    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, frame->timestamp);
+    // TODO: Send frame here
+//    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, frame->timestamp);
 }
 
 struct obs_output_info virtualcam_output_info = {

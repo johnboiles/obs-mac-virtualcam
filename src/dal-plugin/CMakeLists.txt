@@ -19,89 +19,15 @@ include_directories(${AVFOUNDATION}
                     ${COREMEDIAIO}
                     ${COCOA}
                     ${IOSURFACE}
-                    ../common/CoreMediaIO/PublicUtility
-                    ../common/CoreAudio/PublicUtility
-                    ../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant
-                    ../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOVideoAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOStreamAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOKitAssistant
-                    ../common/CoreMediaIO/PublicUtility/CoreMediaAssistant
-                    ../common/CoreMediaIO/PublicUtility/CoreVideoAssistant
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device
-                    # Verified to be necessary
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Client
-                    ../common/CoreMediaIO/PublicUtility/DALAssistant
                     ./)
 
 set(dal-plugin_SOURCES
-	../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
-	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
-	../common/CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.cpp
-	../common/CoreMediaIO/PublicUtility/IOKitAssistant/CMIO_IOKA_NotificationPort.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_ScheduledOutputNotificationProc.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Deck.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FirstOutputPresentationTimeStamp.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_ControlDictionary.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_ClientStream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Frame.cpp
-	../common/CoreAudio/PublicUtility/CACFDistributedNotification.cpp
-	../common/CoreAudio/PublicUtility/CAGuard.cpp
-	../common/CoreMediaIO/PublicUtility/CMIO_SMPTETimeBase.cpp
-	../common/CoreAudio/PublicUtility/CAPThread.cpp
-	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_CFMachPortThread.cpp
-	../common/CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_UserInfo.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_Stream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_Sample_VirtualDevice.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_Sample_Stream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/Properties/CMIO_DP_Sample_Property_HogMode.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_Sample_PlugIn.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_Sample_IOBackedDevice.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_Sample_Device.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/CMIO_DP_SampleVCam_PlugInInterface.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_SuspendedByUser.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_SMPTETimeCallback.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_OutputBuffers.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_NoData.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_HogMode.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FormatList.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_EndOfData.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_DeviceMaster.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Clock.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_ClientSyncDiscontinuity.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Base.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_PlugIn.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_Object.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_ControlDictionary.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_Control.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_HardwarePlugInInterface.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_DeviceSettings.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_DeviceCommands.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_Device.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_Control.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_Command.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Client/CMIO_DPA_Sample_ClientExtras.cpp
-	../common/CoreMediaIO/PublicUtility/DALAssistant/CMIO_DALA_System.cpp
-	../common/CoreMediaIO/PublicUtility/CMIODebugPrintf.cpp
-	../common/CoreMediaIO/PublicUtility/CMIODebugMacros.cpp
-	../common/CoreAudio/PublicUtility/CAVolumeCurve.cpp
-	../common/CoreAudio/PublicUtility/CAProcess.cpp
-	../common/CoreAudio/PublicUtility/CAMutex.cpp
-	../common/CoreAudio/PublicUtility/CAHostTimeBase.cpp
-	../common/CoreAudio/PublicUtility/CACFString.cpp
-	../common/CoreAudio/PublicUtility/CACFPreferences.cpp
-	../common/CoreAudio/PublicUtility/CACFNumber.cpp
-	../common/CoreAudio/PublicUtility/CACFMachPort.cpp
-	../common/CoreAudio/PublicUtility/CACFDictionary.cpp
-	../common/CoreAudio/PublicUtility/CACFArray.cpp
-	CMIODPASampleClient.cpp)
+	PlugInMain.mm
+	PlugInInterface.mm
+	ObjectStore.mm
+	PlugIn.mm
+	Device.mm
+	Stream.mm)
 
 add_library(dal-plugin MODULE
 	${dal-plugin_SOURCES}
@@ -110,7 +36,8 @@ add_library(dal-plugin MODULE
 set_target_properties(dal-plugin
 	PROPERTIES
 	BUNDLE TRUE
-	OUTPUT_NAME "obs-mac-virtualcam")
+	OUTPUT_NAME "obs-mac-virtualcam"
+	COMPILE_FLAGS "-std=gnu++14 -stdlib=libc++ -fobjc-arc -fobjc-weak")
 
 target_link_libraries(dal-plugin
 	${AVFOUNDATION}
@@ -121,11 +48,6 @@ target_link_libraries(dal-plugin
 	${COREMEDIAIO}
 	${IOSURFACE}
 	${IOKIT})
-
-# Note: May not be necessary
-target_link_options(dal-plugin
-	PUBLIC -exported_symbols_list ${PROJECT_SOURCE_DIR}/../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/PlugIn/SampleVCam.exp
-)
 
 # Workaround because building from Xcode likes to put things in Debug and Release directories
 # TODO: This only supports Debug
