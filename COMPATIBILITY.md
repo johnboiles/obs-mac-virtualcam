@@ -11,6 +11,7 @@ Please note that this list is not complete.
 |Discord|No|
 |QuickTime Player|Yes|
 |Photo Booth|No|
+|FaceTime|No|
 |Safari|No (?)|
 |Slack|No (?)|
 |Amazon Chime|Yes(?)*|
