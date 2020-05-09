@@ -42,13 +42,9 @@ static void virtualcam_output_destroy(void *data)
     blog(LOG_DEBUG, "VIRTUALCAM output_destroy");
 }
 
-static string knownResolutions[] = {    //Resolutions which are specifies in the enum "FrameType" in CMIO_DPA_Sample_Shared.h
-    "640x360",
-    "720x480",
-    "720x486",
-    "720x576",
+// TODO(john): Only 720p is supported for now
+static string knownResolutions[] = {
     "1280x720",
-    "1920x1080"
 };
 
 static bool virtualcam_output_start(void *data)

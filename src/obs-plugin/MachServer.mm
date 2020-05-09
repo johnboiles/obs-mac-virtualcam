@@ -113,6 +113,7 @@
 }
 
 - (void)stop {
+    blog(LOG_DEBUG, "VIRTUALCAM sending stop message to %lu clients", self.clientPorts.count);
     [self sendMessageToClientsWithMsgId:MachMsgIdStop components:nil];
 }
 
