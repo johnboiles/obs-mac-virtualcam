@@ -12,14 +12,23 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 
 ## Known Issues
 
-* If OBS is closed when an app is opened, the virtual camera may not show up
+### Plugin Bugs
+* The virtual camera doesn't work with all programs. Check out [COMPATIBILITY.md](https://github.com/johnboiles/obs-mac-virtualcam/blob/master/COMPATIBILITY.md) to see if your app is supported.
+* The virtual camera must be started before the program using it is, otherwise it will not show up
 * Can't click menu bar after program start [(OBS Issue #2678)](https://github.com/obsproject/obs-studio/issues/2678).  **NOTE:** This is not an issue with this plugin, but it does make it more difficult to turn on the Virtual Camera created by this plugin.
 * DAL plugin unable to run because of codesigning issues (for example unable to see Virtual Camera in latest version of Zoom). See [issue #4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for a workaround
-* DAL plugin does not work in Discord ([issue #37](https://github.com/johnboiles/obs-mac-virtualcam/issues/37))
+
+### Common Problems
+* Build fails at `cmake .. && make -j`: In this case, simply repeat `cmake .. && make -j`.
+* Error 2: At the end of the build, the terminal will say `make: *** [all] Error 2`. This is expected and not an error. If it says `Built target obs` a few lines above, your build has succeeded.
+* `Failed to load 'en-US' text for module: 'obs-mac-virtualcam.so'`: If the virtual camera doesn't work, you might see this error. However, it is expected and not the problem. There might be another problem you didn't see.
+
+_If you still have problems running the virtual camera, see below._
 
 ## Discussion / Support
 
 The official place for discussion and chat related to this plugin is in the `#plugins-and-tools` channel in the [OBS Studio Discord](https://discord.gg/obsproject). 
+For questions regarding build fails or the virtual camera not working, ping @gxalpha#3486 and attach the obs log.
 
 ## Reporting Issues / Bugs / Improvements
 
