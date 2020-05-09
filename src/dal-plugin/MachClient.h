@@ -9,11 +9,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol MachClientDelegate
+
+- (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(NSData *)frameData;
+- (void)receivedStop;
+
+@end
+
+
 @interface MachClient : NSObject
 
-- (BOOL)isConnected;
+@property (nullable, weak) id<MachClientDelegate> delegate;
 
-- (void)sendConnectMessage;
+- (BOOL)isServerAvailable;
+
+- (BOOL)connectToServer;
 
 @end
 

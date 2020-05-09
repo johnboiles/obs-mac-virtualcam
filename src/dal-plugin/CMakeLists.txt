@@ -35,8 +35,12 @@ set(dal-plugin_SOURCES
 	Device.mm
 	Stream.h
 	Stream.mm
+    CMSampleBufferUtils.h
+    CMSampleBufferUtils.mm
 	MachClient.h
 	MachClient.mm
+    TestCard.h
+    TestCard.mm
 	../common/MachProtocol.h)
 
 add_library(dal-plugin MODULE

@@ -1,23 +1,23 @@
 //
 //  PlugInInterface.mm
-//  CMIOMinimalSample
+//  obs-mac-virtualcam
 //
 //  This file implements the CMIO DAL plugin interface
 //
 //  Created by John Boiles  on 4/9/20.
 //
-//  CMIOMinimalSample is free software: you can redistribute it and/or modify
+//  obs-mac-virtualcam is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 2 of the License, or
 //  (at your option) any later version.
 //
-//  CMIOMinimalSample is distributed in the hope that it will be useful,
+//  obs-mac-virtualcam is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
+//  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
 #import "PlugInInterface.h"
 
@@ -108,6 +108,7 @@ OSStatus HardwarePlugIn_InitializeWithObjectID(CMIOHardwarePlugInRef self, CMIOO
     stream.objectId = streamId;
     [[ObjectStore SharedObjectStore] setObject:stream forObjectId:streamId];
     device.streamId = streamId;
+    plugIn.stream = stream;
 
     // Tell the system about the Device
     error = CMIOObjectsPublishedAndDied(PlugInRef(), kCMIOObjectSystemObject, 1, &deviceId, 0, 0);
@@ -261,7 +262,7 @@ OSStatus HardwarePlugIn_DeviceStartStream(CMIOHardwarePlugInRef self, CMIODevice
         return kCMIOHardwareBadObjectError;
     }
 
-    [stream startServingFrames];
+    [[PlugIn SharedPlugIn] startStream];
 
     return kCMIOHardwareNoError;
 }
@@ -286,7 +287,7 @@ OSStatus HardwarePlugIn_DeviceStopStream(CMIOHardwarePlugInRef self, CMIODeviceI
         return kCMIOHardwareBadObjectError;
     }
 
-    [stream stopServingFrames];
+    [[PlugIn SharedPlugIn] stopStream];
 
     return kCMIOHardwareNoError;
 }

@@ -1,21 +1,21 @@
 //
 //  PlugIn.mm
-//  CMIOMinimalSample
+//  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/9/20.
 //
-//  CMIOMinimalSample is free software: you can redistribute it and/or modify
+//  obs-mac-virtualcam is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 2 of the License, or
 //  (at your option) any later version.
 //
-//  CMIOMinimalSample is distributed in the hope that it will be useful,
+//  obs-mac-virtualcam is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
+//  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
 #import "PlugIn.h"
 
@@ -23,11 +23,12 @@
 
 #import "Logging.h"
 
-@interface PlugIn () {
+@interface PlugIn () <MachClientDelegate> {
     MachClient *_machClient;
     dispatch_source_t _machConnectDispatchSource;
-    BOOL _connected;
 }
+@property NSTimer *disconnectTimer;
+@property BOOL connected;
 
 @end
 
@@ -47,23 +48,34 @@
     if (self = [super init]) {
         _machConnectDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
         dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
-        uint64_t intervalTime = (int64_t)(5 * NSEC_PER_SEC);
+        uint64_t intervalTime = (int64_t)(1 * NSEC_PER_SEC);
         dispatch_source_set_timer(_machConnectDispatchSource, startTime, intervalTime, 0);
         __weak typeof(self) wself = self;
         dispatch_source_set_event_handler(_machConnectDispatchSource, ^{
-            if (![[wself machClient] isConnected]) {
+            if (![[wself machClient] isServerAvailable]) {
                 DLog(@"Server is not available");
-                return;
-            }
-            if (!_connected) {
+            } else if (!_connected) {
                 DLog(@"Attempting connection");
-                [[wself machClient] sendConnectMessage];
-                _connected = YES;
+                [[wself machClient] connectToServer];
             }
         });
-        dispatch_resume(_machConnectDispatchSource);
     }
     return self;
+}
+
+- (void)startStream {
+    DLogFunc(@"");
+    dispatch_resume(_machConnectDispatchSource);
+    [self.stream startServingDefaultFrames];
+    [self.disconnectTimer invalidate];
+}
+
+- (void)stopStream {
+    DLogFunc(@"");
+    dispatch_suspend(_machConnectDispatchSource);
+    [self.stream stopServingDefaultFrames];
+    [self.disconnectTimer invalidate];
+    _connected = false;
 }
 
 - (void)initialize {
@@ -75,6 +87,7 @@
 - (MachClient *)machClient {
     if (_machClient == nil) {
         _machClient = [[MachClient alloc] init];
+        _machClient.delegate = self;
     }
     return _machClient;
 }
@@ -114,7 +127,7 @@
 - (void)getPropertyDataWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData dataSize:(UInt32)dataSize dataUsed:(nonnull UInt32 *)dataUsed data:(nonnull void *)data {
     switch (address.mSelector) {
         case kCMIOObjectPropertyName:
-            *static_cast<CFStringRef*>(data) = CFSTR("CMIOMinimalSample Plugin");
+            *static_cast<CFStringRef*>(data) = CFSTR("OBS Virtual Camera Plugin");
             *dataUsed = sizeof(CFStringRef);
             return;
         default:
@@ -125,6 +138,32 @@
 
 - (void)setPropertyDataWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData dataSize:(UInt32)dataSize data:(nonnull const void *)data {
     DLog(@"PlugIn unhandled setPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+}
+
+#pragma mark - MachClientDelegate
+
+- (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(nonnull NSData *)frameData {
+    if (!_connected) {
+        _connected = YES;
+        dispatch_suspend(_machConnectDispatchSource);
+        [self.stream stopServingDefaultFrames];
+    }
+
+    // After 5 seconds of not receiving frames, give up on waiting for frames and go back to the static frame
+    __weak typeof(self) weakSelf = self;
+    [self.disconnectTimer invalidate];
+    self.disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        weakSelf.connected = NO;
+        [weakSelf startStream];
+    }];
+
+    [self.stream queueFrameWithSize:size timestamp:timestamp frameData:frameData];
+}
+
+- (void)receivedStop {
+    DLogFunc(@"");
+    _connected = NO;
+    [self startStream];
 }
 
 @end

@@ -16,7 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  Will eventually be used for sending frames to all connected clients
  */
-- (void)sendFrame;
+- (void)sendFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameBytes:(uint8_t *)frameData;
+
+- (void)stop;
 
 @end
 

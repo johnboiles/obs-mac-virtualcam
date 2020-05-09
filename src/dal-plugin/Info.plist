@@ -52,5 +52,9 @@
 	<string>11E146</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.11</string>
+	<key>CMIOHardwareAssistantServiceNames</key>
+	<array>
+		<string>com.johnboiles.obs-mac-virtualcam.server</string>
+	</array>
 </dict>
 </plist>

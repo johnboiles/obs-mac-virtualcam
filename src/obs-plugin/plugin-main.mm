@@ -76,14 +76,17 @@ static void virtualcam_output_stop(void *data, uint64_t ts)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_stop");
     obs_output_end_data_capture(output);
+    [sMachServer stop];
 }
 
 static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 {
+    obs_video_info ovi;
+    obs_get_video_info(&ovi);
+    CGFloat width = ovi.output_width;
+    CGFloat height = ovi.output_height;
     uint8_t *outData = frame->data[0];
-    // TODO: Send frame here
-//    virtualCamDevice->mInputStream->FrameArrived(virtualCamDevice->mFrameSize, outData, frame->timestamp);
-    [sMachServer sendFrame];
+    [sMachServer sendFrameWithSize:NSMakeSize(width, height) timestamp:frame->timestamp frameBytes:outData];
 }
 
 struct obs_output_info virtualcam_output_info = {

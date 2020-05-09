@@ -17,70 +17,90 @@
 
 @implementation MachClient
 
+- (void)dealloc {
+    DLogFunc(@"");
+    _receivePort.delegate = nil;
+}
+
 - (NSPort *)serverPort {
     // See note in MachServer.mm and don't judge me
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    return [[NSMachBootstrapServer sharedInstance] portForName:MACH_SERVICE_NAME];
+    return [[NSMachBootstrapServer sharedInstance] portForName:@MACH_SERVICE_NAME];
     #pragma clang diagnostic pop
 }
 
-- (BOOL)isConnected {
+- (BOOL)isServerAvailable {
     return [self serverPort] != nil;
 }
 
 - (NSPort *)receivePort {
     if (_receivePort == nil) {
-        _receivePort = [NSMachPort port];
+        NSPort *receivePort = [NSMachPort port];
+        _receivePort = receivePort;
         _receivePort.delegate = self;
-        // TODO: BAD. Need to shut this down eventually.
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-            [runLoop addPort:_receivePort forMode:NSDefaultRunLoopMode];
-            [[NSRunLoop currentRunLoop] run];
+            [runLoop addPort:receivePort forMode:NSDefaultRunLoopMode];
+            // weakSelf should become nil when this object gets destroyed
+            while(weakSelf) {
+                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            }
+            DLog(@"Shutting down receive run loop");
         });
-        DLog(@"Initialized port %d", ((NSMachPort *)_receivePort).machPort);
+        DLog(@"Initialized mach port %d for receiving", ((NSMachPort *)_receivePort).machPort);
     }
     return _receivePort;
 }
 
-- (void)sendConnectMessage {
+- (BOOL)connectToServer {
     DLogFunc(@"");
 
     NSPort *sendPort = [self serverPort];
     if (sendPort == nil) {
-        DLog(@"Unable to connect to server port");
-        return;
+        ELog(@"Unable to connect to server port");
+        return NO;
     }
 
-    NSPortMessage *message = [[NSPortMessage alloc]
-                              initWithSendPort:sendPort
-                              receivePort:self.receivePort
-                              components:nil];
+    NSPortMessage *message = [[NSPortMessage alloc] initWithSendPort:sendPort receivePort:self.receivePort components:nil];
     message.msgid = MachMsgIdConnect;
 
     NSDate *timeout = [NSDate dateWithTimeIntervalSinceNow:5.0];
     if (![message sendBeforeDate:timeout]) {
-        DLog(@"Send failed");
+        ELog(@"sendBeforeDate failed");
+        return NO;
     }
+
+    return YES;
 }
 
 - (void)handlePortMessage:(NSPortMessage *)message {
-    DLogFunc(@"");
+    VLogFunc(@"");
     NSArray *components = message.components;
     switch (message.msgid) {
         case MachMsgIdConnect:
             DLog(@"Received connect response");
             break;
         case MachMsgIdFrame:
-            DLog(@"Received frame response");
-            if (components.count > 0) {
-                NSString *dataString = [[NSString alloc] initWithData:components[0] encoding:NSUTF8StringEncoding];
-                DLog(@"Received frame response: \"%@\"", dataString);
+            VLog(@"Received frame message");
+            if (components.count == 4) {
+                CGFloat width;
+                [components[0] getBytes:&width length:sizeof(width)];
+                CGFloat height;
+                [components[1] getBytes:&height length:sizeof(height)];
+                uint64_t timestamp;
+                [components[2] getBytes:&timestamp length:sizeof(timestamp)];
+                VLog(@"Received frame data: %fx%f (%llu)", width, height, timestamp);
+                [self.delegate receivedFrameWithSize:NSMakeSize(width, height) timestamp:timestamp frameData:components[3]];
             }
             break;
+        case MachMsgIdStop:
+            DLog(@"Received stop message");
+            [self.delegate receivedStop];
+            break;
         default:
-            DLog(@"Received unexpected response msgid %u", (unsigned)message.msgid);
+            ELog(@"Received unexpected response msgid %u", (unsigned)message.msgid);
             break;
     }
 }

@@ -1,21 +1,21 @@
 //
 //  Stream.mm
-//  CMIOMinimalSample
+//  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/10/20.
 //
-//  CMIOMinimalSample is free software: you can redistribute it and/or modify
+//  obs-mac-virtualcam is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 2 of the License, or
 //  (at your option) any later version.
 //
-//  CMIOMinimalSample is distributed in the hope that it will be useful,
+//  obs-mac-virtualcam is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with CMIOMinimalSample. If not, see <http://www.gnu.org/licenses/>.
+//  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
 #import "Stream.h"
 
@@ -24,11 +24,13 @@
 #include <CoreMediaIO/CMIOSampleBuffer.h>
 
 #import "Logging.h"
+#import "CMSampleBufferUtils.h"
+#import "TestCard.h"
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
     CFTypeRef _clock;
-    NSImage *_testImage;
+    NSImage *_testCardImage;
     dispatch_source_t _frameDispatchSource;
 }
 
@@ -37,14 +39,14 @@
 @property (readonly) CMSimpleQueueRef queue;
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
-@property (readonly) NSImage *testImage;
+@property (readonly) NSImage *testCardImage;
 
 @end
 
+
 @implementation Stream
 
-#define FPS 30
-#define FPS_FLOAT 30.0
+#define FPS 30.0
 
 - (instancetype _Nonnull)init {
     self = [super init];
@@ -74,11 +76,13 @@
     dispatch_suspend(_frameDispatchSource);
 }
 
-- (void)startServingFrames {
+- (void)startServingDefaultFrames {
+    DLogFunc(@"");
     dispatch_resume(_frameDispatchSource);
 }
 
-- (void)stopServingFrames {
+- (void)stopServingDefaultFrames {
+    DLogFunc(@"");
     dispatch_suspend(_frameDispatchSource);
 }
 
@@ -95,7 +99,7 @@
 
 - (CFTypeRef)clock {
     if (_clock == NULL) {
-        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("CMIOMinimalSample::Stream::clock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
+        OSStatus err = CMIOStreamClockCreate(kCFAllocatorDefault, CFSTR("obs-mac-virtualcam::Stream::clock"), (__bridge void *)self,  CMTimeMake(1, 10), 100, 10, &_clock);
         if (err != noErr) {
             DLog(@"Error %d from CMIOStreamClockCreate", err);
         }
@@ -103,12 +107,11 @@
     return _clock;
 }
 
-- (NSImage *)testImage {
-    if (_testImage == nil) {
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-        _testImage = [bundle imageForResource:@"hi"];
+- (NSImage *)testCardImage {
+    if (_testCardImage == nil) {
+        _testCardImage = ImageOfTestCardWithSize(NSMakeSize(1280, 720));
     }
-    return _testImage;
+    return _testCardImage;
 }
 
 - (CMSimpleQueueRef)copyBufferQueueWithAlteredProc:(CMIODeviceStreamQueueAlteredProc)alteredProc alteredRefCon:(void *)alteredRefCon {
@@ -141,22 +144,15 @@
     CGContextRef context = CGBitmapContextCreate(pxdata, width, height, 8, CVPixelBufferGetBytesPerRow(pxbuffer), rgbColorSpace, kCGImageAlphaPremultipliedFirst | kCGImageByteOrder32Big);
     NSParameterAssert(context);
 
-    double time = double(mach_absolute_time()) / NSEC_PER_SEC;
-    CGFloat pos = CGFloat(time - floor(time));
+    NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
+    [NSGraphicsContext setCurrentContext:nsContext];
 
-    CGColorRef whiteColor = CGColorCreateGenericRGB(1, 1, 1, 1);
-    CGColorRef redColor = CGColorCreateGenericRGB(1, 0, 0, 1);
+    NSRect rect = NSMakeRect(0, 0, self.testCardImage.size.width, self.testCardImage.size.height);
+    CGImageRef image = [self.testCardImage CGImageForProposedRect:&rect context:nsContext hints:nil];
+    CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
 
-    CGContextSetFillColorWithColor(context, whiteColor);
-    CGContextFillRect(context, CGRectMake(0, 0, width, height));
+    DrawDialWithFrame(NSMakeRect(0, 0, width, height), (30 - self.sequenceNumber % 30) * 360 / FPS);
 
-    CGContextSetFillColorWithColor(context, redColor);
-    CGContextFillRect(context, CGRectMake(pos * width, 310, 100, 100));
-
-    CGColorRelease(whiteColor);
-    CGColorRelease(redColor);
-
-    CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
 
     CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
@@ -221,6 +217,37 @@
     }
 }
 
+- (void)queueFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(NSData *)frameData {
+    if (CMSimpleQueueGetFullness(self.queue) >= 1.0) {
+        DLog(@"Queue is full, bailing out");
+        return;
+    }
+    OSStatus err = noErr;
+
+    CMTimeScale scale = FPS * 100;
+    CMTime frameDuration = CMTimeMake(scale / FPS, scale);
+    CMTime pts = CMTimeMake(timestamp, NSEC_PER_SEC);
+    CMSampleTimingInfo timing;
+    timing.duration = frameDuration;
+    timing.presentationTimeStamp = pts;
+    timing.decodeTimeStamp = kCMTimeInvalid;
+    err = CMIOStreamClockPostTimingEvent(pts, mach_absolute_time(), true, self.clock);
+    if (err != noErr) {
+        DLog(@"CMIOStreamClockPostTimingEvent err %d", err);
+    }
+
+    self.sequenceNumber = CMIOGetNextSequenceNumber(self.sequenceNumber);
+
+    CMSampleBufferRef sampleBuffer;
+    CMSampleBufferCreateFromData(size, timing, self.sequenceNumber, frameData, &sampleBuffer);
+    CMSimpleQueueEnqueue(self.queue, sampleBuffer);
+
+    // Inform the clients that the queue has been altered
+    if (self.alteredProc != NULL) {
+        (self.alteredProc)(self.objectId, sampleBuffer, self.alteredRefCon);
+    }
+}
+
 - (CMVideoFormatDescriptionRef)getFormatDescription {
     CMVideoFormatDescriptionRef formatDescription;
     OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_422YpCbCr8, 1280, 720, NULL, &formatDescription);
@@ -278,11 +305,11 @@
 - (void)getPropertyDataWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData dataSize:(UInt32)dataSize dataUsed:(nonnull UInt32 *)dataUsed data:(nonnull void *)data {
     switch (address.mSelector) {
         case kCMIOObjectPropertyName:
-            *static_cast<CFStringRef*>(data) = CFSTR("CMIOMinimalSample Stream");
+            *static_cast<CFStringRef*>(data) = CFSTR("OBS Virtual Camera");
             *dataUsed = sizeof(CFStringRef);
             break;
         case kCMIOObjectPropertyElementName:
-            *static_cast<CFStringRef*>(data) = CFSTR("CMIOMinimalSample Stream Element");
+            *static_cast<CFStringRef*>(data) = CFSTR("OBS Virtual Camera Stream Element");
             *dataUsed = sizeof(CFStringRef);
             break;
         case kCMIOObjectPropertyManufacturer:
@@ -293,7 +320,6 @@
         case kCMIOStreamPropertyLatency:
         case kCMIOStreamPropertyInitialPresentationTimeStampForLinkedAndSyncedAudio:
         case kCMIOStreamPropertyOutputBuffersNeededForThrottledPlayback:
-            DLog(@"TODO: %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
             break;
         case kCMIOStreamPropertyDirection:
             *static_cast<UInt32*>(data) = 1;
@@ -316,11 +342,11 @@
             break;
         case kCMIOStreamPropertyFrameRate:
         case kCMIOStreamPropertyFrameRates:
-            *static_cast<Float64*>(data) = FPS_FLOAT;
+            *static_cast<Float64*>(data) = FPS;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyMinimumFrameRate:
-            *static_cast<Float64*>(data) = FPS_FLOAT;
+            *static_cast<Float64*>(data) = FPS;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyClock:
