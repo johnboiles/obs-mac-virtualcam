@@ -8,10 +8,10 @@ Please note that this list is not complete.
 |Google Chrome|Yes|
 |Zoom|Yes*|
 |Skype|Yes|
-|Discord|No|
+|Discord|Yes|
 |QuickTime Player|Yes|
-|Photo Booth|No|
-|Safari|No (?)|
+|Photo Booth|Yes (4:3 only)|
+|Safari|No|
 |Slack|No (?)|
 |Amazon Chime|Yes(?)*|
 
