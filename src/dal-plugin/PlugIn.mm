@@ -23,12 +23,26 @@
 
 #import "Logging.h"
 
+
+typedef enum {
+    PlugInStateNotStarted = 0,
+    PlugInStateWaitingForServer,
+    PlugInStateReceivingFrames,
+} PlugInState;
+
+
 @interface PlugIn () <MachClientDelegate> {
-    MachClient *_machClient;
-    dispatch_source_t _machConnectDispatchSource;
+    //! Serial queue for all state changes that need to be concerned with thread safety
+    dispatch_queue_t _stateQueue;
+
+    //! Repeated timer for driving the mach server re-connection
+    dispatch_source_t _machConnectTimer;
+
+    //! Timeout timer when we haven't received frames for 5s
+    dispatch_source_t _timeoutTimer;
 }
-@property NSTimer *disconnectTimer;
-@property BOOL connected;
+@property PlugInState state;
+@property MachClient *machClient;
 
 @end
 
@@ -46,17 +60,31 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _machConnectDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        _stateQueue = dispatch_queue_create("com.johnboiles.obs-mac-virtualcam.dal.state", DISPATCH_QUEUE_SERIAL);
+
+        _timeoutTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _stateQueue);
+        __weak typeof(self) weakSelf = self;
+        dispatch_source_set_event_handler(_timeoutTimer, ^{
+            if (weakSelf.state == PlugInStateReceivingFrames) {
+                DLog(@"No frames received for 5s, restarting connection");
+                [self stopStream];
+                [self startStream];
+            }
+        });
+
+        _machClient = [[MachClient alloc] init];
+        _machClient.delegate = self;
+
+        _machConnectTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _stateQueue);
         dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
         uint64_t intervalTime = (int64_t)(1 * NSEC_PER_SEC);
-        dispatch_source_set_timer(_machConnectDispatchSource, startTime, intervalTime, 0);
-        __weak typeof(self) wself = self;
-        dispatch_source_set_event_handler(_machConnectDispatchSource, ^{
-            if (![[wself machClient] isServerAvailable]) {
+        dispatch_source_set_timer(_machConnectTimer, startTime, intervalTime, 0);
+        dispatch_source_set_event_handler(_machConnectTimer, ^{
+            if (![[weakSelf machClient] isServerAvailable]) {
                 DLog(@"Server is not available");
-            } else if (!_connected) {
+            } else if (weakSelf.state == PlugInStateWaitingForServer) {
                 DLog(@"Attempting connection");
-                [[wself machClient] connectToServer];
+                [[weakSelf machClient] connectToServer];
             }
         });
     }
@@ -65,31 +93,33 @@
 
 - (void)startStream {
     DLogFunc(@"");
-    dispatch_resume(_machConnectDispatchSource);
-    [self.stream startServingDefaultFrames];
-    [self.disconnectTimer invalidate];
+    dispatch_async(_stateQueue, ^{
+        if (_state == PlugInStateNotStarted) {
+            dispatch_resume(_machConnectTimer);
+            [self.stream startServingDefaultFrames];
+            _state = PlugInStateWaitingForServer;
+        }
+    });
 }
 
 - (void)stopStream {
     DLogFunc(@"");
-    dispatch_suspend(_machConnectDispatchSource);
-    [self.stream stopServingDefaultFrames];
-    [self.disconnectTimer invalidate];
-    _connected = false;
+    dispatch_async(_stateQueue, ^{
+        if (_state == PlugInStateWaitingForServer) {
+            dispatch_suspend(_machConnectTimer);
+            [self.stream stopServingDefaultFrames];
+        } else if (_state == PlugInStateReceivingFrames) {
+            // TODO: Disconnect from the mach server?
+            dispatch_suspend(_timeoutTimer);
+        }
+        _state = PlugInStateNotStarted;
+    });
 }
 
 - (void)initialize {
 }
 
 - (void)teardown {
-}
-
-- (MachClient *)machClient {
-    if (_machClient == nil) {
-        _machClient = [[MachClient alloc] init];
-        _machClient.delegate = self;
-    }
-    return _machClient;
 }
 
 #pragma mark - CMIOObject
@@ -143,26 +173,24 @@
 #pragma mark - MachClientDelegate
 
 - (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(nonnull NSData *)frameData {
-    if (!_connected) {
-        _connected = YES;
-        dispatch_suspend(_machConnectDispatchSource);
-        [self.stream stopServingDefaultFrames];
-    }
+    dispatch_sync(_stateQueue, ^{
+        if (_state == PlugInStateWaitingForServer) {
+            dispatch_suspend(_machConnectTimer);
+            [self.stream stopServingDefaultFrames];
+            dispatch_resume(_timeoutTimer);
+            _state = PlugInStateReceivingFrames;
+        }
+    });
 
-    // After 5 seconds of not receiving frames, give up on waiting for frames and go back to the static frame
-    __weak typeof(self) weakSelf = self;
-    [self.disconnectTimer invalidate];
-    self.disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        weakSelf.connected = NO;
-        [weakSelf startStream];
-    }];
+    // Add 5 more seconds onto the timeout timer
+    dispatch_source_set_timer(_timeoutTimer, dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC), 5.0 * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10);
 
     [self.stream queueFrameWithSize:size timestamp:timestamp frameData:frameData];
 }
 
 - (void)receivedStop {
-    DLogFunc(@"");
-    _connected = NO;
+    DLogFunc(@"Restarting connection");
+    [self stopStream];
     [self startStream];
 }
 
