@@ -16,5 +16,6 @@ Please note that this list is not complete.
 |Safari|No (?)|
 |Slack|No (?)|
 |Amazon Chime|Yes(?)*|
+|RingCentral|Yes|
 
 *May not always work. If it doesn't, please take a look at [this](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) issue
