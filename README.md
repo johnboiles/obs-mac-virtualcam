@@ -8,13 +8,12 @@ Creates a virtual webcam device from the output of [OBS Studio](https://obsproje
 
 This code was spun out of [this OBS Project RFC](https://github.com/obsproject/rfcs/pull/15) which was itself spun out of [this issue](https://github.com/obsproject/obs-studio/issues/2568) from [@tobi](https://github.com/tobi). This was intended as a proof of concept to inform technical decisions in that RFC, but who knows, maybe it will be useful to you in its current state. The goal is for this (or something with equivalent functionality) to eventually be merged into the core OBS codebase 🤞.
 
-This is heavily based on [Apple's CoreMediaIO sample code](https://developer.apple.com/library/archive/samplecode/CoreMediaIO/Introduction/Intro.html) which has been [modernized by @lvsti](https://github.com/lvsti/CoreMediaIO-DAL-Example)
+This is heavily based on [Apple's CoreMediaIO sample code](https://developer.apple.com/library/archive/samplecode/CoreMediaIO/Introduction/Intro.html) which has been [modernized by @lvsti](https://github.com/lvsti/CoreMediaIO-DAL-Example) and on [CoreMediaIO Device Abstraction Layer (DAL) Minimal Example by @johnboiles](https://github.com/johnboiles/coremediaio-dal-minimal-example).
 
 ## Known Issues
 
 ### Plugin Bugs
 * The virtual camera doesn't work with all programs. Check out [COMPATIBILITY.md](https://github.com/johnboiles/obs-mac-virtualcam/blob/master/COMPATIBILITY.md) to see if your app is supported.
-* The virtual camera must be started before the program using it is, otherwise it will not show up
 * Can't click menu bar after program start [(OBS Issue #2678)](https://github.com/obsproject/obs-studio/issues/2678).  **NOTE:** This is not an issue with this plugin, but it does make it more difficult to turn on the Virtual Camera created by this plugin.
 * DAL plugin unable to run because of codesigning issues (for example unable to see Virtual Camera in latest version of Zoom). See [issue #4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for a workaround
 

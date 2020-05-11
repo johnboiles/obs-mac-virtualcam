@@ -8,14 +8,14 @@ Please note that this list is not complete.
 |Google Chrome|Yes|
 |Zoom|Yes*|
 |Skype|Yes|
-|Microsoft Teams|Yes|
-|Discord|No|
+|Discord|Yes|
 |QuickTime Player|Yes|
-|Photo Booth|No|
-|FaceTime|No|
-|Safari|No (?)|
+|Photo Booth|Yes (4:3 only)|
+|FaceTime|Yes|
+|Safari|No|
 |Slack|No (?)|
 |Amazon Chime|Yes(?)*|
+|Microsoft Teams|Yes|
 |RingCentral|Yes|
 
 *May not always work. If it doesn't, please take a look at [this](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) issue
