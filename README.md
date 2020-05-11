@@ -24,6 +24,7 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 
 _If you still have problems running the virtual camera, see below._
 
+
 ## Discussion / Support
 
 The official place for discussion and chat related to this plugin is in the `#plugins-and-tools` channel in the [OBS Studio Discord](https://discord.gg/obsproject). 
