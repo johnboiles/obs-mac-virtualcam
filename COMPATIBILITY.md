@@ -8,6 +8,7 @@ Please note that this list is not complete.
 |Google Chrome|Yes|
 |Zoom|Yes*|
 |Skype|Yes|
+|Microsoft Teams|Yes|
 |Discord|No|
 |QuickTime Player|Yes|
 |Photo Booth|No|
