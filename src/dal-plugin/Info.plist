@@ -18,18 +18,16 @@
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>7.0</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>7</string>
 	<key>CFBundleSupportedPlatforms</key>
 	<array>
 		<string>MacOSX</string>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>7.0</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>35FDFF29-BFCF-4644-AB77-B759DE932ABE</key>
-		<string>AppleCMIODPSampleVCamPlugIn</string>
+		<string>PlugInMain</string>
 	</dict>
 	<key>CFPlugInTypes</key>
 	<dict>
@@ -38,10 +36,6 @@
 			<string>35FDFF29-BFCF-4644-AB77-B759DE932ABE</string>
 		</array>
 	</dict>
-	<key>CMIOHardwareAssistantServiceNames</key>
-	<array>
-		<string>com.apple.cmio.DPA.SampleVCam</string>
-	</array>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
@@ -58,5 +52,9 @@
 	<string>11E146</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.11</string>
+	<key>CMIOHardwareAssistantServiceNames</key>
+	<array>
+		<string>com.johnboiles.obs-mac-virtualcam.server</string>
+	</array>
 </dict>
 </plist>

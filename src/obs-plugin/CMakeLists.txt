@@ -28,59 +28,14 @@ include_directories(${AVFOUNDATION}
                     "${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
                     ${Qt5Core_INCLUDES}
                     ${Qt5Widgets_INCLUDES}
-                    ../common/CoreMediaIO/PublicUtility
-                    ../common/CoreAudio/PublicUtility
-                    ../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant
-                    ../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOVideoAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOStreamAssistant
-                    ../common/CoreMediaIO/PublicUtility/IOKitAssistant
-                    ../common/CoreMediaIO/PublicUtility/CoreMediaAssistant
-                    ../common/CoreMediaIO/PublicUtility/CoreVideoAssistant
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server
-                    ../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device
-                    ./)
+                    ./
+                    ../common)
 
 set(obs-plugin_SOURCES
-	../common/CoreMediaIO/PublicUtility/IOSurfaceAssistant/CMIO_SA_Assistance.cpp
-	../common/CoreMediaIO/PublicUtility/POSIXThreadAssistant/CMIO_PTA_NotificationPortThread.cpp
-	../common/CoreMediaIO/PublicUtility/IOVideoAssistant/CMIO_IOVA_Assistance.cpp
-	../common/CoreMediaIO/PublicUtility/IOStreamAssistant/CMIO_IOSA_Assistance.cpp
-	../common/CoreMediaIO/PublicUtility/IOKitAssistant/CMIO_IOKA_NotificationPort.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_FirstOutputPresentationTimeStamp.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Deck.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_VCamServer.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Properties/CMIO_DP_Property_Base.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/DP/Base/CMIO_DP_ControlDictionary.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/IOV/PlugIn/CMIO_DP_IOV_ControlDictionary.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamInputStream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Stream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_VCamAssistant.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_VCamDevice.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_MIGInterface.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Frame.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Deck.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_Device.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/Device/CMIO_DPA_Sample_Server_ClientStream.cpp
-	../common/CoreMediaIO/DeviceAbstractionLayer/Devices/Sample/Assistant/Server/CMIO_DPA_Sample_Server_Assistant.cpp
-	../common/CoreMediaIO/PublicUtility/DALAssistant/CMIO_DALA_Object.cpp
-	../common/CoreMediaIO/PublicUtility/CMIODebugMacros.cpp
-	../common/CoreAudio/PublicUtility/CAProcess.cpp
-	../common/CoreAudio/PublicUtility/CAPThread.cpp
-	../common/CoreAudio/PublicUtility/CAMutex.cpp
-	../common/CoreAudio/PublicUtility/CAHostTimeBase.cpp
-	../common/CoreAudio/PublicUtility/CAGuard.cpp
-	../common/CoreAudio/PublicUtility/CACFString.cpp
-	../common/CoreAudio/PublicUtility/CACFNumber.cpp
-	../common/CoreAudio/PublicUtility/CACFDictionary.cpp
-	../common/CoreAudio/PublicUtility/CACFArray.cpp
-	CMIODPASampleServer.cpp
-	plugin-main.cpp)
+	plugin-main.mm
+	MachServer.h
+	MachServer.mm
+	../common/MachProtocol.h)
 
 add_library(obs-plugin MODULE
 	${obs-plugin_SOURCES}
@@ -102,4 +57,6 @@ target_link_libraries(obs-plugin
 
 set_target_properties(obs-plugin PROPERTIES
 	PREFIX ""
-	OUTPUT_NAME "obs-mac-virtualcam")
+	OUTPUT_NAME "obs-mac-virtualcam"
+	COMPILE_FLAGS "-std=gnu++14 -stdlib=libc++ -fobjc-arc -fobjc-weak"
+)
