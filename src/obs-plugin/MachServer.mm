@@ -99,17 +99,20 @@
         return;
     }
 
-    CGFloat width = size.width;
-    NSData *widthData = [NSData dataWithBytes:&width length:sizeof(width)];
-    CGFloat height = size.height;
-    NSData *heightData = [NSData dataWithBytes:&height length:sizeof(height)];
-    NSData *timestampData = [NSData dataWithBytes:&timestamp length:sizeof(timestamp)];
-    // TODO: I wonder if we used the CF apis for Mach IPC if we could avoid extra memory copies
-    NSData *frameData = [NSData dataWithBytes:(void *)frameBytes length:size.width * size.height * 2];
-    // Seems to cause a crash, sometimes
-    // NSData *frameData = [NSData dataWithBytesNoCopy:(void *)frameBytes length:size.width * size.height * 2];
-
-    [self sendMessageToClientsWithMsgId:MachMsgIdFrame components:@[widthData, heightData, timestampData, frameData]];
+    @autoreleasepool {
+        CGFloat width = size.width;
+        NSData *widthData = [NSData dataWithBytes:&width length:sizeof(width)];
+        CGFloat height = size.height;
+        NSData *heightData = [NSData dataWithBytes:&height length:sizeof(height)];
+        NSData *timestampData = [NSData dataWithBytes:&timestamp length:sizeof(timestamp)];
+        // NOTE: I'm not totally sure about the safety of dataWithBytesNoCopy in this context.
+        // Seems like there could potentially be an issue if the frameBuffer went away before the
+        // mach message finished sending. But it seems to be working and avoids a memory copy. Alternately
+        // we could do something like
+        // NSData *frameData = [NSData dataWithBytes:(void *)frameBytes length:size.width * size.height * 2];
+        NSData *frameData = [NSData dataWithBytesNoCopy:(void *)frameBytes length:size.width * size.height * 2 freeWhenDone:NO];
+        [self sendMessageToClientsWithMsgId:MachMsgIdFrame components:@[widthData, heightData, timestampData, frameData]];
+    }
 }
 
 - (void)stop {
