@@ -60,7 +60,6 @@ cmake .. && make -j
 cd ../..
 git clone https://github.com/johnboiles/obs-mac-virtualcam.git
 cd obs-mac-virtualcam
-git checkout new-dal-plugin
 
 # Set an environment variable that points to the directory for your OBS clone
 export OBS_DIR=$PWD/../obs-studio
