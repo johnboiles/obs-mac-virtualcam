@@ -17,10 +17,10 @@ This is heavily based on [Apple's CoreMediaIO sample code](https://developer.app
 * Can't click menu bar after program start [(OBS Issue #2678)](https://github.com/obsproject/obs-studio/issues/2678).  **NOTE:** This is not an issue with this plugin, but it does make it more difficult to turn on the Virtual Camera created by this plugin.
 * DAL plugin unable to run because of codesigning issues (for example unable to see Virtual Camera in latest version of Zoom). See [issue #4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for a workaround
 
-### Common Problems
+### Common Problems (with local builds)
+* `Failed to load 'en-US' text for module: 'obs-mac-virtualcam.so'`: If the virtual camera doesn't work, you might see this error. However, it is expected and not the problem. There might be another problem you didn't see.
 * Build fails at `cmake .. && make -j`: In this case, simply repeat `cmake .. && make -j`.
 * Error 2: At the end of the build, the terminal will say `make: *** [all] Error 2`. This is expected and not an error. If it says `Built target obs` a few lines above, your build has succeeded.
-* `Failed to load 'en-US' text for module: 'obs-mac-virtualcam.so'`: If the virtual camera doesn't work, you might see this error. However, it is expected and not the problem. There might be another problem you didn't see.
 
 _If you still have problems running the virtual camera, see below._
 
@@ -40,9 +40,16 @@ Also please confirm that your issue is related to this plugin and not a general 
 
 If you still believe you have found an unreported issue related to this plugin, please open an issue! When you do, include any relevant terminal log, crash log, screen recording and/or screenshots.
 
-## Building
+## Installing
+To use this plugin, you'll first need to download and install OBS from the [official website](https://obsproject.com). 
+After this, download [the installer](https://github.com/johnboiles/obs-mac-virtualcam/suites/675004159/artifacts/6141410) from the [recent build](https://github.com/johnboiles/obs-mac-virtualcam/runs/667183004?check_suite_focus=true), unzip it, and follow the instructions. It will promt you enter your admin password. If you're already running OBS, make sure to restart it. You'll also need restart any app that was running during the installation process that is supposed to pick up the camera. Now you should be good to go!\
+To start the virtual camera, go (in OBS) to `Tools`→`Start Virtual Camera`.
 
-To use this plugin, you'll need to clone and build OBS locally, build this plugin, copy it to the right places, then run your local build of OBS:
+
+### Building
+
+If you want to clone and build OBS locally, follow these steps and then run your local build of OBS:\
+_This is not recommended if your unfamiliar with the steps below. Most users should just use the installer above._
 
 ```bash
 # Clone and build OBS
