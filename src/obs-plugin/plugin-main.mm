@@ -5,13 +5,9 @@
 #include <QAction.h>
 #include <obs-frontend-api.h>
 #include <obs.h>
-#include <sstream>
-#include <QMessageBox>
-#include <QString>
 #include <CoreFoundation/CoreFoundation.h>
 #include "MachServer.h"
 
-using namespace std;
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("mac-virtualcam", "en-US")
@@ -42,10 +38,6 @@ static void virtualcam_output_destroy(void *data)
     blog(LOG_DEBUG, "VIRTUALCAM output_destroy");
 }
 
-// TODO(john): Only 720p is supported for now
-static string knownResolutions[] = {
-    "1280x720",
-};
 
 static bool virtualcam_output_start(void *data)
 {
@@ -104,7 +96,6 @@ void start()
     obs_data_release(settings);
 }
 
-bool isSupportedResolution();
 bool obs_module_load(void)
 {
     blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
@@ -117,24 +108,8 @@ bool obs_module_load(void)
             action->setText(obs_module_text("Start Virtual Camera"));
             obs_output_stop(output);
         } else {
-            if(isSupportedResolution()){
-                action->setText(obs_module_text("Stop Virtual Camera"));
-                obs_output_start(output);
-            } else {
-                
-                stringstream msg;
-                msg << obs_module_text("Your output resolution not supported. Please use one of the following:") << endl;
-                for(string res : knownResolutions){
-                    msg << res << endl;
-                }
-                QString title = QString::fromStdString(obs_module_text("Unsupported resolution"));
-                QString qstr = QString::fromStdString(msg.str());
-                QMessageBox msgBox;
-                msgBox.setText(title);
-                msgBox.setInformativeText(qstr);
-                msgBox.exec();
-            }
-            
+            action->setText(obs_module_text("Stop Virtual Camera"));
+            obs_output_start(output);
         }
     };
     action->connect(action, &QAction::triggered, menu_cb);
@@ -146,20 +121,3 @@ bool obs_module_load(void)
     return true;
 }
 
-bool isSupportedResolution()
-{
-    
-    obs_video_info ovi;
-    obs_get_video_info(&ovi);
-    
-    stringstream stream;
-    stream << ovi.output_width << "x" << ovi.output_height;
-    string res = stream.str();
-    
-    for(string orgRes : knownResolutions){
-        if(strcmp(orgRes.c_str(), res.c_str())==0){
-            return true;
-        }
-    }
-    return false;
-}
