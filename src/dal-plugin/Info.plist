@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>obs-mac-virtualcam</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.apple.cmio.DAL.SampleVCam</string>
+	<string>com.johnboiles.obs-mac-virtualcam.dal-plugin</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
