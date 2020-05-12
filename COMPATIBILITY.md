@@ -30,7 +30,11 @@ There are two known reasons this plugin does not work.
 
 As of macOS 10.15 (Catalina), apps need to explicitly allow Device Abstraction Layer (DAL) plugins to work by setting [`com.apple.security.cs.disable-library-validation`](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) in their Info.plist. For apps that don't set this key (e.g. Zoom and Slack), it's possible to manually add this key, then re-codesign the app. Take a look at [issue #4](https://github.com/johnboiles/obs-mac-virtualcam/issues/4) for details. Note that you'll need to redo this process every time the app is opened.
 
-TODO: Provide some commands for adding this entitlement.
+You can try to re-codesign the application to avoid this. Please be aware this could have security implications for the app. For example (for Zoom):
+
+```bash
+sudo codesign -f -s - /Applications/zoom.us.app
+```
 
 ### macOS System Apps block DAL plugins
 
