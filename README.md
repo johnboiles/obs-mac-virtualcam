@@ -8,6 +8,14 @@ Creates a virtual webcam device from the output of [OBS Studio](https://obsproje
 
 This code was spun out of [this OBS Project RFC](https://github.com/obsproject/rfcs/pull/15) which was itself spun out of [this issue](https://github.com/obsproject/obs-studio/issues/2568) from [@tobi](https://github.com/tobi). The goal is for this (or something with equivalent functionality) to eventually be merged into the core OBS codebase 🤞.
 
+## Donating 💸
+
+Consider sending some money in the direction of the [OBS Project](https://obsproject.com/contribute) via [Open Collective](https://opencollective.com/obsproject/contribute), [Patreon](https://patreon.com/OBSProject), or [PayPal](https://www.paypal.me/obsproject). Obviously, without OBS, this plugin would not be very useful! Hugh "Jim" Bailey is OBS Project's full-time lead developer and project maintainer. This money helps him continue to work on OBS!
+
+If, after you donate to the OBS Project, you also want to send some cash my way that's appreciated too! Feel free to [Buy Me a Coffee](https://www.buymeacoffee.com/johnboiles) or [PayPal me](paypal.me/johnboiles).
+
+<a href="https://www.buymeacoffee.com/johnboiles" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ## Known Issues
 
 * The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) and OS restrictions (for built-in apps like Facetime). Check out [COMPATIBILITY.md](https://github.com/johnboiles/obs-mac-virtualcam/blob/master/COMPATIBILITY.md) to see if your app is supported. Please [edit that file](https://github.com/johnboiles/obs-mac-virtualcam/edit/master/COMPATIBILITY.md) and submit a Pull Request if you try other software that we should include in that list.
