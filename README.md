@@ -18,7 +18,7 @@ If, after you donate to the OBS Project, you also want to send some cash my way 
 
 ## Known Issues
 
-* The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) and OS restrictions (for built-in apps like Facetime). Check out [COMPATIBILITY.md](https://github.com/johnboiles/obs-mac-virtualcam/blob/master/COMPATIBILITY.md) to see if your app is supported. Please [edit that file](https://github.com/johnboiles/obs-mac-virtualcam/edit/master/COMPATIBILITY.md) and submit a Pull Request if you try other software that we should include in that list.
+* The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) (for third-party apps like Zoom and Slack) and OS restrictions (for built-in apps like Facetime and Photo Booth). Check out [COMPATIBILITY.md](https://github.com/johnboiles/obs-mac-virtualcam/blob/master/COMPATIBILITY.md) to see if your app is supported. Please [edit that file](https://github.com/johnboiles/obs-mac-virtualcam/edit/master/COMPATIBILITY.md) and submit a Pull Request if you try other software that we should include in that list.
 * OBS needs to be restarted after changing resolutions for the Virtual Camera to work. (#83)
 
 ## Installing
