@@ -64,6 +64,7 @@ jobs:
 
     - name: Package Plugin
       run: ./ci/macos/package-macos.sh
+      working-directory: ./obs-mac-virtualcam
       env:
         RELEASE_MODE: true
         CODE_SIGNING_IDENTITY: John Boiles
