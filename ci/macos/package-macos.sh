@@ -23,23 +23,23 @@ PKG_VERSION="$GIT_HASH-$GIT_BRANCH_OR_TAG"
 FILENAME_UNSIGNED="$PLUGIN_NAME-$PKG_VERSION-Unsigned.pkg"
 FILENAME="$PLUGIN_NAME-$PKG_VERSION.pkg"
 
-echo "=> Modifying $PLUGIN_NAME.so"
-install_name_tool \
-	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
-		@executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
-	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
-		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
-	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
-		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
-	./build/$PLUGIN_NAME.so
+# echo "=> Modifying $PLUGIN_NAME.so"
+# install_name_tool \
+# 	-change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
+# 		@executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
+# 	-change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
+# 		@executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
+# 	-change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
+# 		@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
+# 	./build/src/obs-plugin/obs-mac-virtualcam.so
 
 # Check if replacement worked
 echo "=> Dependencies for $PLUGIN_NAME"
-otool -L ./build/$PLUGIN_NAME.so
+otool -L ./build/src/obs-plugin/obs-mac-virtualcam.so
 
 if [[ "$RELEASE_MODE" == "True" ]]; then
 	echo "=> Signing plugin binary: $PLUGIN_NAME.so"
-	codesign --sign "$CODE_SIGNING_IDENTITY" ./build/$PLUGIN_NAME.so
+	codesign --sign "$CODE_SIGNING_IDENTITY" ./build/src/obs-plugin/obs-mac-virtualcam.so
 else
 	echo "=> Skipped plugin codesigning"
 fi

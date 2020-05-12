@@ -95,3 +95,8 @@ jobs:
       with:
         name: obs-mac-virtualcam-obs-plugin
         path: artifacts/obs-plugin
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: pkg-installer
+        path: obs-mac-virtualcam/release
