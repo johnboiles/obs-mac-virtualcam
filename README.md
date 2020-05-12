@@ -12,7 +12,7 @@ This code was spun out of [this OBS Project RFC](https://github.com/obsproject/r
 
 Consider sending some money in the direction of the [OBS Project](https://obsproject.com/contribute) via [Open Collective](https://opencollective.com/obsproject/contribute), [Patreon](https://patreon.com/OBSProject), or [PayPal](https://www.paypal.me/obsproject). Obviously, without OBS, this plugin would not be very useful! Hugh "Jim" Bailey is OBS Project's full-time lead developer and project maintainer. This money helps him continue to work on OBS!
 
-If, after you donate to the OBS Project, you also want to send some cash my way that's appreciated too! Feel free to [Buy Me a Coffee](https://www.buymeacoffee.com/johnboiles) or [PayPal me](paypal.me/johnboiles).
+If, after you donate to the OBS Project, you also want to send some cash my way that's appreciated too! Feel free to [Buy Me a Coffee](https://www.buymeacoffee.com/johnboiles) or [PayPal me](https://paypal.me/johnboiles).
 
 <a href="https://www.buymeacoffee.com/johnboiles" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
