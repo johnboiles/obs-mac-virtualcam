@@ -5,6 +5,8 @@ on:
     branches:
     - master
     - pkg-build
+    tags:
+    - "v*"
 
 jobs:
   build:
@@ -17,7 +19,7 @@ jobs:
         repository: obsproject/obs-studio
         path: obs-studio
         submodules: recursive
-        ref: 25.0.7
+        ref: 25.0.8
 
     - name: Checkout obs-mac-virtualcam
       uses: actions/checkout@v2
@@ -42,7 +44,10 @@ jobs:
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
 
-        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib -DQTDIR:STRING=/usr/local/opt/qt ..
+        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
+          -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
+          -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
+          -DQTDIR:STRING=/usr/local/opt/qt ..
         make -j
 
     - name: Fix runtime QT deps
@@ -75,26 +80,15 @@ jobs:
 
     - name: Copy artifacts
       run: |
-        mkdir -p artifacts/dal-plugin
-        mkdir -p artifacts/obs-plugin
+        mkdir -p artifacts
 
-        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/dal-plugin/
-        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/obs-plugin/
+        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/
+        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/
 
     - uses: actions/upload-artifact@v1
       with:
-        name: obs-mac-virtualcam
+        name: raw-plugins
         path: artifacts
-
-    - uses: actions/upload-artifact@v1
-      with:
-        name: obs-mac-virtualcam-dal-plugin
-        path: artifacts/dal-plugin
-
-    - uses: actions/upload-artifact@v1
-      with:
-        name: obs-mac-virtualcam-obs-plugin
-        path: artifacts/obs-plugin
 
     - uses: actions/upload-artifact@v1
       with:
