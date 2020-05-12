@@ -48,14 +48,9 @@ fi
 # =!= NOTICE =!=
 # Installs a LaunchDaemon under /Library/LaunchDaemons/fr.whitebox.packages.build.dispatcher.plist
 # =!= NOTICE =!=
-
-HAS_PACKAGES=$(type packagesbuild 2>/dev/null)
-
-if [ "${HAS_PACKAGES}" = "" ]; then
-    echo "=> Installing Packaging app (might require password due to 'sudo').."
-    curl -o './Packages.pkg' --retry-connrefused -s --retry-delay 1 'https://s3-us-west-2.amazonaws.com/obs-nightly/Packages.pkg'
-    sudo installer -pkg ./Packages.pkg -target /
-fi
+echo "=> Installing Packaging app (might require password due to 'sudo').."
+curl -o './Packages.pkg' --retry-connrefused -s --retry-delay 1 'https://s3-us-west-2.amazonaws.com/obs-nightly/Packages.pkg'
+sudo installer -pkg ./Packages.pkg -target /
 
 echo "=> Actual package build"
 packagesbuild ./installer/installer-macOS.generated.pkgproj
