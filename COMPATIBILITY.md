@@ -18,6 +18,9 @@ If you find inaccuracies in this list or want to provide more detail, please [ed
 |Amazon Chime|No*|Possible to run by changing entitlements. See note on apps that don't allow DAL plugins.|
 |Microsoft Teams|Yes||
 |RingCentral|Yes||
+|Brave|Yes||
+|Edge|Yes||
+|Firefox|No|
 
 ## Why doesn't my app work
 
