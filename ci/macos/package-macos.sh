@@ -40,7 +40,7 @@ otool -L ./build/src/obs-plugin/obs-mac-virtualcam.so
 if [[ "$RELEASE_MODE" == "True" ]]; then
 	echo "=> Signing plugin binary: $PLUGIN_NAME.so"
 	codesign --sign "$CODE_SIGNING_IDENTITY" ./build/src/obs-plugin/obs-mac-virtualcam.so
-	codesign --sign "$CODE_SIGNING_IDENTITY" --deep ./build/src/dal-plugin/obs-mac-virtualcam.plugin
+	codesign --sign "$CODE_SIGNING_IDENTITY" --force --deep ./build/src/dal-plugin/obs-mac-virtualcam.plugin
 else
 	echo "=> Skipped plugin codesigning"
 fi
