@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - pkg-build
 
 jobs:
   build:
@@ -54,6 +55,22 @@ jobs:
           -change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
             @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
           obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
+
+    - name: Install Apple certificates
+      uses: apple-actions/import-codesign-certs@v1
+      with: 
+        p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+        p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+
+    - name: Package Plugin
+      run: ./ci/macos/package-macos.sh
+      env:
+        RELEASE_MODE: true
+        CODE_SIGNING_IDENTITY: John Boiles
+        INSTALLER_SIGNING_IDENTITY: John Boiles
+        AC_USERNAME: $(secrets.NOTARAZATION_USERNAME)
+        AC_PASSWORD: $(secrets.NOTARIZATION_PASSWORD)
+        AC_PROVIDER_SHORTNAME: $(secrets.NOTARIZATION_PROVIDER_SHORTNAME)
 
     - name: Copy artifacts
       run: |
