@@ -69,9 +69,9 @@ jobs:
         RELEASE_MODE: "True"
         CODE_SIGNING_IDENTITY: John Boiles
         INSTALLER_SIGNING_IDENTITY: John Boiles
-        AC_USERNAME: $(secrets.NOTARAZATION_USERNAME)
-        AC_PASSWORD: $(secrets.NOTARIZATION_PASSWORD)
-        AC_PROVIDER_SHORTNAME: $(secrets.NOTARIZATION_PROVIDER_SHORTNAME)
+        AC_USERNAME: ${{ secrets.NOTARAZATION_USERNAME }}
+        AC_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
+        AC_PROVIDER_SHORTNAME: ${{ secrets.NOTARIZATION_PROVIDER_SHORTNAME }}
 
     - name: Copy artifacts
       run: |
