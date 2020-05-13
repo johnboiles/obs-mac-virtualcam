@@ -28,14 +28,14 @@ jobs:
 
     - name: Install OBS deps
       run: |
-        brew install FFmpeg x264 Qt5 cmake mbedtls swig
+        brew bundle --file=obs-mac-virtualcam/Brewfile
 
     - name: Build OBS
       run: |
         mkdir obs-studio/build
         cd obs-studio/build
 
-        export QTDIR=/usr/local/opt/qt 
+        export QTDIR=$(brew --prefix qt5)
         cmake ..
         make -j
 
@@ -63,7 +63,7 @@ jobs:
 
     - name: Install Apple certificates
       uses: apple-actions/import-codesign-certs@v1
-      with: 
+      with:
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
