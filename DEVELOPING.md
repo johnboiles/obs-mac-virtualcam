@@ -28,11 +28,11 @@ git clone --recursive https://github.com/obsproject/obs-studio.git
 cd obs-studio
 
 # Follow normal OBS build steps
-brew install FFmpeg x264 Qt5 cmake mbedtls swig
+brew install ffmpeg x264 qt5 cmake mbedtls swig
 mkdir build
 cd build
 # Note: if you installed homebrew to a custom location, this will be $BREW_INSTALL_PATH/opt/qt
-export QTDIR=/usr/local/opt/qt
+export QTDIR=$(brew --prefix qt5)
 cmake .. && make -j
 
 # Clone this repo
