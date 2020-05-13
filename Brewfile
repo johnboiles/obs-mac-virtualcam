@@ -1,0 +1,6 @@
+brew 'ffmpeg'
+brew 'x264'
+brew 'qt5'
+brew 'cmake'
+brew 'mbedtls'
+brew 'swig'
