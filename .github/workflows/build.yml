@@ -23,7 +23,7 @@ jobs:
 
     - name: Install OBS deps
       run: |
-        brew bundle
+        brew bundle --file=obs-mac-virtualcam/Brewfile
 
     - name: Build OBS
       run: |
