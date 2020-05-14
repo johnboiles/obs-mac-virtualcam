@@ -86,8 +86,9 @@
             return @"kCMIODevicePropertyCanSwitchFrameRatesWithoutFrameDrops";
         case kCMIODevicePropertyLocation:
             return @"kCMIODevicePropertyLocation";
-        case kCMIODevicePropertyDeviceHasStreamingError:
-            return @"kCMIODevicePropertyDeviceHasStreamingError";
+        // The next one gives errors on macOS 10.13 High Sierra and XCode 10.1
+        // case kCMIODevicePropertyDeviceHasStreamingError:
+        //     return @"kCMIODevicePropertyDeviceHasStreamingError";
         case kCMIODevicePropertyScopeInput:
             return @"kCMIODevicePropertyScopeInput";
         case kCMIODevicePropertyScopeOutput:
