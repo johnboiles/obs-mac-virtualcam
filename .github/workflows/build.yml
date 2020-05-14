@@ -22,23 +22,17 @@ jobs:
       with:
         path: obs-mac-virtualcam
 
-    - name: Cache Homebrew Caches
-      id: cache-obs-dependencies
-      uses: actions/cache@v1
-      with:
-        path: ~/Library/Caches/Homebrew
-        key: homebrew-cache-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
-
-    - name: Install OBS deps
-      run: |
-        brew bundle --file=obs-mac-virtualcam/Brewfile
-
     - name: Cache OBS Build
       id: cache-obs-build
       uses: actions/cache@v1
       with:
         path: obs-studio
         key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
+
+    - name: Install OBS deps
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
+      run: |
+        brew bundle -v --file=obs-mac-virtualcam/Brewfile
 
     - name: Checkout OBS
       if: steps.cache-obs-build.outputs.cache-hit != 'true'
@@ -59,6 +53,10 @@ jobs:
         cmake ..
         make -j
 
+    - name: Install obs-mac-virtualcam deps
+      run: |
+        brew install cmake qt5
+
     - name: Build the plugin
       run: |
         mkdir obs-mac-virtualcam/build
@@ -67,17 +65,17 @@ jobs:
         cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
-          -DQTDIR:STRING=/usr/local/opt/qt ..
+          -DQTDIR:STRING=$(brew --prefix qt5) ..
         make -j
 
     - name: Fix runtime QT deps
       run: |
         install_name_tool \
-          -change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
+          -change $(brew --prefix qt5)/lib/QtWidgets.framework/Versions/5/QtWidgets \
             @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
-          -change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
+          -change $(brew --prefix qt5)/lib/QtGui.framework/Versions/5/QtGui \
             @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
-          -change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
+          -change $(brew --prefix qt5)/lib/QtCore.framework/Versions/5/QtCore \
             @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
           obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
 
