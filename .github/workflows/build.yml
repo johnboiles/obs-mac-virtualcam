@@ -29,50 +29,6 @@ jobs:
         path: obs-studio
         key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
 
-    - name: Dump homebrew info
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      run: |
-        echo "brew --cache"
-        brew --cache
-        echo "brew --prefix"
-        brew --prefix
-        echo "/usr/local contents"
-        ls /usr/local
-        echo "~/Library/Caches/Homebrew"
-        ls ~/Library/Caches/Homebrew
-
-    - name: Cache Homebrew Cellar
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
-      with:
-        path: /usr/local/Cellar
-        key: homebrew-cellar-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
-
-    - name: Dump homebrew info
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      run: |
-        echo "> ls ~/Library/Caches/Homebrew"
-        ls ~/Library/Caches/Homebrew
-        echo "> ls /usr/local/opt/"
-        ls /usr/local/opt/
-        echo "> brew --prefix qt5"
-        brew --prefix qt5
-
-    - name: Relink qt5
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      run: |
-        brew link qt5
-
-    - name: Dump homebrew info
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      run: |
-        echo "> ls ~/Library/Caches/Homebrew"
-        ls ~/Library/Caches/Homebrew
-        echo "> ls /usr/local/opt"
-        ls /usr/local/opt
-        echo "> brew --prefix qt5"
-        brew --prefix qt5
-
     - name: Install OBS deps
       if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
@@ -97,7 +53,7 @@ jobs:
         cmake ..
         make -j
 
-    - name: Install OBS deps
+    - name: Install obs-mac-virtualcam deps
       run: |
         brew install cmake qt5
 
