@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.14
+      MACOSX_DEPLOYMENT_TARGET: 10.13
       obs-studio-ref: 25.0.8
     runs-on: macos-latest
 
