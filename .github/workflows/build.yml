@@ -22,7 +22,15 @@ jobs:
       with:
         path: obs-mac-virtualcam
 
+    - name: Cache OBS Build
+      id: cache-obs-build
+      uses: actions/cache@v1
+      with:
+        path: obs-studio
+        key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
+
     - name: Dump homebrew info
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
         echo "brew --cache"
         brew --cache
@@ -34,12 +42,14 @@ jobs:
         ls ~/Library/Caches/Homebrew
 
     - name: Cache Homebrew Cellar
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       uses: actions/cache@v1
       with:
         path: /usr/local/Cellar
         key: homebrew-cellar-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
 
     - name: Dump homebrew info
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
         echo "> ls ~/Library/Caches/Homebrew"
         ls ~/Library/Caches/Homebrew
@@ -49,10 +59,12 @@ jobs:
         brew --prefix qt5
 
     - name: Relink qt5
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
         brew link qt5
 
     - name: Dump homebrew info
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
         echo "> ls ~/Library/Caches/Homebrew"
         ls ~/Library/Caches/Homebrew
@@ -62,15 +74,9 @@ jobs:
         brew --prefix qt5
 
     - name: Install OBS deps
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
         brew bundle -v --file=obs-mac-virtualcam/Brewfile
-
-    - name: Cache OBS Build
-      id: cache-obs-build
-      uses: actions/cache@v1
-      with:
-        path: obs-studio
-        key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
 
     - name: Checkout OBS
       if: steps.cache-obs-build.outputs.cache-hit != 'true'
