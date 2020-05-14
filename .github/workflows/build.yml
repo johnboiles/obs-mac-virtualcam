@@ -43,8 +43,8 @@ jobs:
       run: |
         echo "> ls ~/Library/Caches/Homebrew"
         ls ~/Library/Caches/Homebrew
-        echo "> ls /usr/local/opt/qt"
-        ls /usr/local/opt/qt
+        echo "> ls /usr/local/opt/"
+        ls /usr/local/opt/
         echo "> brew --prefix qt5"
         brew --prefix qt5
 
@@ -56,8 +56,8 @@ jobs:
       run: |
         echo "> ls ~/Library/Caches/Homebrew"
         ls ~/Library/Caches/Homebrew
-        echo "> ls /usr/local/opt/qt"
-        ls /usr/local/opt/qt
+        echo "> ls /usr/local/opt"
+        ls /usr/local/opt
         echo "> brew --prefix qt5"
         brew --prefix qt5
 
