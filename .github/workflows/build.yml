@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.14
+      MACOSX_DEPLOYMENT_TARGET: 10.13
       obs-studio-ref: 25.0.8
     runs-on: macos-latest
 
@@ -38,7 +38,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: obs-studio
-        key: obs-studio-${{ env.obs-studio-ref }}
+        key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
 
     - name: Checkout OBS
       if: steps.cache-obs-build.outputs.cache-hit != 'true'
