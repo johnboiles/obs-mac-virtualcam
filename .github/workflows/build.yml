@@ -33,12 +33,11 @@ jobs:
         echo "~/Library/Caches/Homebrew"
         ls ~/Library/Caches/Homebrew
 
-    - name: Cache Homebrew Caches
-      id: cache-obs-dependencies
+    - name: Cache Homebrew Cellar
       uses: actions/cache@v1
       with:
-        path: ~/Library/Caches/Homebrew
-        key: homebrew-cache-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
+        path: /usr/local/Cellar
+        key: homebrew-cellar-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
 
     - name: Dump homebrew info
       run: |
