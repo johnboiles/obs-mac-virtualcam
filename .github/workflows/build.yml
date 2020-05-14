@@ -97,6 +97,10 @@ jobs:
         cmake ..
         make -j
 
+    - name: Install OBS deps
+      run: |
+        brew install cmake
+
     - name: Build the plugin
       run: |
         mkdir obs-mac-virtualcam/build
