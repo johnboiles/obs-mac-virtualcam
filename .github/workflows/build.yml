@@ -5,6 +5,8 @@ on:
 
 jobs:
   build:
+    env:
+      MACOSX_DEPLOYMENT_TARGET: 10.14
     runs-on: macos-latest
 
     steps:
@@ -44,3 +46,26 @@ jobs:
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
           -DQTDIR:STRING=/usr/local/opt/qt ..
         make -j
+
+    - name: Fix runtime QT deps
+      run: |
+        install_name_tool \
+          -change /usr/local/opt/qt/lib/QtWidgets.framework/Versions/5/QtWidgets \
+            @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
+          -change /usr/local/opt/qt/lib/QtGui.framework/Versions/5/QtGui \
+            @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
+          -change /usr/local/opt/qt/lib/QtCore.framework/Versions/5/QtCore \
+            @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
+          obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
+
+    - name: Copy artifacts
+      run: |
+        mkdir -p artifacts
+
+        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/
+        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: raw-plugins
+        path: artifacts
