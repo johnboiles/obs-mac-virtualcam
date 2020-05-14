@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  pull_request:
   push:
     branches:
     - master
@@ -20,6 +21,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: obs-mac-virtualcam
+
+    - name: Cache Homebrew Caches
+      id: cache-obs-dependencies
+      uses: actions/cache@v1
+      with:
+        path: ${{ env.HOME }}/Library/Caches/Homebrew
+        key: homebrew-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
 
     - name: Install OBS deps
       run: |
@@ -73,13 +81,28 @@ jobs:
             @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
           obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
 
+    - name: Copy artifacts
+      run: |
+        mkdir -p artifacts
+
+        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/
+        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/
+
+    - name: Upload Raw PlugIn Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: raw-plugins
+        path: artifacts
+
     - name: Install Apple certificates
+      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
       uses: apple-actions/import-codesign-certs@v1
       with:
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: Package Plugin
+      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
       run: ./ci/macos/package-macos.sh
       working-directory: ./obs-mac-virtualcam
       env:
@@ -90,19 +113,9 @@ jobs:
         AC_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
         AC_PROVIDER_SHORTNAME: ${{ secrets.NOTARIZATION_PROVIDER_SHORTNAME }}
 
-    - name: Copy artifacts
-      run: |
-        mkdir -p artifacts
-
-        cp -r obs-mac-virtualcam/build/src/dal-plugin/obs-mac-virtualcam.plugin artifacts/
-        cp obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so artifacts/
-
-    - uses: actions/upload-artifact@v1
-      with:
-        name: raw-plugins
-        path: artifacts
-
-    - uses: actions/upload-artifact@v1
+    - name: Upload .pkg Installer
+      uses: actions/upload-artifact@v1
+      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
       with:
         name: pkg-installer
         path: obs-mac-virtualcam/release
