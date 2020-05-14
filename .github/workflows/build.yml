@@ -7,34 +7,44 @@ jobs:
   build:
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.14
+      obs-studio-ref: 25.0.8
     runs-on: macos-latest
 
     steps:
-    - name: Checkout obs-studio
+    - name: Install OBS deps
+      run: |
+        brew bundle --file=obs-mac-virtualcam/Brewfile
+
+    - name: Cache OBS Build
+      id: cache-obs-build
+      uses: actions/cache@v1
+      with:
+        path: obs-studio
+        key: obs-studio-${{ env.obs-studio-ref }}
+
+    - name: Checkout OBS
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: obsproject/obs-studio
         path: obs-studio
         submodules: recursive
-        ref: 25.0.8
-
-    - name: Checkout obs-mac-virtualcam
-      uses: actions/checkout@v2
-      with:
-        path: obs-mac-virtualcam
-
-    - name: Install OBS deps
-      run: |
-        brew bundle --file=obs-mac-virtualcam/Brewfile
+        ref: ${{ env.obs-studio-ref }}
 
     - name: Build OBS
+      if: steps.cache-obs-build.outputs.cache-hit != 'true'
       run: |
-        mkdir obs-studio/build
+        mkdir -p obs-studio/build
         cd obs-studio/build
 
         export QTDIR=$(brew --prefix qt5)
         cmake ..
         make -j
+
+    - name: Checkout obs-mac-virtualcam
+      uses: actions/checkout@v2
+      with:
+        path: obs-mac-virtualcam
 
     - name: Build the plugin
       run: |
