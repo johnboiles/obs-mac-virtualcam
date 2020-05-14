@@ -99,7 +99,7 @@ jobs:
 
     - name: Install OBS deps
       run: |
-        brew install cmake
+        brew install cmake qt5
 
     - name: Build the plugin
       run: |
