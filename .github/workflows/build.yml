@@ -26,7 +26,7 @@ jobs:
       id: cache-obs-dependencies
       uses: actions/cache@v1
       with:
-        path: ${{ env.HOME }}/Library/Caches/Homebrew
+        path: ~/Library/Caches/Homebrew
         key: homebrew-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
 
     - name: Install OBS deps
