@@ -22,6 +22,17 @@ jobs:
       with:
         path: obs-mac-virtualcam
 
+    - name: Dump homebrew info
+      run: |
+        echo "brew --cache"
+        brew --cache
+        echo "brew --prefix"
+        brew --prefix
+        echo "/usr/local contents"
+        ls /usr/local
+        echo "~/Library/Caches/Homebrew"
+        ls ~/Library/Caches/Homebrew
+
     - name: Cache Homebrew Caches
       id: cache-obs-dependencies
       uses: actions/cache@v1
@@ -29,9 +40,14 @@ jobs:
         path: ~/Library/Caches/Homebrew
         key: homebrew-cache-${{ hashFiles('obs-mac-virtualcam/Brewfile') }}
 
+    - name: Dump homebrew info
+      run: |
+        echo "~/Library/Caches/Homebrew"
+        ls ~/Library/Caches/Homebrew
+
     - name: Install OBS deps
       run: |
-        brew bundle --file=obs-mac-virtualcam/Brewfile
+        brew bundle -v --file=obs-mac-virtualcam/Brewfile
 
     - name: Cache OBS Build
       id: cache-obs-build
