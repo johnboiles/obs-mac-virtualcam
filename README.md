@@ -18,9 +18,11 @@ If, after you donate to the OBS Project, you also want to send some cash my way 
 
 ## Known Issues
 
-* The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) (for third-party apps like Zoom and Slack) and OS restrictions (for built-in apps like Facetime and Photo Booth). Check out [the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility) to see if your app is supported. Please [edit that file](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility/_edit) if you try other software that we should include in that list.
+* The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) (for third-party apps like Zoom and Slack) and OS restrictions (for built-in apps like Facetime and Photo Booth). Check out [the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility) to see if your app is supported. Please [edit the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility/_edit) if you try other software that we should include in that list.
 * OBS needs to be restarted after changing resolutions for the Virtual Camera to work. ([#83](https://github.com/johnboiles/obs-mac-virtualcam/issues/83))
-* Older versions of macOS (older than macOS 10.15 Catalina) are not currently supported ([#85](https://github.com/johnboiles/obs-mac-virtualcam/issues/85))
+* You _may_ need to restart your computer after installing new versions of this plugin (not sure why 🤷‍♂️).
+
+See also the open [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) for other reported issues.
 
 ## Installing
 
