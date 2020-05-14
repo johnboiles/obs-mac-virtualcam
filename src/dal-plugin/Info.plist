@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BuildMachineOSBuild</key>
-	<string>19E266</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -36,22 +34,8 @@
 			<string>35FDFF29-BFCF-4644-AB77-B759DE932ABE</string>
 		</array>
 	</dict>
-	<key>DTCompiler</key>
-	<string>com.apple.compilers.llvm.clang.1_0</string>
-	<key>DTPlatformBuild</key>
-	<string>11E146</string>
-	<key>DTPlatformVersion</key>
-	<string>GM</string>
-	<key>DTSDKBuild</key>
-	<string>19E258</string>
-	<key>DTSDKName</key>
-	<string>macosx10.15</string>
-	<key>DTXcode</key>
-	<string>1140</string>
-	<key>DTXcodeBuild</key>
-	<string>11E146</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.11</string>
+	<string>10.13</string>
 	<key>CMIOHardwareAssistantServiceNames</key>
 	<array>
 		<string>com.johnboiles.obs-mac-virtualcam.server</string>
