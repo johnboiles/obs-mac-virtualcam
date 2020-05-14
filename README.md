@@ -1,6 +1,6 @@
 # OBS (macOS) Virtual Camera 🎥
 
-![Release](https://github.com/johnboiles/obs-mac-virtualcam/workflows/Release/badge.svg)
+![Build](https://github.com/johnboiles/obs-mac-virtualcam/workflows/Build%20and%20(maybe)%20Release/badge.svg)
 
 Creates a virtual webcam device from the output of [OBS Studio](https://obsproject.com/). Especially useful for streaming smooth, composited video into Zoom, Hangouts, Jitsi etc. Like [CatxFish/obs-virtual-cam](https://github.com/CatxFish/obs-virtual-cam) but for macOS.
 
