@@ -11,6 +11,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
+    - name: Checkout obs-mac-virtualcam
+      uses: actions/checkout@v2
+      with:
+        path: obs-mac-virtualcam
+
     - name: Install OBS deps
       run: |
         brew bundle --file=obs-mac-virtualcam/Brewfile
@@ -40,11 +45,6 @@ jobs:
         export QTDIR=$(brew --prefix qt5)
         cmake ..
         make -j
-
-    - name: Checkout obs-mac-virtualcam
-      uses: actions/checkout@v2
-      with:
-        path: obs-mac-virtualcam
 
     - name: Build the plugin
       run: |
