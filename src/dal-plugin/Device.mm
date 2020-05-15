@@ -95,7 +95,7 @@
 
     switch (address.mSelector) {
         case kCMIOObjectPropertyName:
-            *static_cast<CFStringRef*>(data) = CFSTR("OBS Virtual Camera Device");
+            *static_cast<CFStringRef*>(data) = CFSTR("OBS Virtual Camera");
             *dataUsed = sizeof(CFStringRef);
             break;
         case kCMIOObjectPropertyManufacturer:
@@ -103,7 +103,7 @@
             *dataUsed = sizeof(CFStringRef);
             break;
         case kCMIOObjectPropertyElementCategoryName:
-            *static_cast<CFStringRef*>(data) = CFSTR("catname");
+            *static_cast<CFStringRef*>(data) = CFSTR("Virtual Camera");
             *dataUsed = sizeof(CFStringRef);
             break;
         case kCMIOObjectPropertyElementNumberName:
