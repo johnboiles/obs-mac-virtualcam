@@ -1,13 +1,13 @@
 ---
 name: Support request
-about: If you need help
+about: If you need additional help
 title: "[Support]"
 labels: ''
 assignees: ''
 
 ---
 
-_Please read the "Discussion / Support" section of the Readme first. Only open an issue if you don't get an answer on the OBS or someone tells you to. _
+_Please read the "Discussion / Support" section of the Readme first. Only open an issue if you don't get an answer on the OBS or someone tells you to._
 
 **Describe the issue**
 A clear and concise description of what the problem is.
@@ -27,8 +27,9 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS version: [e.g. macOS Catalina 10.15.4]
- - Application (if applicable) [e.g. chrome, safari]
- - Version [e.g. 1.0.0]
+ - Application (if applicable): [e.g. Chrome, Safari]
+ - Virtualcam version: [e.g. 1.0.0]
+ - OBS version: [e.g. 25.0.8]
 
 **Additional context**
 Add any other context about the problem here.
