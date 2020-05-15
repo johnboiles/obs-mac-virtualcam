@@ -23,11 +23,11 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Computer data (please complete the following information):**
+**Desktop (please complete the following information):**
  - OS version: [e.g. macOS Catalina 10.15.4]
- - Application [e.g. Chrome, Zoom]
- - Virtualcam version [e.g. 1.1.0]
- - OBS version [e.g. 25.0.8]
+ - Application: [e.g. Chrome, Zoom]
+ - Virtualcam version: [e.g. 1.1.0]
+ - OBS version: [e.g. 25.0.8]
 
 **Additional context**
 Add any other context about the problem here.
