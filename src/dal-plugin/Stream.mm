@@ -168,22 +168,10 @@
 
     CVPixelBufferRef pixelBuffer = [self createPixelBufferWithTestAnimation];
 
-    // The timing here is quite important. For frames to be delivered correctly and successfully be recorded by apps
-    // like QuickTime Player, we need to be accurate in both our timestamps _and_ have a sensible scale. Using large
-    // timestamps and scales like mach_absolute_time() and NSEC_PER_SEC will work for display, but will error out
-    // when trying to record.
-    //
-    // Instead, we start our presentation times from zero (using the sequence number as a base), and use a scale that's
-    // a multiple of our framerate. This has been observed in parts of AVFoundation and lets us be frame-accurate even
-    // on non-round framerates (i.e., we can use a scale of 2997 for 29,97 fps content if we want to).
-    CMTimeScale scale = FPS * 10;
-    CMTime frameDuration = CMTimeMake(scale / FPS, scale);
-    CMTime pts = CMTimeMake(frameDuration.value * self.sequenceNumber, scale);
-    CMSampleTimingInfo timing;
-    timing.duration = frameDuration;
-    timing.presentationTimeStamp = pts;
-    timing.decodeTimeStamp = pts;
-    OSStatus err = CMIOStreamClockPostTimingEvent(pts, mach_absolute_time(), true, self.clock);
+    uint64_t hostTime = mach_absolute_time();
+    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(hostTime, FPS);
+
+    OSStatus err = CMIOStreamClockPostTimingEvent(timingInfo.presentationTimeStamp, hostTime, true, self.clock);
     if (err != noErr) {
         DLog(@"CMIOStreamClockPostTimingEvent err %d", err);
     }
@@ -198,7 +186,7 @@
         kCFAllocatorDefault,
         pixelBuffer,
         format,
-        &timing,
+        &timingInfo,
         self.sequenceNumber,
         kCMIOSampleBufferNoDiscontinuities,
         &buffer
@@ -224,14 +212,9 @@
     }
     OSStatus err = noErr;
 
-    CMTimeScale scale = FPS * 100;
-    CMTime frameDuration = CMTimeMake(scale / FPS, scale);
-    CMTime pts = CMTimeMake(timestamp, NSEC_PER_SEC);
-    CMSampleTimingInfo timing;
-    timing.duration = frameDuration;
-    timing.presentationTimeStamp = pts;
-    timing.decodeTimeStamp = kCMTimeInvalid;
-    err = CMIOStreamClockPostTimingEvent(pts, mach_absolute_time(), true, self.clock);
+    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(timestamp, FPS);
+
+    err = CMIOStreamClockPostTimingEvent(timingInfo.presentationTimeStamp, mach_absolute_time(), true, self.clock);
     if (err != noErr) {
         DLog(@"CMIOStreamClockPostTimingEvent err %d", err);
     }
@@ -239,7 +222,7 @@
     self.sequenceNumber = CMIOGetNextSequenceNumber(self.sequenceNumber);
 
     CMSampleBufferRef sampleBuffer;
-    CMSampleBufferCreateFromData(size, timing, self.sequenceNumber, frameData, &sampleBuffer);
+    CMSampleBufferCreateFromData(size, timingInfo, self.sequenceNumber, frameData, &sampleBuffer);
     CMSimpleQueueEnqueue(self.queue, sampleBuffer);
 
     // Inform the clients that the queue has been altered
