@@ -123,7 +123,7 @@ bool obs_module_load(void)
             
             obs_video_info ovi;
             obs_get_video_info(&ovi);
-            if(getAspectRatio(ovi.base_width, ovi.base_height)!=getAspectRatio(ovi.output_width, ovi.output_height)) {
+            if(getAspectRatio(ovi.base_width, ovi.base_height) != getAspectRatio(ovi.output_width, ovi.output_height)) {
                 QMessageBox msgBox;
                 msgBox.setText(QString::fromStdString(obs_module_text("Warning: Aspect ratios don't match")));
                 stringstream stream;
@@ -159,11 +159,8 @@ bool obs_module_load(void)
                     return;
                 }
             }
-            
             action->setText(obs_module_text("Stop Virtual Camera"));
             obs_output_start(output);
-    
-        
         }
     };
     action->connect(action, &QAction::triggered, menu_cb);
@@ -178,21 +175,21 @@ bool obs_module_load(void)
 bool isUsualResolution(obs_video_info ovi){
     string res = to_string(ovi.output_width) + "x" + to_string(ovi.output_height);
     for(string knownRes : knownResolutions){
-        if (res==knownRes)
+        if (res == knownRes)
             return true;
     }
     return false;
 }
 
-int gcd(int a, int b);
+int gcd(int a, int b) {
+    if (b == 0) {
+      return a;
+    }
+   return gcd(b, a % b);
+}
+
 string getAspectRatio(int width, int height){
     int baseGcd = gcd(width, height);
     string aspectRatio = to_string(width/baseGcd) + ":" + to_string(height/baseGcd);
     return aspectRatio;
-}
-
-int gcd(int a, int b) {
-   if (b == 0)
-      return a;
-   return gcd(b, a % b);
 }
