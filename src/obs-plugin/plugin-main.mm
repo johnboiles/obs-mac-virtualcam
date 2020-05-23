@@ -3,10 +3,14 @@
 #include <pthread.h>
 #include <QMainWindow.h>
 #include <QAction.h>
+#include <QMessageBox>
 #include <obs-frontend-api.h>
 #include <obs.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <sstream>
 #include "MachServer.h"
+using namespace std;
+
 
 
 OBS_DECLARE_MODULE()
@@ -96,6 +100,14 @@ void start()
     obs_data_release(settings);
 }
 
+static string knownResolutions[] = {
+    "640x360",
+    "1280x720",
+    "1920x1080"
+};
+
+bool isUsualResolution(obs_video_info ovi);
+string getAspectRatio(int width, int height);
 bool obs_module_load(void)
 {
     blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
@@ -108,8 +120,50 @@ bool obs_module_load(void)
             action->setText(obs_module_text("Start Virtual Camera"));
             obs_output_stop(output);
         } else {
+            
+            obs_video_info ovi;
+            obs_get_video_info(&ovi);
+            if(getAspectRatio(ovi.base_width, ovi.base_height)!=getAspectRatio(ovi.output_width, ovi.output_height)) {
+                QMessageBox msgBox;
+                msgBox.setText(QString::fromStdString(obs_module_text("Warning: Aspect ratios don't match")));
+                stringstream stream;
+                stream << obs_module_text("The aspect ratio of your base resolution (");
+                stream << getAspectRatio(ovi.base_width, ovi.base_height);
+                stream << obs_module_text(") doesn't match the aspect ratio of your scaled resolution(");
+                stream << getAspectRatio(ovi.output_width, ovi.output_height);
+                stream << obs_module_text("). This will result in a cropped image.\nContinue anyways?");
+                msgBox.setInformativeText(QString::fromStdString(stream.str()));
+                msgBox.setStandardButtons(QMessageBox::Yes);
+                msgBox.addButton(QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::No);
+                if(msgBox.exec() != QMessageBox::Yes){
+                    return;
+                }
+            }
+            if(!isUsualResolution(ovi)) {
+                QMessageBox msgBox;
+                msgBox.setText(QString::fromStdString(obs_module_text("Warning: Unusual resolution")));
+                stringstream stream;
+                stream << obs_module_text("Your output resolution (");
+                stream << ovi.output_width << "x" << ovi.output_height;
+                stream << obs_module_text(") is unusual which may result in a distorted image. If that is the case, use one of the following resolutions:\n");
+                for(string res : knownResolutions){
+                    stream << res << endl;
+                }
+                stream << obs_module_text("Continue anyways?");
+                msgBox.setInformativeText(QString::fromStdString(stream.str()));
+                msgBox.setStandardButtons(QMessageBox::Yes);
+                msgBox.addButton(QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::No);
+                if(msgBox.exec() != QMessageBox::Yes){
+                    return;
+                }
+            }
+            
             action->setText(obs_module_text("Stop Virtual Camera"));
             obs_output_start(output);
+    
+        
         }
     };
     action->connect(action, &QAction::triggered, menu_cb);
@@ -121,3 +175,24 @@ bool obs_module_load(void)
     return true;
 }
 
+bool isUsualResolution(obs_video_info ovi){
+    string res = to_string(ovi.output_width) + "x" + to_string(ovi.output_height);
+    for(string knownRes : knownResolutions){
+        if (res==knownRes)
+            return true;
+    }
+    return false;
+}
+
+int gcd(int a, int b);
+string getAspectRatio(int width, int height){
+    int baseGcd = gcd(width, height);
+    string aspectRatio = to_string(width/baseGcd) + ":" + to_string(height/baseGcd);
+    return aspectRatio;
+}
+
+int gcd(int a, int b) {
+   if (b == 0)
+      return a;
+   return gcd(b, a % b);
+}
