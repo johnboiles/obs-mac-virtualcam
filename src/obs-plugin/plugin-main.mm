@@ -100,13 +100,6 @@ void start()
     obs_data_release(settings);
 }
 
-static string knownResolutions[] = {
-    "640x360",
-    "1280x720",
-    "1920x1080"
-};
-
-bool isUsualResolution(obs_video_info ovi);
 string getAspectRatio(int width, int height);
 bool obs_module_load(void)
 {
@@ -140,25 +133,6 @@ bool obs_module_load(void)
                     return;
                 }
             }
-            if(!isUsualResolution(ovi)) {
-                QMessageBox msgBox;
-                msgBox.setText(QString::fromStdString(obs_module_text("Warning: Unusual resolution")));
-                stringstream stream;
-                stream << obs_module_text("Your output resolution (");
-                stream << ovi.output_width << "x" << ovi.output_height;
-                stream << obs_module_text(") is unusual which may result in a distorted image. If that is the case, use one of the following resolutions:\n");
-                for(string res : knownResolutions){
-                    stream << res << endl;
-                }
-                stream << obs_module_text("Continue anyways?");
-                msgBox.setInformativeText(QString::fromStdString(stream.str()));
-                msgBox.setStandardButtons(QMessageBox::Yes);
-                msgBox.addButton(QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::No);
-                if(msgBox.exec() != QMessageBox::Yes){
-                    return;
-                }
-            }
             action->setText(obs_module_text("Stop Virtual Camera"));
             obs_output_start(output);
         }
@@ -170,15 +144,6 @@ bool obs_module_load(void)
     start();
     
     return true;
-}
-
-bool isUsualResolution(obs_video_info ovi){
-    string res = to_string(ovi.output_width) + "x" + to_string(ovi.output_height);
-    for(string knownRes : knownResolutions){
-        if (res == knownRes)
-            return true;
-    }
-    return false;
 }
 
 int gcd(int a, int b) {
