@@ -74,6 +74,10 @@ static void virtualcam_output_raw_video(void *data, struct video_data *frame)
     CGFloat width = ovi.output_width;
     CGFloat height = ovi.output_height;
     uint8_t *outData = frame->data[0];
+    if (frame->linesize[0] != (ovi.output_width * 2)) {
+        blog(LOG_ERROR, "VIRTUALCAM unexpected frame->linesize (expected:%d actual:%d)", (ovi.output_width * 2), frame->linesize[0]);
+    }
+
     [sMachServer sendFrameWithSize:NSMakeSize(width, height) timestamp:frame->timestamp frameBytes:outData];
 }
 
