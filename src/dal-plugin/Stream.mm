@@ -114,7 +114,6 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     int width = [[defaults objectForKey:@"obs-virtualcam-dal-width"] integerValue];
     int height = [[defaults objectForKey:@"obs-virtualcam-dal-height"] integerValue];
-    DLog("Calling testCardImageSize");
     if(width==0 || height==0){
         return NSMakeSize(1280, 720);
     }
