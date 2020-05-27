@@ -35,8 +35,25 @@ OSStatus CMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo
 
     // Copy memory into the pixel buffer
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    void *dest = CVPixelBufferGetBaseAddress(pixelBuffer);
-    memcpy(dest, data.bytes, data.length);
+    uint8_t *dest = (uint8_t *)CVPixelBufferGetBaseAddress(pixelBuffer);
+    uint8_t *src = (uint8_t *)data.bytes;
+
+    size_t destBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+    size_t srcBytesPerRow = size.width * 2;
+
+    // Sometimes CVPixelBufferCreate will create a pixelbuffer that's a different
+    // size than necessary to hold the frame (probably for some optimization reason).
+    // If that is the case this will do a row-by-row copy into the buffer.
+    if (destBytesPerRow == srcBytesPerRow) {
+        memcpy(dest, src, data.length);
+    } else {
+        for (int line = 0; line < size.height; line++) {
+            memcpy(dest, src, srcBytesPerRow);
+            src += srcBytesPerRow;
+            dest += destBytesPerRow;
+        }
+    }
+
     CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
 
     err = CMIOSampleBufferCreateForImageBuffer(
