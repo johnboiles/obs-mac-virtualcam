@@ -13,6 +13,7 @@
 @interface MachServer () <NSPortDelegate>
 @property NSPort *port;
 @property NSMutableSet *clientPorts;
+@property NSRunLoop *runLoop;
 @end
 
 
@@ -23,6 +24,13 @@
         self.clientPorts = [[NSMutableSet alloc] init];
     }
     return self;
+}
+
+- (void)dealloc {
+    blog(LOG_DEBUG, "VIRTUALCAM tearing down MachServer");
+    [self.runLoop removePort:self.port forMode:NSDefaultRunLoopMode];
+    [self.port invalidate];
+    self.port.delegate = nil;
 }
 
 - (void)run {
@@ -49,8 +57,8 @@
 
     self.port.delegate = self;
 
-    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-    [runLoop addPort:self.port forMode:NSDefaultRunLoopMode];
+    self.runLoop = [NSRunLoop currentRunLoop];
+    [self.runLoop addPort:self.port forMode:NSDefaultRunLoopMode];
 
     blog(LOG_DEBUG, "VIRTUALCAM mach server running!");
 }

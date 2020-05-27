@@ -36,6 +36,7 @@ static void *virtualcam_output_create(obs_data_t *settings, obs_output_t *output
 static void virtualcam_output_destroy(void *data)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_destroy");
+    sMachServer = nil;
 }
 
 
@@ -92,14 +93,6 @@ struct obs_output_info virtualcam_output_info = {
     .raw_video = virtualcam_output_raw_video,
 };
 
-void start()
-{
-    OBSData settings;
-    
-    output = obs_output_create("virtualcam_output", "virtualcam_output", settings, NULL);
-    obs_data_release(settings);
-}
-
 bool obs_module_load(void)
 {
     blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
@@ -111,17 +104,18 @@ bool obs_module_load(void)
         if (obs_output_active(output)) {
             action->setText(obs_module_text("Start Virtual Camera"));
             obs_output_stop(output);
+            obs_output_release(output);
+            output = NULL;
         } else {
             action->setText(obs_module_text("Stop Virtual Camera"));
+            OBSData settings;
+            output = obs_output_create("virtualcam_output", "virtualcam_output", settings, NULL);
             obs_output_start(output);
         }
     };
     action->connect(action, &QAction::triggered, menu_cb);
 
     obs_register_output(&virtualcam_output_info);
-
-    start();
-    
     return true;
 }
 
