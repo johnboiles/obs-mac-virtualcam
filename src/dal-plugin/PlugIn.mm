@@ -175,6 +175,11 @@ typedef enum {
 - (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(nonnull NSData *)frameData {
     dispatch_sync(_stateQueue, ^{
         if (_state == PlugInStateWaitingForServer) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setInteger:size.width forKey:@"obs-virtualcam-dal-width"];
+            [defaults setInteger:size.height forKey:@"obs-virtualcam-dal-height"];
+            [defaults synchronize];
+            
             dispatch_suspend(_machConnectTimer);
             [self.stream stopServingDefaultFrames];
             dispatch_resume(_timeoutTimer);

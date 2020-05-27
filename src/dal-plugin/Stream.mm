@@ -40,6 +40,7 @@
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
 @property (readonly) NSImage *testCardImage;
+@property NSSize testCardSize;
 
 @end
 
@@ -78,6 +79,8 @@
 
 - (void)startServingDefaultFrames {
     DLogFunc(@"");
+    _testCardImage = nil;
+    _testCardSize.height = 0;
     dispatch_resume(_frameDispatchSource);
 }
 
@@ -107,9 +110,20 @@
     return _clock;
 }
 
+- (NSSize)testCardImageSize {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    int width = [[defaults objectForKey:@"obs-virtualcam-dal-width"] integerValue];
+    int height = [[defaults objectForKey:@"obs-virtualcam-dal-height"] integerValue];
+    DLog("Calling testCardImageSize");
+    if(width==0 || height==0){
+        return NSMakeSize(1280, 720);
+    }
+    return NSMakeSize(width, height);
+}
+
 - (NSImage *)testCardImage {
     if (_testCardImage == nil) {
-        _testCardImage = ImageOfTestCardWithSize(NSMakeSize(1280, 720));
+        _testCardImage = ImageOfTestCardWithSize([self testCardImageSize]);
     }
     return _testCardImage;
 }
@@ -125,8 +139,12 @@
 }
 
 - (CVPixelBufferRef)createPixelBufferWithTestAnimation {
-    int width = 1280;
-    int height = 720;
+    
+    if (self.testCardSize.height == 0){
+        self.testCardSize = [self testCardImageSize];
+    }
+    int width = self.testCardSize.width;
+    int height = self.testCardSize.height;
 
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
