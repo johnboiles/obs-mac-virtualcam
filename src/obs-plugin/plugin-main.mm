@@ -7,7 +7,7 @@
 #include <obs.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include "MachServer.h"
-
+#include "Defines.generated.h"
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("mac-virtualcam", "en-US")
@@ -30,19 +30,19 @@ static const char *virtualcam_output_get_name(void *type_data)
 
 static void *virtualcam_output_create(obs_data_t *settings, obs_output_t *output)
 {
-    blog(LOG_DEBUG, "VIRTUALCAM output_create");
+    blog(LOG_DEBUG, "output_create");
     sMachServer = [[MachServer alloc] init];
 }
 
 static void virtualcam_output_destroy(void *data)
 {
-    blog(LOG_DEBUG, "VIRTUALCAM output_destroy");
+    blog(LOG_DEBUG, "output_destroy");
     sMachServer = nil;
 }
 
 static bool virtualcam_output_start(void *data)
 {
-    blog(LOG_DEBUG, "VIRTUALCAM output_start");
+    blog(LOG_DEBUG, "output_start");
     
     [sMachServer run];
 
@@ -62,7 +62,7 @@ static bool virtualcam_output_start(void *data)
 
 static void virtualcam_output_stop(void *data, uint64_t ts)
 {
-    blog(LOG_DEBUG, "VIRTUALCAM output_stop");
+    blog(LOG_DEBUG, "output_stop");
     obs_output_end_data_capture(output);
     [sMachServer stop];
 }
@@ -71,7 +71,7 @@ static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 {
     uint8_t *outData = frame->data[0];
     if (frame->linesize[0] != (videoInfo.output_width * 2)) {
-        blog(LOG_ERROR, "VIRTUALCAM unexpected frame->linesize (expected:%d actual:%d)", (videoInfo.output_width * 2), frame->linesize[0]);
+        blog(LOG_ERROR, "unexpected frame->linesize (expected:%d actual:%d)", (videoInfo.output_width * 2), frame->linesize[0]);
     }
 
     CGFloat width = videoInfo.output_width;
@@ -93,7 +93,7 @@ struct obs_output_info virtualcam_output_info = {
 
 bool obs_module_load(void)
 {
-    blog(LOG_DEBUG, "VIRTUALCAM obs_module_load");
+    blog(LOG_DEBUG, "obs_module_load version=%s", PLUGIN_VERSION);
 
     QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
     action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("Start Virtual Camera"));

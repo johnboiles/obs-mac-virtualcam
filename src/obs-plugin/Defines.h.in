@@ -1,8 +1,8 @@
 //
-//  Logging.h
+//  Defines.h
 //  obs-mac-virtualcam
 //
-//  Created by John Boiles  on 4/10/20.
+//  Created by John Boiles  on 5/27/20.
 //
 //  obs-mac-virtualcam is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,15 +17,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef Logging_h
-#define Logging_h
+#define PLUGIN_NAME "@CMAKE_PROJECT_NAME@"
+#define PLUGIN_VERSION "@CMAKE_PROJECT_VERSION@"
 
-#include "Defines.generated.h"
-
-#define DLog(fmt, ...) NSLog((PLUGIN_NAME @"(DAL): " fmt), ##__VA_ARGS__)
-#define DLogFunc(fmt, ...) NSLog((PLUGIN_NAME @"(DAL): %s " fmt), __FUNCTION__, ##__VA_ARGS__)
-#define VLog(fmt, ...)
-#define VLogFunc(fmt, ...)
-#define ELog(fmt, ...) DLog(fmt, ##__VA_ARGS__)
-
-#endif /* Logging_h */
+#define blog(level, msg, ...) blog(level, "[" PLUGIN_NAME "] " msg, ##__VA_ARGS__)

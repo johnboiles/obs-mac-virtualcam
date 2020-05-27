@@ -10,6 +10,11 @@ find_library(COREMEDIAIO CoreMediaIO)
 find_library(IOSURFACE IOSurface)
 find_library(IOKIT IOKit)
 
+configure_file(
+	Defines.h.in
+	../../../src/dal-plugin/Defines.generated.h
+)
+
 # Possible we could remove osme of these
 include_directories(${AVFOUNDATION}
                     ${COCOA}
@@ -23,6 +28,7 @@ include_directories(${AVFOUNDATION}
                     ../common)
 
 set(dal-plugin_SOURCES
+	Defines.generated.h
 	Logging.h
 	PlugInMain.mm
 	PlugInInterface.h

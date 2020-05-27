@@ -16,6 +16,11 @@ set(CMAKE_PREFIX_PATH "${QTDIR}")
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
+configure_file(
+	Defines.h.in
+	../../../src/obs-plugin/Defines.generated.h
+)
+
 include_directories(${AVFOUNDATION}
                     ${COCOA}
                     ${COREFOUNDATION}
@@ -32,6 +37,7 @@ include_directories(${AVFOUNDATION}
                     ../common)
 
 set(obs-plugin_SOURCES
+	Defines.generated.h
 	plugin-main.mm
 	MachServer.h
 	MachServer.mm
