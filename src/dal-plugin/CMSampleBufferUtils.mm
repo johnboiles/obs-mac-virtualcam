@@ -137,7 +137,7 @@ OSStatus CMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timi
     return noErr;
 }
 
-CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, double fps) {
+CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, uint32_t fpsNumerator, uint32_t fpsDenominator) {
     // The timing here is quite important. For frames to be delivered correctly and successfully be recorded by apps
     // like QuickTime Player, we need to be accurate in both our timestamps _and_ have a sensible scale. Using large
     // timestamps and scales like mach_absolute_time() and NSEC_PER_SEC will work for display, but will error out
@@ -146,7 +146,7 @@ CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, doubl
     // 600 is a commmon default in Apple's docs https://developer.apple.com/documentation/avfoundation/avmutablemovie/1390622-timescale
     CMTimeScale scale = 600;
     CMSampleTimingInfo timing;
-    timing.duration = CMTimeMake(scale, fps * scale);
+    timing.duration = CMTimeMake(fpsDenominator * scale, fpsNumerator * scale);
     timing.presentationTimeStamp = CMTimeMake((timestampNanos / (double)NSEC_PER_SEC) * scale, scale);
     timing.decodeTimeStamp = kCMTimeInvalid;
     return timing;

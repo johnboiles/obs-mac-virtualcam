@@ -172,7 +172,7 @@ typedef enum {
 
 #pragma mark - MachClientDelegate
 
-- (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(nonnull NSData *)frameData {
+- (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp fpsNumerator:(uint32_t)fpsNumerator fpsDenominator:(uint32_t)fpsDenominator frameData:(NSData *)frameData {
     dispatch_sync(_stateQueue, ^{
         if (_state == PlugInStateWaitingForServer) {
             dispatch_suspend(_machConnectTimer);
@@ -185,7 +185,7 @@ typedef enum {
     // Add 5 more seconds onto the timeout timer
     dispatch_source_set_timer(_timeoutTimer, dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC), 5.0 * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10);
 
-    [self.stream queueFrameWithSize:size timestamp:timestamp frameData:frameData];
+    [self.stream queueFrameWithSize:size timestamp:timestamp fpsNumerator:fpsNumerator fpsDenominator:fpsDenominator frameData:frameData];
 }
 
 - (void)receivedStop {
