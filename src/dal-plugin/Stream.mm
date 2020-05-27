@@ -169,7 +169,7 @@
     CVPixelBufferRef pixelBuffer = [self createPixelBufferWithTestAnimation];
 
     uint64_t hostTime = mach_absolute_time();
-    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(hostTime, FPS);
+    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(hostTime, FPS, 1);
 
     OSStatus err = CMIOStreamClockPostTimingEvent(timingInfo.presentationTimeStamp, hostTime, true, self.clock);
     if (err != noErr) {
@@ -205,14 +205,14 @@
     }
 }
 
-- (void)queueFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(NSData *)frameData {
+- (void)queueFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp fpsNumerator:(uint32_t)fpsNumerator fpsDenominator:(uint32_t)fpsDenominator frameData:(NSData *)frameData {
     if (CMSimpleQueueGetFullness(self.queue) >= 1.0) {
         DLog(@"Queue is full, bailing out");
         return;
     }
     OSStatus err = noErr;
 
-    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(timestamp, FPS);
+    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(timestamp, fpsNumerator, fpsDenominator);
 
     err = CMIOStreamClockPostTimingEvent(timingInfo.presentationTimeStamp, mach_absolute_time(), true, self.clock);
     if (err != noErr) {

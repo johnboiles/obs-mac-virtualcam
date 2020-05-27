@@ -84,7 +84,7 @@
             break;
         case MachMsgIdFrame:
             VLog(@"Received frame message");
-            if (components.count == 4) {
+            if (components.count >= 6) {
                 CGFloat width;
                 [components[0] getBytes:&width length:sizeof(width)];
                 CGFloat height;
@@ -92,7 +92,12 @@
                 uint64_t timestamp;
                 [components[2] getBytes:&timestamp length:sizeof(timestamp)];
                 VLog(@"Received frame data: %fx%f (%llu)", width, height, timestamp);
-                [self.delegate receivedFrameWithSize:NSMakeSize(width, height) timestamp:timestamp frameData:components[3]];
+                NSData *frameData = components[3];
+                uint32_t fpsNumerator;
+                [components[4] getBytes:&fpsNumerator length:sizeof(fpsNumerator)];
+                uint32_t fpsDenominator;
+                [components[5] getBytes:&fpsDenominator length:sizeof(fpsDenominator)];
+                [self.delegate receivedFrameWithSize:NSMakeSize(width, height) timestamp:timestamp fpsNumerator:fpsNumerator fpsDenominator:fpsDenominator frameData:frameData];
             }
             break;
         case MachMsgIdStop:

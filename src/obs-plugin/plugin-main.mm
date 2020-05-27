@@ -17,6 +17,7 @@ MODULE_EXPORT const char *obs_module_description(void)
 }
 
 obs_output_t *output;
+obs_video_info videoInfo;
 // Tools menu action for starting and stopping the virtual camera
 QAction *action;
 static MachServer *sMachServer;
@@ -39,20 +40,18 @@ static void virtualcam_output_destroy(void *data)
     sMachServer = nil;
 }
 
-
 static bool virtualcam_output_start(void *data)
 {
     blog(LOG_DEBUG, "VIRTUALCAM output_start");
     
     [sMachServer run];
 
-    obs_video_info ovi;
-    obs_get_video_info(&ovi);
+    obs_get_video_info(&videoInfo);
     
     struct video_scale_info conversion = {};
     conversion.format = VIDEO_FORMAT_UYVY;
-    conversion.width = ovi.output_width;
-    conversion.height = ovi.output_height;
+    conversion.width = videoInfo.output_width;
+    conversion.height = videoInfo.output_height;
     obs_output_set_video_conversion(output, &conversion);
     if (!obs_output_begin_data_capture(output, 0)) {
         return false;
@@ -70,16 +69,15 @@ static void virtualcam_output_stop(void *data, uint64_t ts)
 
 static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 {
-    obs_video_info ovi;
-    obs_get_video_info(&ovi);
-    CGFloat width = ovi.output_width;
-    CGFloat height = ovi.output_height;
     uint8_t *outData = frame->data[0];
-    if (frame->linesize[0] != (ovi.output_width * 2)) {
-        blog(LOG_ERROR, "VIRTUALCAM unexpected frame->linesize (expected:%d actual:%d)", (ovi.output_width * 2), frame->linesize[0]);
+    if (frame->linesize[0] != (videoInfo.output_width * 2)) {
+        blog(LOG_ERROR, "VIRTUALCAM unexpected frame->linesize (expected:%d actual:%d)", (videoInfo.output_width * 2), frame->linesize[0]);
     }
 
-    [sMachServer sendFrameWithSize:NSMakeSize(width, height) timestamp:frame->timestamp frameBytes:outData];
+    CGFloat width = videoInfo.output_width;
+    CGFloat height = videoInfo.output_height;
+
+    [sMachServer sendFrameWithSize:NSMakeSize(width, height) timestamp:frame->timestamp fpsNumerator:videoInfo.fps_num fpsDenominator:videoInfo.fps_den frameBytes:outData];
 }
 
 struct obs_output_info virtualcam_output_info = {

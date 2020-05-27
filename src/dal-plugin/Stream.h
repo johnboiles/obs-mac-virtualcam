@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)stopServingDefaultFrames;
 
-- (void)queueFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(NSData *)frameData;
+- (void)queueFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp fpsNumerator:(uint32_t)fpsNumerator fpsDenominator:(uint32_t)fpsDenominator frameData:(NSData *)frameData;
 
 @end
 

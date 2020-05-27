@@ -11,4 +11,4 @@ OSStatus CMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo
 
 OSStatus CMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timingInfo, UInt64 sequenceNumber, NSData *data, CMSampleBufferRef *sampleBuffer);
 
-CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, double fps);
+CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, uint32_t fpsNumerator, uint32_t fpsDenominator);

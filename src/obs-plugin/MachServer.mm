@@ -102,7 +102,7 @@
     [self.clientPorts minusSet:removedPorts];
 }
 
-- (void)sendFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameBytes:(uint8_t *)frameBytes {
+- (void)sendFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp fpsNumerator:(uint32_t)fpsNumerator fpsDenominator:(uint32_t)fpsDenominator frameBytes:(uint8_t *)frameBytes {
     if ([self.clientPorts count] <= 0) {
         return;
     }
@@ -113,13 +113,16 @@
         CGFloat height = size.height;
         NSData *heightData = [NSData dataWithBytes:&height length:sizeof(height)];
         NSData *timestampData = [NSData dataWithBytes:&timestamp length:sizeof(timestamp)];
+        NSData *fpsNumeratorData = [NSData dataWithBytes:&fpsNumerator length:sizeof(fpsNumerator)];
+        NSData *fpsDenominatorData = [NSData dataWithBytes:&fpsDenominator length:sizeof(fpsDenominator)];
+
         // NOTE: I'm not totally sure about the safety of dataWithBytesNoCopy in this context.
         // Seems like there could potentially be an issue if the frameBuffer went away before the
         // mach message finished sending. But it seems to be working and avoids a memory copy. Alternately
         // we could do something like
         // NSData *frameData = [NSData dataWithBytes:(void *)frameBytes length:size.width * size.height * 2];
         NSData *frameData = [NSData dataWithBytesNoCopy:(void *)frameBytes length:size.width * size.height * 2 freeWhenDone:NO];
-        [self sendMessageToClientsWithMsgId:MachMsgIdFrame components:@[widthData, heightData, timestampData, frameData]];
+        [self sendMessageToClientsWithMsgId:MachMsgIdFrame components:@[widthData, heightData, timestampData, frameData, fpsNumeratorData, fpsDenominatorData]];
     }
 }
 
