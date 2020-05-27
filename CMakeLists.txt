@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(obs-mac-virtualcam VERSION 1.1.1)
+project(obs-mac-virtualcam VERSION 1.1.2)
 set(PLUGIN_AUTHOR "John Boiles")
 set(MACOS_BUNDLEID "com.johnboiles.obs-mac-virtualcam")
 
