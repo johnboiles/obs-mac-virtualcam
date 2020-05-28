@@ -178,7 +178,8 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setInteger:size.width forKey:kTestCardWidthKey];
             [defaults setInteger:size.height forKey:kTestCardHeightKey];
-            
+            [defaults setDouble:(double)fpsNumerator/(double)fpsDenominator forKey:kTestCardFPSKey];
+
             dispatch_suspend(_machConnectTimer);
             [self.stream stopServingDefaultFrames];
             dispatch_resume(_timeoutTimer);
