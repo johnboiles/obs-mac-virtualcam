@@ -1,0 +1,6 @@
+build/
+xcode/
+.DS_Store
+*.generated.*
+/installer/Output/
+Brewfile.lock.json
