@@ -33,6 +33,8 @@
     CFTypeRef _clock;
     NSImage *_testCardImage;
     dispatch_source_t _frameDispatchSource;
+    NSSize _testCardSize;
+    Float64 _fps;
 }
 
 @property CMIODeviceStreamQueueAlteredProc alteredProc;
@@ -41,25 +43,23 @@
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
 @property (readonly) NSImage *testCardImage;
-@property (nonatomic) NSSize testCardSize;
+@property (readonly) NSSize testCardSize;
+@property (readonly) Float64 fps;
 
 @end
 
 
 @implementation Stream
 
-#define FPS 30.0
+#define DEFAULT_FPS 30.0
+#define DEFAULT_WIDTH 1280
+#define DEFAULT_HEIGHT 720
 
 - (instancetype _Nonnull)init {
     self = [super init];
     if (self) {
         _frameDispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
                                                      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-
-        dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
-        uint64_t intervalTime = (int64_t)(NSEC_PER_SEC / FPS);
-        dispatch_source_set_timer(_frameDispatchSource, startTime, intervalTime, 0);
-
         __weak typeof(self) wself = self;
         dispatch_source_set_event_handler(_frameDispatchSource, ^{
             [wself fillFrame];
@@ -82,6 +82,10 @@
     DLogFunc(@"");
     _testCardImage = nil;
     _testCardSize = NSZeroSize;
+    _fps = 0;
+    dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+    uint64_t intervalTime = (int64_t)(NSEC_PER_SEC / self.fps);
+    dispatch_source_set_timer(_frameDispatchSource, startTime, intervalTime, 0);
     dispatch_resume(_frameDispatchSource);
 }
 
@@ -93,7 +97,7 @@
 - (CMSimpleQueueRef)queue {
     if (_queue == NULL) {
         // Allocate a one-second long queue, which we can use our FPS constant for.
-        OSStatus err = CMSimpleQueueCreate(kCFAllocatorDefault, FPS, &_queue);
+        OSStatus err = CMSimpleQueueCreate(kCFAllocatorDefault, self.fps, &_queue);
         if (err != noErr) {
             DLog(@"Err %d in CMSimpleQueueCreate", err);
         }
@@ -116,13 +120,26 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         int width = [[defaults objectForKey:kTestCardWidthKey] integerValue];
         int height = [[defaults objectForKey:kTestCardHeightKey] integerValue];
-        if( width == 0 || height == 0) {
-            _testCardSize = NSMakeSize(1280, 720);
+        if (width == 0 || height == 0) {
+            _testCardSize = NSMakeSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         } else {
             _testCardSize = NSMakeSize(width, height);
         }
     }
     return _testCardSize;
+}
+
+- (Float64)fps {
+    if (_fps == 0) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        double fps = [[defaults objectForKey:kTestCardFPSKey] doubleValue];
+        if (fps == 0) {
+            _fps = DEFAULT_FPS;
+        } else {
+            _fps = fps;
+        }
+    }
+    return _fps;
 }
 
 - (NSImage *)testCardImage {
@@ -169,7 +186,7 @@
     CGImageRef image = [self.testCardImage CGImageForProposedRect:&rect context:nsContext hints:nil];
     CGContextDrawImage(context, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
 
-    DrawDialWithFrame(NSMakeRect(0, 0, width, height), (30 - self.sequenceNumber % 30) * 360 / FPS);
+    DrawDialWithFrame(NSMakeRect(0, 0, width, height), (int(self.fps) - self.sequenceNumber % int(self.fps)) * 360 / int(self.fps));
 
     CGContextRelease(context);
 
@@ -187,7 +204,7 @@
     CVPixelBufferRef pixelBuffer = [self createPixelBufferWithTestAnimation];
 
     uint64_t hostTime = mach_absolute_time();
-    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(hostTime, FPS, 1);
+    CMSampleTimingInfo timingInfo = CMSampleTimingInfoForTimestamp(hostTime, self.fps, 1);
 
     OSStatus err = CMIOStreamClockPostTimingEvent(timingInfo.presentationTimeStamp, hostTime, true, self.clock);
     if (err != noErr) {
@@ -251,7 +268,7 @@
 
 - (CMVideoFormatDescriptionRef)getFormatDescription {
     CMVideoFormatDescriptionRef formatDescription;
-    OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_422YpCbCr8, 1280, 720, NULL, &formatDescription);
+    OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_422YpCbCr8, self.testCardSize.width, self.testCardSize.height, NULL, &formatDescription);
     if (err != noErr) {
         DLog(@"Error %d from CMVideoFormatDescriptionCreate", err);
     }
@@ -336,18 +353,18 @@
             break;
         case kCMIOStreamPropertyFrameRateRanges:
             AudioValueRange range;
-            range.mMinimum = FPS;
-            range.mMaximum = FPS;
+            range.mMinimum = self.fps;
+            range.mMaximum = self.fps;
             *static_cast<AudioValueRange*>(data) = range;
             *dataUsed = sizeof(AudioValueRange);
             break;
         case kCMIOStreamPropertyFrameRate:
         case kCMIOStreamPropertyFrameRates:
-            *static_cast<Float64*>(data) = FPS;
+            *static_cast<Float64*>(data) = self.fps;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyMinimumFrameRate:
-            *static_cast<Float64*>(data) = FPS;
+            *static_cast<Float64*>(data) = self.fps;
             *dataUsed = sizeof(Float64);
             break;
         case kCMIOStreamPropertyClock:
