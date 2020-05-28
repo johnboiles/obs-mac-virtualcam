@@ -18,8 +18,8 @@ If, after you donate to the OBS Project, you also want to send some cash my way 
 
 ## Known Issues
 
-* The virtual camera doesn't work with all programs due to a combination of [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc) (for third-party apps like Zoom and Slack) and OS restrictions (for built-in apps like Facetime and Photo Booth). Check out [the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility) to see if your app is supported. Please [edit the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility/_edit) if you try other software that we should include in that list.
-* OBS needs to be restarted after changing resolutions for the Virtual Camera to work. ([#83](https://github.com/johnboiles/obs-mac-virtualcam/issues/83))
+* Zoom, Slack, Webex, Skype and probably some other applications have disabled virtual cameras by default via [application restrictions](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation?language=objc). Check out [the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility) to see if your app is supported. Please [edit the wiki](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility/_edit) if you try other software that we should include in that list. In most cases you can work around these restrictions by [re-codesigning those applications](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility#apps-dont-allow-dal-plugins).
+* Photo Booth and FaceTime do not support virtual cameras as of macOS 10.14 Mojave since they disallow loading any plugin that's not provided by Apple. Photo Booth can simply be duplicated and renamed (e.g. `Photo Booth copy`) and it will work. There is no known workaroud for FaceTime.
 * You _may_ need to restart your computer after installing new versions of this plugin (not sure why 🤷‍♂️).
 
 See also the open [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) for other reported issues.
@@ -60,7 +60,7 @@ If you still believe you have found an unreported issue related to this plugin, 
 
 ## Development
 
-Please help me make this thing not janky! See the [this wiki file](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Developing) for build instructions and tips & tricks for developing.
+Please help me make this thing not janky! See the [this wiki page](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Developing) for build instructions and tips & tricks for developing.
 
 ## License
 
