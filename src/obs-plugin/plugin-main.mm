@@ -93,7 +93,7 @@ struct obs_output_info virtualcam_output_info = {
 
 bool obs_module_load(void)
 {
-    blog(LOG_DEBUG, "obs_module_load version=%s", PLUGIN_VERSION);
+    blog(LOG_INFO, "version=%s", PLUGIN_VERSION);
 
     QMainWindow* main_window = (QMainWindow*)obs_frontend_get_main_window();
     action = (QAction*)obs_frontend_add_tools_menu_qaction(obs_module_text("Start Virtual Camera"));
