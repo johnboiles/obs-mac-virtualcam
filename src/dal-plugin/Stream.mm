@@ -268,7 +268,7 @@
 
 - (CMVideoFormatDescriptionRef)getFormatDescription {
     CMVideoFormatDescriptionRef formatDescription;
-    OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_422YpCbCr8, self.testCardSize.width, self.testCardSize.height, NULL, &formatDescription);
+    OSStatus err = CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_AppleProRes4444, self.testCardSize.width, self.testCardSize.height, NULL, &formatDescription);
     if (err != noErr) {
         DLog(@"Error %d from CMVideoFormatDescriptionCreate", err);
     }

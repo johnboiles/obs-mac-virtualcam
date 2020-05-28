@@ -48,11 +48,11 @@ static bool virtualcam_output_start(void *data)
 
     obs_get_video_info(&videoInfo);
     
-    struct video_scale_info conversion = {};
-    conversion.format = VIDEO_FORMAT_UYVY;
-    conversion.width = videoInfo.output_width;
-    conversion.height = videoInfo.output_height;
-    obs_output_set_video_conversion(output, &conversion);
+//    struct video_scale_info conversion = {};
+//    conversion.format = VIDEO_FORMAT_UYVY;
+//    conversion.width = videoInfo.output_width;
+//    conversion.height = videoInfo.output_height;
+//    obs_output_set_video_conversion(output, &conversion);
     if (!obs_output_begin_data_capture(output, 0)) {
         return false;
     }

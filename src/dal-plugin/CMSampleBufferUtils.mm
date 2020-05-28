@@ -19,7 +19,7 @@ OSStatus CMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo
 
     // Create an empty pixel buffer
     CVPixelBufferRef pixelBuffer;
-    err = CVPixelBufferCreate(kCFAllocatorDefault, size.width, size.height, kCVPixelFormatType_422YpCbCr8, nil, &pixelBuffer);
+    err = CVPixelBufferCreate(kCFAllocatorDefault, size.width, size.height, kCMVideoCodecType_AppleProRes4444, nil, &pixelBuffer);
     if (err != noErr) {
         DLog(@"CVPixelBufferCreate err %d", err);
         return err;
@@ -118,7 +118,7 @@ OSStatus CMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timi
     };
 
     CMFormatDescriptionRef format;
-    err = CMVideoFormatDescriptionCreate(NULL, kCMVideoCodecType_422YpCbCr8, size.width, size.height, (__bridge CFDictionaryRef)extensions, &format);
+    err = CMVideoFormatDescriptionCreate(NULL, kCMVideoCodecType_AppleProRes4444, size.width, size.height, (__bridge CFDictionaryRef)extensions, &format);
     if (err != noErr) {
         DLog(@"CMVideoFormatDescriptionCreate err %d", err);
         return err;
