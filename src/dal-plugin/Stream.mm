@@ -127,7 +127,7 @@
 
 - (NSImage *)testCardImage {
     if (_testCardImage == nil) {
-        _testCardImage = ImageOfTestCardWithSize([self testCardSize]);
+        _testCardImage = ImageOfTestCardWithSize(self.testCardSize);
     }
     return _testCardImage;
 }
@@ -143,7 +143,6 @@
 }
 
 - (CVPixelBufferRef)createPixelBufferWithTestAnimation {
-    self.testCardSize = [self testCardSize];
     int width = self.testCardSize.width;
     int height = self.testCardSize.height;
 
