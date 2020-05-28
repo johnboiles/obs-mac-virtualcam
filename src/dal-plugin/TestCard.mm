@@ -47,8 +47,8 @@ void DrawTestCardWithFrame(CGContextRef context, NSRect frame)
     // NSRect center = NSMakeRect(NSMinX(frame) + floor(frame.size.width * 0.29199 - 0.25) + 0.75, NSMinY(frame) + floor(frame.size.height * 0.12917 + 0.5), floor(frame.size.width * 0.70840 - 0.25) - floor(frame.size.width * 0.29199 - 0.25), floor(frame.size.height * 0.86944 + 0.5) - floor(frame.size.height * 0.12917 + 0.5));
     NSRect regularText = NSMakeRect(NSMinX(frame) + floor((frame.size.width - 274.23) * 0.04061 - 0.34) + 0.84, NSMinY(frame) + floor((frame.size.height - 352.53) * 0.42711 - 0.45) + 0.95, 274.23, 352.53);
     NSRect rGB = NSMakeRect(NSMinX(frame), NSMinY(frame) - 0.98, floor((frame.size.width) * 0.03223 + 0.24) + 0.26, floor((frame.size.height + 0.98) * 0.02185 - 1.25) + 1.75);
-    NSRect topRight = NSMakeRect(NSMinX(frame) + frame.size.width - 99.46, NSMinY(frame) + 0.04, 93.42, 93.52);
-    NSRect bottomLeft = NSMakeRect(NSMinX(frame) + 1.75, NSMinY(frame) + frame.size.height - 94.55, 93.42, 93.51);
+    NSRect topRight = NSMakeRect(NSMinX(frame) + frame.size.width - 93.46, NSMinY(frame) + 0.04, 93.42, 93.52);
+    NSRect bottomLeft = NSMakeRect(NSMinX(frame), NSMinY(frame) + frame.size.height - 93.55, 93.42, 93.51);
 
 
     //// Background
