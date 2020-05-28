@@ -26,6 +26,7 @@
 #import "Logging.h"
 #import "CMSampleBufferUtils.h"
 #import "TestCard.h"
+#import "PlugIn.h"
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
@@ -40,6 +41,7 @@
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
 @property (readonly) NSImage *testCardImage;
+@property (nonatomic) NSSize testCardSize;
 
 @end
 
@@ -78,6 +80,8 @@
 
 - (void)startServingDefaultFrames {
     DLogFunc(@"");
+    _testCardImage = nil;
+    _testCardSize = NSZeroSize;
     dispatch_resume(_frameDispatchSource);
 }
 
@@ -107,9 +111,23 @@
     return _clock;
 }
 
+- (NSSize)testCardSize {
+    if (NSEqualSizes(_testCardSize, NSZeroSize)) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        int width = [[defaults objectForKey:kTestCardWidthKey] integerValue];
+        int height = [[defaults objectForKey:kTestCardHeightKey] integerValue];
+        if( width == 0 || height == 0) {
+            _testCardSize = NSMakeSize(1280, 720);
+        } else {
+            _testCardSize = NSMakeSize(width, height);
+        }
+    }
+    return _testCardSize;
+}
+
 - (NSImage *)testCardImage {
     if (_testCardImage == nil) {
-        _testCardImage = ImageOfTestCardWithSize(NSMakeSize(1280, 720));
+        _testCardImage = ImageOfTestCardWithSize(self.testCardSize);
     }
     return _testCardImage;
 }
@@ -125,8 +143,8 @@
 }
 
 - (CVPixelBufferRef)createPixelBufferWithTestAnimation {
-    int width = 1280;
-    int height = 720;
+    int width = self.testCardSize.width;
+    int height = self.testCardSize.height;
 
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
                              [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
