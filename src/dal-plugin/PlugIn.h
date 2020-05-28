@@ -24,6 +24,9 @@
 #import "MachClient.h"
 #import "Stream.h"
 
+#define kTestCardWidthKey @"obs-mac-virtualcam-test-card-width"
+#define kTestCardHeightKey @"obs-mac-virtualcam-test-card-height"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PlugIn : NSObject <CMIOObject>

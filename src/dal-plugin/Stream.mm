@@ -26,6 +26,7 @@
 #import "Logging.h"
 #import "CMSampleBufferUtils.h"
 #import "TestCard.h"
+#import "PlugIn.h"
 
 @interface Stream () {
     CMSimpleQueueRef _queue;
@@ -80,7 +81,7 @@
 - (void)startServingDefaultFrames {
     DLogFunc(@"");
     _testCardImage = nil;
-    _testCardSize.height = 0;
+    _testCardSize = NSZeroSize;
     dispatch_resume(_frameDispatchSource);
 }
 
@@ -111,13 +112,17 @@
 }
 
 - (NSSize)testCardImageSize {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    int width = [[defaults objectForKey:@"obs-virtualcam-dal-width"] integerValue];
-    int height = [[defaults objectForKey:@"obs-virtualcam-dal-height"] integerValue];
-    if(width==0 || height==0){
-        return NSMakeSize(1280, 720);
+    if (NSEqualSizes(_testCardSize, NSZeroSize)) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        int width = [[defaults objectForKey:kTestCardWidthKey] integerValue];
+        int height = [[defaults objectForKey:kTestCardHeightKey] integerValue];
+        if( width == 0 || height == 0) {
+            _testCardSize = NSMakeSize(1280, 720);
+        } else {
+            _testCardSize = NSMakeSize(width, height);
+        }
     }
-    return NSMakeSize(width, height);
+    return _testCardSize;
 }
 
 - (NSImage *)testCardImage {
@@ -139,7 +144,7 @@
 
 - (CVPixelBufferRef)createPixelBufferWithTestAnimation {
     
-    if (self.testCardSize.height == 0){
+    if (NSEqualSizes(self.testCardSize, NSZeroSize)){
         self.testCardSize = [self testCardImageSize];
     }
     int width = self.testCardSize.width;
