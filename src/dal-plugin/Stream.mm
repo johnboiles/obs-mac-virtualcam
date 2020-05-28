@@ -41,7 +41,7 @@
 @property (readonly) CFTypeRef clock;
 @property UInt64 sequenceNumber;
 @property (readonly) NSImage *testCardImage;
-@property NSSize testCardSize;
+@property (nonatomic) NSSize testCardSize;
 
 @end
 
@@ -111,7 +111,7 @@
     return _clock;
 }
 
-- (NSSize)testCardImageSize {
+- (NSSize)testCardSize {
     if (NSEqualSizes(_testCardSize, NSZeroSize)) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         int width = [[defaults objectForKey:kTestCardWidthKey] integerValue];
@@ -127,7 +127,7 @@
 
 - (NSImage *)testCardImage {
     if (_testCardImage == nil) {
-        _testCardImage = ImageOfTestCardWithSize([self testCardImageSize]);
+        _testCardImage = ImageOfTestCardWithSize([self testCardSize]);
     }
     return _testCardImage;
 }
@@ -143,10 +143,7 @@
 }
 
 - (CVPixelBufferRef)createPixelBufferWithTestAnimation {
-    
-    if (NSEqualSizes(self.testCardSize, NSZeroSize)){
-        self.testCardSize = [self testCardImageSize];
-    }
+    self.testCardSize = [self testCardSize];
     int width = self.testCardSize.width;
     int height = self.testCardSize.height;
 

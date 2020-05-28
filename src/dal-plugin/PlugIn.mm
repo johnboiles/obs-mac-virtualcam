@@ -175,11 +175,10 @@ typedef enum {
 - (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp frameData:(nonnull NSData *)frameData {
     dispatch_sync(_stateQueue, ^{
         if (_state == PlugInStateWaitingForServer) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                [defaults setInteger:size.width forKey:kTestCardWidthKey];
-                [defaults setInteger:size.height forKey:kTestCardHeightKey];
-            });
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setInteger:size.width forKey:kTestCardWidthKey];
+            [defaults setInteger:size.height forKey:kTestCardHeightKey];
+            
             dispatch_suspend(_machConnectTimer);
             [self.stream stopServingDefaultFrames];
             dispatch_resume(_timeoutTimer);
