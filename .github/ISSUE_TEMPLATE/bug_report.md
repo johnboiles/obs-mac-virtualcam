@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+_Attention: While Zoom says they re-enabled virtual cameras, only certain ones they whitelisted work. Currently, this plugin does not work with Zoom!_
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
