@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-_Please read the "Discussion / Support" section of the Readme first. Only open an issue if you don't get an answer on the OBS or someone tells you to. Attention: While Zoom says they re-enabled virtual cameras, only certain ones they whitelisted work. Currently, this plugin does not work with Zoom out of the box! See https://github.com/johnboiles/obs-mac-virtualcam/wiki/Compatibility#apps-dont-allow-dal-plugins for a workaround._
-
 **Describe the issue**
 A clear and concise description of what the problem is.
 
