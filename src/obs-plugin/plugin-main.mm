@@ -28,13 +28,13 @@ static const char *virtualcam_output_get_name(void *type_data)
     return obs_module_text("macOS Virtual Webcam");
 }
 
+// This is a dummy pointer so we have something to return from virtualcam_output_create
 static void *data = &data;
 
 static void *virtualcam_output_create(obs_data_t *settings, obs_output_t *output)
 {
     blog(LOG_DEBUG, "output_create");
     sMachServer = [[MachServer alloc] init];
-    // `obs_output_info.create` should return non `NULL` pointer.
     return data;
 }
 
