@@ -217,7 +217,7 @@ void DrawTestCardWithFrame(CGContextRef context, NSRect frame)
             label6Style.alignment = NSTextAlignmentLeft;
             NSDictionary* label6FontAttributes = @{NSFontAttributeName: [NSFont fontWithName: @"Helvetica-Bold" size: 66], NSForegroundColorAttributeName: textForeground, NSParagraphStyleAttributeName: label6Style};
 
-            [@"Mirrorred" drawInRect: NSOffsetRect(label6Rect, 0, 0) withAttributes: label6FontAttributes];
+            [@"Mirrored" drawInRect: NSOffsetRect(label6Rect, 0, 0) withAttributes: label6FontAttributes];
 
 
 
