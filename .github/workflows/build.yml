@@ -92,28 +92,30 @@ jobs:
         name: raw-plugins
         path: artifacts
 
-    - name: Install Apple certificates
-      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
-      uses: apple-actions/import-codesign-certs@v1
-      with:
-        p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
-        p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+  package:
+    needs: build
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
+    runs-on: macos-latest
+    steps: 
+      - name: Install Apple certificates
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
-    - name: Package Plugin
-      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
-      run: ./ci/macos/package-macos.sh
-      working-directory: ./obs-mac-virtualcam
-      env:
-        RELEASE_MODE: "True"
-        CODE_SIGNING_IDENTITY: John Boiles
-        INSTALLER_SIGNING_IDENTITY: John Boiles
-        AC_USERNAME: ${{ secrets.NOTARAZATION_USERNAME }}
-        AC_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
-        AC_PROVIDER_SHORTNAME: ${{ secrets.NOTARIZATION_PROVIDER_SHORTNAME }}
+      - name: Package Plugin
+        run: ./ci/macos/package-macos.sh
+        working-directory: ./obs-mac-virtualcam
+        env:
+          RELEASE_MODE: "True"
+          CODE_SIGNING_IDENTITY: John Boiles
+          INSTALLER_SIGNING_IDENTITY: John Boiles
+          AC_USERNAME: ${{ secrets.NOTARAZATION_USERNAME }}
+          AC_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
+          AC_PROVIDER_SHORTNAME: ${{ secrets.NOTARIZATION_PROVIDER_SHORTNAME }}
 
-    - name: Upload .pkg Installer
-      uses: actions/upload-artifact@v1
-      if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/v')
-      with:
-        name: pkg-installer
-        path: obs-mac-virtualcam/release
+      - name: Upload .pkg Installer
+        uses: actions/upload-artifact@v1
+        with:
+          name: pkg-installer
+          path: obs-mac-virtualcam/release
