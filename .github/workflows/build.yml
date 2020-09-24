@@ -50,6 +50,9 @@ jobs:
         cd obs-studio/build
 
         export QTDIR=$(brew --prefix qt5)
+        echo QTDIR
+        echo $(brew --prefix qt5)
+        echo $(QTDIR)
         cmake ..
         make -j
 
