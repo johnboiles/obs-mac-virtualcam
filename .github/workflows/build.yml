@@ -50,7 +50,7 @@ jobs:
         cd obs-studio/build
 
         export QTDIR=$(brew --prefix qt5)
-        cmake ..
+        cmake -DDISABLE_PYTHON=ON ..
         make -j
 
     - name: Install obs-mac-virtualcam deps
