@@ -55,7 +55,7 @@ jobs:
 
     - name: Install obs-mac-virtualcam deps
       run: |
-        brew install cmake qt5
+        brew install cmake qt5@5.14.1
 
     - name: Build the plugin
       run: |
