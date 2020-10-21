@@ -13,7 +13,9 @@ jobs:
   build:
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.13
-      obs-studio-ref: 25.0.8
+      MACOS_DEPS_VERSION: '2020-08-30'
+      QT_VERSION: '5.14.1'
+      obs-studio-ref: 26.0.2
     runs-on: macos-latest
 
     steps:
@@ -22,17 +24,45 @@ jobs:
       with:
         path: obs-mac-virtualcam
 
+    - name: 'Restore pre-built dependencies from cache'
+      id: deps-cache
+      uses: actions/cache@v2.1.2
+      env:
+        CACHE_NAME: 'deps-cache'
+      with:
+        path: /tmp/obsdeps
+        key: ${{ runner.os }}-pr-${{ env.CACHE_NAME }}-${{ env.MACOS_DEPS_VERSION }}
+
+    - name: 'Restore pre-built Qt dependency from cache'
+      id: deps-qt-cache
+      uses: actions/cache@v2.1.2
+      env:
+        CACHE_NAME: 'deps-qt-cache'
+      with:
+        path: /tmp/obsdeps
+        key: ${{ runner.os }}-pr-${{ env.CACHE_NAME }}-${{ env.MACOS_DEPS_VERSION }}
+
+    - name: 'Install prerequisite: Pre-built dependencies'
+      if: steps.deps-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz
+        tar -xf ./macos-deps-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C "/tmp"
+
+    - name: 'Install prerequisite: Pre-built dependency Qt'
+      if: steps.deps-qt-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        curl -L -O https://github.com/obsproject/obs-deps/releases/download/${{ env.MACOS_DEPS_VERSION }}/macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz
+        tar -xf ./macos-qt-${{ env.QT_VERSION }}-${{ env.MACOS_DEPS_VERSION }}.tar.gz -C "/tmp"
+        xattr -r -d com.apple.quarantine /tmp/obsdeps
+
     - name: Cache OBS Build
       id: cache-obs-build
       uses: actions/cache@v1
       with:
         path: obs-studio
         key: obs-studio-${{ env.obs-studio-ref }}-macOS${{ env.MACOSX_DEPLOYMENT_TARGET }}
-
-    - name: Install OBS deps
-      if: steps.cache-obs-build.outputs.cache-hit != 'true'
-      run: |
-        brew bundle -v --file=obs-mac-virtualcam/Brewfile
 
     - name: Checkout OBS
       if: steps.cache-obs-build.outputs.cache-hit != 'true'
@@ -49,13 +79,8 @@ jobs:
         mkdir -p obs-studio/build
         cd obs-studio/build
 
-        export QTDIR=$(brew --prefix qt5)
-        cmake -DDISABLE_PYTHON=ON ..
+        cmake -DQTDIR="/tmp/obsdeps" -DSWIGDIR="/tmp/obsdeps" -DDepsPath="/tmp/obsdeps" -DDISABLE_PYTHON=ON ..
         make -j
-
-    - name: Install obs-mac-virtualcam deps
-      run: |
-        brew install cmake qt5
 
     - name: Build the plugin
       run: |
@@ -65,17 +90,18 @@ jobs:
         cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
-          -DQTDIR:STRING=$(brew --prefix qt5) ..
+          -DQTDIR:STRING=/tmp/obsdeps ..
+
         make -j
 
     - name: Fix runtime QT deps
       run: |
         install_name_tool \
-          -change $(brew --prefix qt5)/lib/QtWidgets.framework/Versions/5/QtWidgets \
+          -change /tmp/obsdeps/lib/QtWidgets.framework/Versions/5/QtWidgets \
             @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
-          -change $(brew --prefix qt5)/lib/QtGui.framework/Versions/5/QtGui \
+          -change /tmp/obsdeps/lib/QtGui.framework/Versions/5/QtGui \
             @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
-          -change $(brew --prefix qt5)/lib/QtCore.framework/Versions/5/QtCore \
+          -change /tmp/obsdeps/lib/QtCore.framework/Versions/5/QtCore \
             @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore \
           obs-mac-virtualcam/build/src/obs-plugin/obs-mac-virtualcam.so
 
