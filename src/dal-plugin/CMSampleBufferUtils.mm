@@ -35,7 +35,7 @@ OSStatus CMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo
 
     // Copy memory into the pixel buffer
     CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-    uint8_t *dest = (uint8_t *)CVPixelBufferGetBaseAddress(pixelBuffer);
+    uint8_t *dest = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
     uint8_t *src = (uint8_t *)data.bytes;
 
     size_t destBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
