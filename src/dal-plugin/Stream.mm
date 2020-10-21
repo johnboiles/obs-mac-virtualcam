@@ -172,11 +172,11 @@
     NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
 
     CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    void *pxdata = CVPixelBufferGetBaseAddressOfPlane(pxbuffer, 0);
     NSParameterAssert(pxdata != NULL);
 
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(pxdata, width, height, 8, CVPixelBufferGetBytesPerRow(pxbuffer), rgbColorSpace, kCGImageAlphaPremultipliedFirst | kCGImageByteOrder32Big);
+    CGContextRef context = CGBitmapContextCreate(pxdata, width, height, 8, CVPixelBufferGetBytesPerRowOfPlane(pxbuffer, 0), rgbColorSpace, kCGImageAlphaPremultipliedFirst | kCGImageByteOrder32Big);
     NSParameterAssert(context);
 
     NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
