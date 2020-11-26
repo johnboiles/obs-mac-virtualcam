@@ -21,6 +21,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
+    - name: Use cmake
+      run: cmake --version
+
     - name: Checkout obs-mac-virtualcam
       uses: actions/checkout@v2
       with:
