@@ -19,6 +19,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
     - name: Checkout obs-mac-virtualcam
       uses: actions/checkout@v2
       with:
@@ -82,7 +86,7 @@ jobs:
         cmake -DQTDIR="/tmp/obsdeps" -DSWIGDIR="/tmp/obsdeps" -DDepsPath="/tmp/obsdeps" -DDISABLE_PYTHON=ON ..
         make -j
 
-    - name: Build the plugin
+    - name: Build the OBS plugin
       run: |
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
@@ -92,7 +96,18 @@ jobs:
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
           -DQTDIR:STRING=/tmp/obsdeps ..
 
-        make -j
+        make -j obs-plugin
+
+    - name: Build the DAL plugin
+      run: |
+        cd obs-mac-virtualcam/build
+
+        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
+          -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
+          -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
+          -DQTDIR:STRING=/tmp/obsdeps -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
+
+        make -j dal-plugin
 
     - name: Fix runtime QT deps
       run: |
