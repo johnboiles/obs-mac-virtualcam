@@ -112,7 +112,7 @@ jobs:
         cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
-          -DQTDIR:STRING=/tmp/obsdeps -D CMAKE_OSX_ARCHITECTURES="x86_64" ..
+          -DQTDIR:STRING=/tmp/obsdeps -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
 
         make -j dal-plugin
 
