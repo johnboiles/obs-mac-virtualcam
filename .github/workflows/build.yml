@@ -82,7 +82,7 @@ jobs:
         cmake -DQTDIR="/tmp/obsdeps" -DSWIGDIR="/tmp/obsdeps" -DDepsPath="/tmp/obsdeps" -DDISABLE_PYTHON=ON ..
         make -j
 
-    - name: Build the plugin
+    - name: Build the OBS plugin
       run: |
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
@@ -92,7 +92,20 @@ jobs:
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
           -DQTDIR:STRING=/tmp/obsdeps ..
 
-        make -j
+        make -j obs-plugin
+
+    - name: Build the DAL plugin
+      run: |
+        rm -rf obs-mac-virtualcam/build
+        mkdir obs-mac-virtualcam/build
+        cd obs-mac-virtualcam/build
+
+        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
+          -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
+          -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
+          -DQTDIR:STRING=/tmp/obsdeps -D CMAKE_OSX_ARCHITECTURES="arm64;x86_64" ..
+
+        make -j dal-plugin
 
     - name: Fix runtime QT deps
       run: |
