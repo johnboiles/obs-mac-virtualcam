@@ -16,10 +16,10 @@ jobs:
       MACOS_DEPS_VERSION: '2020-08-30'
       QT_VERSION: '5.14.1'
       obs-studio-ref: 26.0.2
-    runs-on: macos-latest
+    runs-on: macos-11.0
 
     steps:
-    - name: Use cmake
+    - name: Update cmake
       run: |
         cmake --version
         brew update
