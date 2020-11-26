@@ -26,6 +26,10 @@ jobs:
         brew upgrade cmake
         cmake --version
 
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
     - name: Checkout obs-mac-virtualcam
       uses: actions/checkout@v2
       with:
