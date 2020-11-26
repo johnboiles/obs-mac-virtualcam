@@ -22,6 +22,7 @@ jobs:
     - name: Use cmake
       run: |
         cmake --version
+        brew update
         brew upgrade cmake
         cmake --version
 
@@ -92,6 +93,7 @@ jobs:
       run: |
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
+        echo $PWD
 
         cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
@@ -105,6 +107,7 @@ jobs:
         rm -rf obs-mac-virtualcam/build
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
+        echo $PWD
 
         cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
