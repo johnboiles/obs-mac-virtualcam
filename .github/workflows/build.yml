@@ -15,7 +15,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.13
       MACOS_DEPS_VERSION: '2020-08-30'
       QT_VERSION: '5.14.1'
-      CPATH: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/
+      CPATH: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
       obs-studio-ref: 26.0.2
     runs-on: macos-latest
 
@@ -101,7 +101,7 @@ jobs:
         mkdir obs-mac-virtualcam/build
         cd obs-mac-virtualcam/build
 
-        cmake -DCMAKE_C_COMPILER "/usr/bin/clang" -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
+        cmake -DLIBOBS_INCLUDE_DIR:STRING=$GITHUB_WORKSPACE/obs-studio/libobs \
           -DLIBOBS_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/libobs/libobs.dylib \
           -DOBS_FRONTEND_LIB:STRING=$GITHUB_WORKSPACE/obs-studio/build/UI/obs-frontend-api/libobs-frontend-api.dylib \
           -DQTDIR:STRING=/tmp/obsdeps -D CMAKE_OSX_ARCHITECTURES="arm64;x86_64" ..
