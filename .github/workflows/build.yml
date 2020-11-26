@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.13
+      MACOSX_DEPLOYMENT_TARGET: 10.15
       MACOS_DEPS_VERSION: '2020-08-30'
       QT_VERSION: '5.14.1'
       obs-studio-ref: 26.0.2
