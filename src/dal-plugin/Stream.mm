@@ -133,7 +133,7 @@
     if (_fps == 0) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         double fps = [[defaults objectForKey:kTestCardFPSKey] doubleValue];
-        if (fps == 0) {
+        if (isnan(fps) || fps <= 0 || fps > 120) {
             _fps = DEFAULT_FPS;
         } else {
             _fps = fps;
