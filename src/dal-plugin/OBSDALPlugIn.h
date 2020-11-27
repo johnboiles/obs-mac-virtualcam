@@ -1,8 +1,8 @@
 //
-//  Device.h
+//  OBSDALPlugIn.h
 //  obs-mac-virtualcam
 //
-//  Created by John Boiles  on 4/10/20.
+//  Created by John Boiles  on 4/9/20.
 //
 //  obs-mac-virtualcam is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,16 +18,33 @@
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
+#import <CoreMediaIO/CMIOHardwarePlugIn.h>
 
-#import "ObjectStore.h"
+#import "OBSDALObjectStore.h"
+#import "OBSDALMachClient.h"
+#import "OBSDALStream.h"
+
+#define kTestCardWidthKey @"obs-mac-virtualcam-test-card-width"
+#define kTestCardHeightKey @"obs-mac-virtualcam-test-card-height"
+#define kTestCardFPSKey @"obs-mac-virtualcam-test-card-fps"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Device : NSObject <CMIOObject>
+@interface OBSDALPlugIn : NSObject <CMIOObject>
 
 @property CMIOObjectID objectId;
-@property CMIOObjectID pluginId;
-@property CMIOObjectID streamId;
+@property (readonly) OBSDALMachClient *machClient;
+@property OBSDALStream *stream;
+
++ (OBSDALPlugIn *)SharedOBSDALPlugIn;
+
+- (void)initialize;
+
+- (void)teardown;
+
+- (void)startStream;
+
+- (void)stopStream;
 
 @end
 

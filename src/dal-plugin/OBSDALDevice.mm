@@ -1,5 +1,5 @@
 //
-//  Device.mm
+//  OBSDALDevice.mm
 //  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/10/20.
@@ -17,21 +17,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
-#import "Device.h"
+#import "OBSDALDevice.h"
 
 #import <CoreFoundation/CoreFoundation.h>
 #include <IOKit/audio/IOAudioTypes.h>
 
-#import "PlugIn.h"
+#import "OBSDALPlugIn.h"
 #import "Logging.h"
 
-@interface Device ()
+@interface OBSDALDevice ()
 @property BOOL excludeNonDALAccess;
 @property pid_t masterPid;
 @end
 
 
-@implementation Device
+@implementation OBSDALDevice
 
 // Note that the DAL's API calls HasProperty before calling GetPropertyDataSize. This means that it can be assumed that address is valid for the property involved.
 - (UInt32)getPropertyDataSizeWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData {
@@ -84,7 +84,7 @@
         case kCMIODevicePropertyDeviceMaster:
             return sizeof(pid_t);
         default:
-            DLog(@"Device unhandled getPropertyDataSizeWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALDevice unhandled getPropertyDataSizeWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
     };
 
     return 0;
@@ -178,7 +178,7 @@
             *dataUsed = sizeof(pid_t);
             break;
         default:
-            DLog(@"Device unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALDevice unhandled getPropertyDataWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             *dataUsed = 0;
             break;
     };
@@ -211,7 +211,7 @@
         case kCMIODevicePropertyLinkedCoreAudioDeviceUID:
             return false;
         default:
-            DLog(@"Device unhandled hasPropertyWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALDevice unhandled hasPropertyWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return false;
     };
 }
@@ -243,7 +243,7 @@
         case kCMIODevicePropertyDeviceMaster:
             return true;
         default:
-            DLog(@"Device unhandled isPropertySettableWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALDevice unhandled isPropertySettableWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return false;
     };
 }
@@ -258,7 +258,7 @@
             self.masterPid = *static_cast<const pid_t*>(data);
             break;
         default:
-            DLog(@"Device unhandled setPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALDevice unhandled setPropertyDataWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             break;
     };
 }

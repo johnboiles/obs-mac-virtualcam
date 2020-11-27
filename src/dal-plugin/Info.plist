@@ -25,7 +25,7 @@
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>35FDFF29-BFCF-4644-AB77-B759DE932ABE</key>
-		<string>PlugInMain</string>
+		<string>OBSDALPlugInMain</string>
 	</dict>
 	<key>CFPlugInTypes</key>
 	<dict>

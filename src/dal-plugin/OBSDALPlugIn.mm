@@ -1,5 +1,5 @@
 //
-//  PlugIn.mm
+//  OBSDALPlugIn.mm
 //  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/9/20.
@@ -17,7 +17,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
-#import "PlugIn.h"
+#import "OBSDALPlugIn.h"
 
 #import <CoreMediaIO/CMIOHardwarePlugin.h>
 
@@ -25,13 +25,13 @@
 
 
 typedef enum {
-    PlugInStateNotStarted = 0,
-    PlugInStateWaitingForServer,
-    PlugInStateReceivingFrames,
-} PlugInState;
+    OBSDALPlugInStateNotStarted = 0,
+    OBSDALPlugInStateWaitingForServer,
+    OBSDALPlugInStateReceivingFrames,
+} OBSDALPlugInState;
 
 
-@interface PlugIn () <MachClientDelegate> {
+@interface OBSDALPlugIn () <OBSDALMachClientDelegate> {
     //! Serial queue for all state changes that need to be concerned with thread safety
     dispatch_queue_t _stateQueue;
 
@@ -41,21 +41,21 @@ typedef enum {
     //! Timeout timer when we haven't received frames for 5s
     dispatch_source_t _timeoutTimer;
 }
-@property PlugInState state;
-@property MachClient *machClient;
+@property OBSDALPlugInState state;
+@property OBSDALMachClient *machClient;
 
 @end
 
 
-@implementation PlugIn
+@implementation OBSDALPlugIn
 
-+ (PlugIn *)SharedPlugIn {
-    static PlugIn *sPlugIn = nil;
++ (OBSDALPlugIn *)SharedOBSDALPlugIn {
+    static OBSDALPlugIn *sOBSDALPlugIn = nil;
     static dispatch_once_t sOnceToken;
     dispatch_once(&sOnceToken, ^{
-        sPlugIn = [[self alloc] init];
+        sOBSDALPlugIn = [[self alloc] init];
     });
-    return sPlugIn;
+    return sOBSDALPlugIn;
 }
 
 - (instancetype)init {
@@ -65,14 +65,14 @@ typedef enum {
         _timeoutTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _stateQueue);
         __weak typeof(self) weakSelf = self;
         dispatch_source_set_event_handler(_timeoutTimer, ^{
-            if (weakSelf.state == PlugInStateReceivingFrames) {
+            if (weakSelf.state == OBSDALPlugInStateReceivingFrames) {
                 DLog(@"No frames received for 5s, restarting connection");
                 [self stopStream];
                 [self startStream];
             }
         });
 
-        _machClient = [[MachClient alloc] init];
+        _machClient = [[OBSDALMachClient alloc] init];
         _machClient.delegate = self;
 
         _machConnectTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _stateQueue);
@@ -82,7 +82,7 @@ typedef enum {
         dispatch_source_set_event_handler(_machConnectTimer, ^{
             if (![[weakSelf machClient] isServerAvailable]) {
                 DLog(@"Server is not available");
-            } else if (weakSelf.state == PlugInStateWaitingForServer) {
+            } else if (weakSelf.state == OBSDALPlugInStateWaitingForServer) {
                 DLog(@"Attempting connection");
                 [[weakSelf machClient] connectToServer];
             }
@@ -94,10 +94,10 @@ typedef enum {
 - (void)startStream {
     DLogFunc(@"");
     dispatch_async(_stateQueue, ^{
-        if (_state == PlugInStateNotStarted) {
+        if (_state == OBSDALPlugInStateNotStarted) {
             dispatch_resume(_machConnectTimer);
             [self.stream startServingDefaultFrames];
-            _state = PlugInStateWaitingForServer;
+            _state = OBSDALPlugInStateWaitingForServer;
         }
     });
 }
@@ -105,14 +105,14 @@ typedef enum {
 - (void)stopStream {
     DLogFunc(@"");
     dispatch_async(_stateQueue, ^{
-        if (_state == PlugInStateWaitingForServer) {
+        if (_state == OBSDALPlugInStateWaitingForServer) {
             dispatch_suspend(_machConnectTimer);
             [self.stream stopServingDefaultFrames];
-        } else if (_state == PlugInStateReceivingFrames) {
+        } else if (_state == OBSDALPlugInStateReceivingFrames) {
             // TODO: Disconnect from the mach server?
             dispatch_suspend(_timeoutTimer);
         }
-        _state = PlugInStateNotStarted;
+        _state = OBSDALPlugInStateNotStarted;
     });
 }
 
@@ -129,7 +129,7 @@ typedef enum {
         case kCMIOObjectPropertyName:
             return true;
         default:
-            DLog(@"PlugIn unhandled hasPropertyWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALPlugIn unhandled hasPropertyWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return false;
     };
 }
@@ -139,7 +139,7 @@ typedef enum {
         case kCMIOObjectPropertyName:
             return false;
         default:
-            DLog(@"PlugIn unhandled isPropertySettableWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALPlugIn unhandled isPropertySettableWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return false;
     };
 }
@@ -149,7 +149,7 @@ typedef enum {
         case kCMIOObjectPropertyName:
             return sizeof(CFStringRef);
         default:
-            DLog(@"PlugIn unhandled getPropertyDataSizeWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALPlugIn unhandled getPropertyDataSizeWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return 0;
     };
 }
@@ -161,20 +161,20 @@ typedef enum {
             *dataUsed = sizeof(CFStringRef);
             return;
         default:
-            DLog(@"PlugIn unhandled getPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+            DLog(@"OBSDALPlugIn unhandled getPropertyDataWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
             return;
         };
 }
 
 - (void)setPropertyDataWithAddress:(CMIOObjectPropertyAddress)address qualifierDataSize:(UInt32)qualifierDataSize qualifierData:(nonnull const void *)qualifierData dataSize:(UInt32)dataSize data:(nonnull const void *)data {
-    DLog(@"PlugIn unhandled setPropertyDataWithAddress for %@", [ObjectStore StringFromPropertySelector:address.mSelector]);
+    DLog(@"OBSDALPlugIn unhandled setPropertyDataWithAddress for %@", [OBSDALObjectStore StringFromPropertySelector:address.mSelector]);
 }
 
-#pragma mark - MachClientDelegate
+#pragma mark - OBSDALMachClientDelegate
 
 - (void)receivedFrameWithSize:(NSSize)size timestamp:(uint64_t)timestamp fpsNumerator:(uint32_t)fpsNumerator fpsDenominator:(uint32_t)fpsDenominator frameData:(NSData *)frameData {
     dispatch_sync(_stateQueue, ^{
-        if (_state == PlugInStateWaitingForServer) {
+        if (_state == OBSDALPlugInStateWaitingForServer) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setInteger:size.width forKey:kTestCardWidthKey];
             [defaults setInteger:size.height forKey:kTestCardHeightKey];
@@ -183,7 +183,7 @@ typedef enum {
             dispatch_suspend(_machConnectTimer);
             [self.stream stopServingDefaultFrames];
             dispatch_resume(_timeoutTimer);
-            _state = PlugInStateReceivingFrames;
+            _state = OBSDALPlugInStateReceivingFrames;
         }
     });
 

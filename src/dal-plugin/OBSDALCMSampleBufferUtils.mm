@@ -5,16 +5,16 @@
 //  Created by John Boiles  on 5/8/20.
 //
 
-#import "CMSampleBufferUtils.h"
+#import "OBSDALCMSampleBufferUtils.h"
 
 #include "Logging.h"
 
 /*!
-CMSampleBufferCreateFromData
+OBSDALCMSampleBufferCreateFromData
 
 Creates a CMSampleBuffer by copying bytes from NSData into a CVPixelBuffer.
 */
-OSStatus CMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo, UInt64 sequenceNumber, NSData *data, CMSampleBufferRef *sampleBuffer) {
+OSStatus OBSDALCMSampleBufferCreateFromData(NSSize size, CMSampleTimingInfo timingInfo, UInt64 sequenceNumber, NSData *data, CMSampleBufferRef *sampleBuffer) {
     OSStatus err = noErr;
 
     // Create an empty pixel buffer
@@ -94,12 +94,12 @@ OSStatus createReadonlyBlockBuffer(CMBlockBufferRef *result, NSData *data) {
 }
 
 /*!
- CMSampleBufferCreateFromDataNoCopy
+ OBSDALCMSampleBufferCreateFromDataNoCopy
 
  Creates a CMSampleBuffer by using the bytes directly from NSData (without copying them).
  Seems to mostly work but does not work at full resolution in OBS for some reason (which prevents loopback testing).
  */
-OSStatus CMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timingInfo, UInt64 sequenceNumber, NSData *data, CMSampleBufferRef *sampleBuffer) {
+OSStatus OBSDALCMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timingInfo, UInt64 sequenceNumber, NSData *data, CMSampleBufferRef *sampleBuffer) {
     OSStatus err = noErr;
 
     CMBlockBufferRef dataBuffer;
@@ -137,7 +137,7 @@ OSStatus CMSampleBufferCreateFromDataNoCopy(NSSize size, CMSampleTimingInfo timi
     return noErr;
 }
 
-CMSampleTimingInfo CMSampleTimingInfoForTimestamp(uint64_t timestampNanos, uint32_t fpsNumerator, uint32_t fpsDenominator) {
+CMSampleTimingInfo OBSDALCMSampleTimingInfoForTimestamp(uint64_t timestampNanos, uint32_t fpsNumerator, uint32_t fpsDenominator) {
     // The timing here is quite important. For frames to be delivered correctly and successfully be recorded by apps
     // like QuickTime Player, we need to be accurate in both our timestamps _and_ have a sensible scale. Using large
     // timestamps and scales like mach_absolute_time() and NSEC_PER_SEC will work for display, but will error out
