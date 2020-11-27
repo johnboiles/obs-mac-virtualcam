@@ -1,5 +1,5 @@
 //
-//  ObjectStore.h
+//  OBSDALObjectStore.h
 //  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/10/20.
@@ -32,9 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface ObjectStore : NSObject
+@interface OBSDALObjectStore : NSObject
 
-+ (ObjectStore *)SharedObjectStore;
++ (OBSDALObjectStore *)SharedOBSDALObjectStore;
 
 + (NSObject<CMIOObject> *)GetObjectWithId:(CMIOObjectID)objectId;
 

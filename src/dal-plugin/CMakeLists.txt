@@ -30,23 +30,23 @@ include_directories(${AVFOUNDATION}
 set(dal-plugin_SOURCES
 	Defines.generated.h
 	Logging.h
-	PlugInMain.mm
-	PlugInInterface.h
-	PlugInInterface.mm
-	ObjectStore.h
-	ObjectStore.mm
-	PlugIn.h
-	PlugIn.mm
-	Device.h
-	Device.mm
-	Stream.h
-	Stream.mm
-    CMSampleBufferUtils.h
-    CMSampleBufferUtils.mm
-	MachClient.h
-	MachClient.mm
-    TestCard.h
-    TestCard.mm
+	OBSDALPlugInMain.mm
+	OBSDALPlugInInterface.h
+	OBSDALPlugInInterface.mm
+	OBSDALObjectStore.h
+	OBSDALObjectStore.mm
+	OBSDALPlugIn.h
+	OBSDALPlugIn.mm
+	OBSDALDevice.h
+	OBSDALDevice.mm
+	OBSDALStream.h
+	OBSDALStream.mm
+	OBSDALCMSampleBufferUtils.h
+	OBSDALCMSampleBufferUtils.mm
+	OBSDALMachClient.h
+	OBSDALMachClient.mm
+	OBSDALTestCard.h
+	OBSDALTestCard.mm
 	../common/MachProtocol.h)
 
 add_library(dal-plugin MODULE

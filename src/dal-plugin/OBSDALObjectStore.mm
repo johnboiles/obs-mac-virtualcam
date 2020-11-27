@@ -1,5 +1,5 @@
 //
-//  ObjectStore.mm
+//  OBSDALObjectStore.mm
 //  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/10/20.
@@ -17,13 +17,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
-#import "ObjectStore.h"
+#import "OBSDALObjectStore.h"
 
-@interface ObjectStore ()
+@interface OBSDALObjectStore ()
 @property NSMutableDictionary *objectMap;
 @end
 
-@implementation ObjectStore
+@implementation OBSDALObjectStore
 
 // 4-byte selectors to string for easy debugging
 + (NSString *)StringFromPropertySelector:(CMIOObjectPropertySelector)selector {
@@ -241,17 +241,17 @@
         }
 }
 
-+ (ObjectStore *)SharedObjectStore {
-    static ObjectStore *sObjectStore = nil;
++ (OBSDALObjectStore *)SharedOBSDALObjectStore {
+    static OBSDALObjectStore *sOBSDALObjectStore = nil;
     static dispatch_once_t sOnceToken;
     dispatch_once(&sOnceToken, ^{
-        sObjectStore = [[self alloc] init];
+        sOBSDALObjectStore = [[self alloc] init];
     });
-    return sObjectStore;
+    return sOBSDALObjectStore;
 }
 
 + (NSObject<CMIOObject> *)GetObjectWithId:(CMIOObjectID)objectId {
-    return [[ObjectStore SharedObjectStore] getObject:objectId];
+    return [[OBSDALObjectStore SharedOBSDALObjectStore] getObject:objectId];
 }
 
 - (id)init {

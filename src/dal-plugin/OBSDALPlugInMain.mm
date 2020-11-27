@@ -1,5 +1,5 @@
 //
-//  PlugInInterface.h
+//  OBSDALPlugInMain.mm
 //  obs-mac-virtualcam
 //
 //  Created by John Boiles  on 4/9/20.
@@ -17,7 +17,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with obs-mac-virtualcam. If not, see <http://www.gnu.org/licenses/>.
 
-#import <CoreMediaIO/CMIOHardwarePlugIn.h>
+#import <CoreMediaIO/CMIOHardwarePlugin.h>
 
-// The static singleton of the plugin interface
-CMIOHardwarePlugInRef PlugInRef();
+#import "OBSDALPlugInInterface.h"
+#import "Logging.h"
+#import "Defines.generated.h"
+
+//! OBSDALPlugInMain is the entrypoint for the plugin
+extern "C" {
+    void* OBSDALPlugInMain(CFAllocatorRef allocator, CFUUIDRef requestedTypeUUID) {
+        DLogFunc(@"version=%@", PLUGIN_VERSION);
+        if (!CFEqual(requestedTypeUUID, kCMIOHardwarePlugInTypeID)) {
+            return 0;
+        }
+
+        return OBSDALPlugInRef();
+    }
+}
