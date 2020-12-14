@@ -1,12 +1,16 @@
 # OBS (macOS) Virtual Camera 🎥
 
 ![Build](https://github.com/johnboiles/obs-mac-virtualcam/workflows/Build%20and%20(maybe)%20Release/badge.svg)
+**ATTENTION: Before updating to OBS Studio 26.1, make sure to remove this plugin using the [uninstall instructions](https://github.com/johnboiles/obs-mac-virtualcam#uninstalling).** While it worked for most, some users have reported problems when updating to OBS Studio 26.1 with the plugin installed.
+**ATTENTION: STARTING WITH OBS Studio 26.1, THIS PLUGIN IS NOW A PART OF THE OFFICIAL OBS PACKAGE. Development will now happen on the [OBS Studio GitHub.](https://github.com/obsproject/obs-studio).
+Running this plugin besides the built-in distribution does not work.
+If you can, update to OBS 26.1!**
 
 Creates a virtual webcam device from the output of [OBS Studio](https://obsproject.com/). Especially useful for streaming smooth, composited video into Zoom, Hangouts, Jitsi etc. Like [CatxFish/obs-virtual-cam](https://github.com/CatxFish/obs-virtual-cam) but for macOS.
 
 ![Mar-28-2020 01-55-07](https://user-images.githubusercontent.com/218876/77819715-279b8700-709a-11ea-8885-aa15051665ee.gif)
 
-This code was spun out of [this OBS Project RFC](https://github.com/obsproject/rfcs/pull/15) which was itself spun out of [this issue](https://github.com/obsproject/obs-studio/issues/2568) from [@tobi](https://github.com/tobi). The goal is for this (or something with equivalent functionality) to eventually be merged into the core OBS codebase 🤞.
+This code was spun out of [this OBS Project RFC](https://github.com/obsproject/rfcs/pull/15) which was itself spun out of [this issue](https://github.com/obsproject/obs-studio/issues/2568) from [@tobi](https://github.com/tobi). The goal for this, being merged into the core OBS codebase, has been reached 🤞.
 
 ## Donating 💸
 
@@ -26,6 +30,7 @@ If, after you donate to the OBS Project, you also want to send some cash my way 
 See also the open [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) for other reported issues. In case you need help or think you found a bug, see [this](https://github.com/johnboiles/obs-mac-virtualcam#Discussion--Support).
 
 ## Installing
+*If you are using OBS Studio 26.1 or newer, the virtual camera is already part of OBS Studio. In that case, **DO NOT** install this plugin!*
 
 * Download and install the latest version of OBS from the [official website](https://obsproject.com).
 * Download the latest `.pkg` installer on the [Releases page](https://github.com/johnboiles/obs-mac-virtualcam/releases)
@@ -47,15 +52,15 @@ sudo rm -rf /Library/Application\ Support/obs-studio/plugins/obs-mac-virtualcam
 
 ## Discussion / Support
 
-The official place for discussion and chat related to this plugin is in the `#plugins-and-tools` channel in the [OBS Studio Discord](https://discord.gg/obsproject). For questions or troubleshooting, ping @gxalpha#3486 and attach the OBS log, screenshots, and/or crash logs (from Console.app).
+If you are using the version the virtual camera that comes shipped with OBS Studio 26.1, the official place for questions is the `#macos-support` channel in the [OBS Studio Discord](https://discord.gg/obsproject).
+If you are still using this plugin, the official place for discussion and chat is in the `#plugins-and-tools` channel in the [OBS Studio Discord](https://discord.gg/obsproject). For questions or troubleshooting, ping @gxalpha#3486 and attach the OBS log, screenshots, and/or crash logs (from Console.app).
 
 ## Reporting Issues / Bugs / Improvements
 
 > 🚀 Wonder How to contribute? Have look at our [notes for contributors](https://github.com/johnboiles/obs-mac-virtualcam/wiki/Contributing). There are ways non-technical or minimally-technical folks can contribute too!
 
-This plugin is still very much a work in progress. If you are having an issue there's a good chance someone has already run into the same thing. Please search through the [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) before reporting a new one.
-
-Also, make sure you're running the most recent version of OBS. We're only officially supporting the most recent version of OBS at any given time.
+This plugin is now archived. If you are having an issue there's a good chance someone has already run into the same thing. Please search through the [issues](https://github.com/johnboiles/obs-mac-virtualcam/issues) before reporting a new one.
+If you are using the version the virtual camera that comes shipped with OBS Studio 26.1, also see the issues on the [OBS Studio GitHub](https://github.com/obsproject/obs-studio/issues) and create new issues there.
 
 If you still believe you have found an unreported issue related to this plugin, please open an issue! When you do, include any relevant terminal log, Console.app log, crash log, screen recording and/or screenshots. The more information you can provide, the better!
 
@@ -65,4 +70,4 @@ Please help me make this thing not janky! See the [this wiki page](https://githu
 
 ## License
 
-As the goal of this repo is to eventually get merged into [obsproject/obs-studio](https://github.com/obsproject/obs-studio/) (or die because someone made a better implementation), the license for this code mirrors the GPLv2 license for that project.
+As the goal of this repo was to get merged into [obsproject/obs-studio](https://github.com/obsproject/obs-studio/), the license for this code mirrors the GPLv2 license for that project.
